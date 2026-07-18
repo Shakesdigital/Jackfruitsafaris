@@ -1,20 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY;
-const supabaseAnonKey = process.env.NEXT_SUPABASE_ANON_KEY;
-
-// Server-side client creator with cookies (lazy - only called when needed)
 export async function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY;
-  const key = process.env.NEXT_SUPABASE_ANON_KEY;
+  // Try multiple env var names for flexibility
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.SUPABASE_URL;
+  const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  console.log("SUPABASE CLIENT INIT:", { 
+    hasUrl: !!url, 
+    hasKey: !!key,
+    urlPrefix: url ? url.substring(0, 30) + "..." : "undefined"
+  });
 
   if (!url || !key) {
     // Return a mock client that will fail gracefully
+    console.log("SUPABASE RETURNING MOCK - NOT CONFIGURED");
     return {
       auth: {
         getUser: async () => ({ data: { user: null }, error: null }),
-        signInWithPassword: async () => ({ error: { message: "Not configured" } }),
+        signInWithPassword: async () => ({ error: { message: "Not configured: check NEXT_PUBLIC_SUPABASE_URL_KEY and NEXT_SUPABASE_ANON_KEY" } }),
         signOut: async () => ({}),
       },
       from: () => ({
