@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { login } from "@/app/admin/actions";
+import { login } from "@/lib/server/actions";
 
 export const metadata = {
   title: "Admin Login",
