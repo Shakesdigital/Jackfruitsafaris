@@ -10,9 +10,11 @@ export function middleware(request: NextRequest) {
 
   // Protect admin routes
   if (pathname.startsWith("/admin")) {
-    const accessToken = request.cookies.get("sb-access-token");
-
-    if (!accessToken) {
+    // Check for Supabase auth cookies - Supabase uses sb:token format
+    const supabaseToken = request.cookies.get("sb:token");
+    const sbAccessToken = request.cookies.get("sb-access-token"); // fallback
+    
+    if (!supabaseToken && !sbAccessToken) {
       const url = request.nextUrl.clone();
       url.pathname = "/auth/login";
       return NextResponse.redirect(url);
@@ -21,5 +23,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/auth/login"],
+  matcher: ["/admin/:path*"],
 };
