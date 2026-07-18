@@ -28,7 +28,7 @@ export default async function LoginPage({
             {decodeURIComponent(error)}
           </div>
         )}
-        <form action={login} method="POST" className="space-y-6">
+        <form action="/api/admin/login" method="POST" className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email address
