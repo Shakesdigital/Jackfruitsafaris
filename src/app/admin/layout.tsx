@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { logout } from "@/app/admin/actions";
 
 export const metadata: Metadata = {
@@ -21,12 +20,6 @@ function LogoutButton() {
       </button>
     </form>
   );
-}
-
-async function getUser() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("sb-access-token");
-  return token?.value;
 }
 
 export default async function AdminLayout({
