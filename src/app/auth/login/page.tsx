@@ -6,11 +6,14 @@ export const metadata = {
   description: "Jackfruit Safaris Admin Panel",
 };
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  const params = await searchParams;
+  const error = params.error;
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow">
@@ -20,6 +23,11 @@ export default function LoginPage({
           </h1>
           <p className="mt-2 text-center text-gray-600">Sign in to access the CMS</p>
         </div>
+        {error && (
+          <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
+            {decodeURIComponent(error)}
+          </div>
+        )}
         <form action={login} method="POST" className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
