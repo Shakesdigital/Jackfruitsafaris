@@ -17,8 +17,8 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY;
+const supabaseAnonKey = process.env.NEXT_SUPABASE_ANON_KEY;
 
 // Public client – can be used from browser components
 export const supabase = createClient(
@@ -33,7 +33,7 @@ export const supabase = createClient(
 // Optional: server‑side client for privileged ops
 export const supabaseAdmin = createClient(
   supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.NEXT_SUPABASE_SECRET_KEY
 );
 
 // Helper: eager‑load all rows from a table with optional filter.
