@@ -9,15 +9,23 @@ export async function login(formData: FormData) {
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  // Log for debugging (remove after fixing)
+  console.log("LOGIN ATTEMPT:", { email, hasClient: !!supabase });
+
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
+  console.log("LOGIN RESULT:", { error: error?.message, hasUser: !!data?.user });
+
   if (error) {
+    console.log("LOGIN ERROR REDIRECT:", `/auth/login?error=${encodeURIComponent(error.message)}`);
     redirect(`/auth/login?error=${encodeURIComponent(error.message)}`);
+    return;
   }
 
+  console.log("LOGIN SUCCESS REDIRECT TO /admin");
   redirect("/admin");
 }
 
