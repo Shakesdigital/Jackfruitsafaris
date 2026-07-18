@@ -11,14 +11,9 @@ export async function POST(request: NextRequest) {
   const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    return NextResponse.json({ 
-      error: "Server misconfigured", 
-      details: {
-        hasUrl: !!url,
-        hasKey: !!key,
-        checked: ["NEXT_PUBLIC_SUPABASE_URL_KEY", "SUPABASE_URL_KEY", "SUPABASE_URL"]
-      }
-    }, { status: 500 });
+    const errorUrl = new URL("/auth/login", request.url);
+    errorUrl.searchParams.set("error", encodeURIComponent("Server misconfigured - check environment variables"));
+    return NextResponse.redirect(errorUrl);
   }
 
   const supabase = createClient(url, key);
@@ -29,13 +24,15 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 401 });
+    const errorUrl = new URL("/auth/login", request.url);
+    errorUrl.searchParams.set("error", encodeURIComponent(error.message));
+    return NextResponse.redirect(errorUrl);
   }
 
-  // Set cookie and redirect
+  // Successful login - redirect to admin
   const response = NextResponse.redirect(new URL("/admin", request.url));
-  
-  // Supabase sets cookies automatically - this is handled by the client
+
+  // Supabase sets cookies automatically
   return response;
 }
 
