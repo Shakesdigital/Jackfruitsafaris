@@ -2,8 +2,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 import { logout } from "@/app/admin/actions";
 
 export const metadata: Metadata = {
@@ -24,27 +23,17 @@ function LogoutButton() {
   );
 }
 
+async function getUser() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("sb-access-token");
+  return token?.value;
+}
+
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/admin/login");
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, avatar_url")
-    .eq("id", user.id)
-    .single();
-
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
@@ -80,50 +69,10 @@ export default async function AdminLayout({
             </li>
             <li>
               <Link
-                href="/admin/experiences"
-                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
-              >
-                Experiences
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/admin/safaris"
                 className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
               >
                 Safari Packages
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/reviews"
-                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
-              >
-                Reviews
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/travel-guides"
-                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
-              >
-                Travel Guides
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/faqs"
-                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
-              >
-                FAQs
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/admin/partners"
-                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
-              >
-                Partners
               </Link>
             </li>
             <li>
@@ -134,21 +83,10 @@ export default async function AdminLayout({
                 Inquiry Leads
               </Link>
             </li>
-            <li>
-              <Link
-                href="/admin/settings"
-                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
-              >
-                Settings
-              </Link>
-            </li>
           </ul>
         </nav>
         <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">
-              {profile?.full_name || user.email}
-            </span>
+          <div className="flex items-center justify-end">
             <LogoutButton />
           </div>
         </div>
