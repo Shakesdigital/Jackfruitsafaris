@@ -16,7 +16,7 @@ export default function LoginPage() {
           </h1>
           <p className="mt-2 text-center text-gray-600">Sign in to access the CMS</p>
         </div>
-        <form action={login} className="space-y-6">
+        <form action={login} method="POST" className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email address

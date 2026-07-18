@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { logout } from "@/app/admin/actions";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Jackfruit Safaris",
@@ -27,6 +28,17 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Get the current path from headers
+  const headersList = await headers();
+  const pathName = headersList.get("x-nextjs-pathname") || "";
+
+  // Skip sidebar for login page
+  const isLoginPage = pathName === "/admin/login";
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
