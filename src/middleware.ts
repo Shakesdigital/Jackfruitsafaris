@@ -10,11 +10,16 @@ export function middleware(request: NextRequest) {
 
   // Protect admin routes
   if (pathname.startsWith("/admin")) {
-    // Check for Supabase auth cookies - Supabase uses sb:token format
-    const supabaseToken = request.cookies.get("sb:token");
-    const sbAccessToken = request.cookies.get("sb-access-token"); // fallback
+    // Check for any Supabase auth cookies - Supabase uses various cookie formats
+    // based on project configuration
+    const allCookies = request.cookies.getAll();
+    const hasSupabaseCookie = allCookies.some(cookie => 
+      cookie.name.startsWith("sb:") || 
+      cookie.name.includes("supabase") ||
+      cookie.name === "sb-access-token"
+    );
     
-    if (!supabaseToken && !sbAccessToken) {
+    if (!hasSupabaseCookie) {
       const url = request.nextUrl.clone();
       url.pathname = "/auth/login";
       return NextResponse.redirect(url);

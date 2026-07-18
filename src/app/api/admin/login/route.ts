@@ -30,12 +30,8 @@ export async function POST(request: NextRequest) {
   }
 
   // Successful login - redirect to admin
+  // The session cookies are set automatically by Supabase
   const response = NextResponse.redirect(new URL("/admin", request.url));
-
-  // Supabase sets cookies automatically
+  
   return response;
-}
-
-export async function GET() {
-  return NextResponse.redirect(new URL("/auth/login"));
 }
