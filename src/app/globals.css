@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbfaf5;
+  --foreground: #10251b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #f5bf2f;
+  color: #10251b;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
