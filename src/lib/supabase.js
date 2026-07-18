@@ -41,8 +41,7 @@ export const fetchTable = async (table, options = {}) => {
   const { data, error } = await supabase
     .from(table)
     .select("*")
-    .order("created_at", { ascending: false })
-Eventos?;
+    .order("created_at", { ascending: false });
   if (error) {
     console.error(`Supabase fetch error on ${table}`, error);
     return [];
