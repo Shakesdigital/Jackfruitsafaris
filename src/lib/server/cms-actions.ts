@@ -16,10 +16,10 @@ const siteSettingsSchema = z.object({
   alternate_phone: z.string().optional(),
   address: z.string().optional(),
   operating_hours: z.string().optional(),
-  social_links: z.record(z.any()).optional(),
+  social_links: z.record(z.string(), z.any()).optional(),
   footer_copy: z.string().optional(),
-  seo: z.record(z.any()).optional(),
-  integrations: z.record(z.any()).optional(),
+  seo: z.record(z.string(), z.any()).optional(),
+  integrations: z.record(z.string(), z.any()).optional(),
 });
 
 export async function upsertSiteSettings(formData: FormData) {
@@ -369,7 +369,7 @@ const pageSchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
   summary: z.string().optional(),
-  hero: z.record(z.any()).optional(),
+  hero: z.record(z.string(), z.any()).optional(),
   sections: z.array(z.any()).optional(),
   featured_image_url: z.string().url().optional().or(z.literal("")),
   status: z.enum(["draft", "published", "archived"]).default("draft"),

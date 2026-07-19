@@ -35,29 +35,21 @@ export async function generateStaticParams() {
 }
 
 async function getPublishedExperiences() {
-  const supabase = await createClient();
+  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    // Return empty array when Supabase is not configured
+    return [];
+  }
+
+  const supabase = supabaseCreateClient(url!, key!);
   const { data } = await supabase
     .from("experiences")
     .select("slug")
     .eq("status", "published");
   return data || [];
-}
-
-async function createClient() {
-  const { cookies } = await import("next/headers");
-  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
-  return supabaseCreateClient(url!, key!, {
-    global: {
-      headers: {
-        cookie: (await cookies()).getAll()
-          .map((c) => `${c.name}=${c.value}`)
-          .join("; "),
-      },
-    },
-  });
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -83,7 +75,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
   }
 
   const safaris = await getPublishedSafaris();
-  const displaySafaris = safaris.slice(0, 2).map((s: any) => ({
+  const displaySafaris = safaris.slice(0, 2).map((s: { slug: string; title: string; duration?: string; summary?: string; price_from?: number; comfort_levels?: string[]; featured_image_url?: string }) => ({
     slug: s.slug,
     title: s.title,
     duration: s.duration || "",
@@ -123,7 +115,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
           <article className="space-y-10">
             <div className="grid gap-4 sm:grid-cols-2">
-              {bullets.map((item: any) => (
+              {bullets.map((item: string) => (
                 <p
                   key={item}
                   className="flex gap-3 rounded-[8px] bg-[#eef7f0] p-4 text-sm font-bold leading-6 text-[#27382b]"
@@ -155,7 +147,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 Recommended safaris
               </h2>
               <div className="mt-6 grid gap-6 md:grid-cols-2">
-                {displaySafaris.map((safari: any) => (
+                {displaySafaris.map((safari: Safari) => (
                   <SafariCard key={safari.slug} safari={safari as Safari} />
                 ))}
               </div>

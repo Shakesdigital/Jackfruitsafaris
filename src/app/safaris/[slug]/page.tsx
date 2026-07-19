@@ -131,7 +131,7 @@ export default async function SafariDetailPage({ params }: Props) {
                 Highlights
               </h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {displayData.highlights.map((highlight) => (
+                {displayData.highlights.map((highlight: string) => (
                   <p
                     key={highlight}
                     className="flex gap-3 rounded-[8px] bg-[#eef7f0] p-4 text-sm font-bold leading-6 text-[#27382b]"
@@ -149,7 +149,7 @@ export default async function SafariDetailPage({ params }: Props) {
                 Day by day
               </p>
               <div className="mt-6 grid gap-5">
-                {displayData.itinerary.map((day: any) => (
+                {displayData.itinerary.map((day: { day: string; title: string; body: string; meals: string }) => (
                   <div
                     key={`${day.day}-${day.title}`}
                     className="rounded-[8px] border border-black/10 bg-white p-5"
@@ -197,7 +197,7 @@ export default async function SafariDetailPage({ params }: Props) {
                   Included
                 </h2>
                 <div className="mt-4 grid gap-3">
-                  {displayData.included.map((item) => (
+                  {displayData.included.map((item: string) => (
                     <p key={item} className="flex gap-3 text-sm font-bold leading-6 text-[#27382b]">
                       <CheckCircle2 className="mt-0.5 shrink-0 text-[#2d6f55]" size={18} />
                       {item}
@@ -210,7 +210,7 @@ export default async function SafariDetailPage({ params }: Props) {
                   Excluded
                 </h2>
                 <div className="mt-4 grid gap-3">
-                  {displayData.excluded.map((item) => (
+                  {displayData.excluded.map((item: string) => (
                     <p key={item} className="flex gap-3 text-sm font-bold leading-6 text-[#27382b]">
                       <XCircle className="mt-0.5 shrink-0 text-[#a04b36]" size={18} />
                       {item}
@@ -225,7 +225,7 @@ export default async function SafariDetailPage({ params }: Props) {
                 Accommodation options
               </h2>
               <div className="mt-5 grid gap-4 md:grid-cols-3">
-                {displayData.accommodations.map((item: any) => (
+                {displayData.accommodations.map((item: { tier: string; options: string }) => (
                   <div
                     key={item.tier}
                     className="rounded-[8px] border border-black/10 bg-white p-5"
@@ -247,7 +247,7 @@ export default async function SafariDetailPage({ params }: Props) {
                 FAQs
               </h2>
               <div className="mt-5 grid gap-3">
-                {displayData.faqs.map((faq: any) => (
+                {displayData.faqs.map((faq: { question: string; answer: string }) => (
                   <details
                     key={faq.question}
                     className="rounded-[8px] border border-black/10 bg-white p-5"

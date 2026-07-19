@@ -33,7 +33,7 @@ export default async function SafarisPage() {
   const cmsSafaris = await getPublishedSafaris();
 
   // Transform CMS data for SafariCard
-  const safaris: Safari[] = cmsSafaris.map((s) => ({
+  const safaris: Safari[] = cmsSafaris.map((s: { slug: string; title: string; duration?: string; summary?: string; price_from?: number; comfort_levels?: string[]; featured_image_url?: string }) => ({
     slug: s.slug,
     title: s.title,
     duration: s.duration || "",
@@ -78,7 +78,7 @@ export default async function SafarisPage() {
               ))}
             </div>
             <div className="grid gap-6 md:grid-cols-2">
-              {safaris.map((safari: any) => (
+              {safaris.map((safari: Safari) => (
                 <SafariCard key={safari.slug} safari={safari} />
               ))}
             </div>

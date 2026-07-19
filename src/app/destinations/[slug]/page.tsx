@@ -32,20 +32,26 @@ export async function generateStaticParams() {
 }
 
 async function createClient() {
-  const { cookies } = await import("next/headers");
+  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
-  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
-  return supabaseCreateClient(url!, key!, {
-    global: {
-      headers: {
-        cookie: (await cookies()).getAll()
-          .map((c) => `${c.name}=${c.value}`)
-          .join("; "),
-      },
-    },
-  });
+  if (!url || !key) {
+    // Return a mock client that supports method chaining
+    const emptyResult = { data: [], error: null };
+    const chainable = {
+      eq: () => ({ ...chainable }),
+      order: () => ({ ...emptyResult }),
+    };
+    return {
+      auth: { getUser: async () => ({ data: { user: null }, error: null }) },
+      from: () => ({
+        select: () => ({ ...chainable }),
+      }),
+    } as any;
+  }
+
+  return supabaseCreateClient(url!, key!);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -71,7 +77,7 @@ export default async function DestinationDetailPage({ params }: Props) {
   }
 
   const safaris = await getPublishedSafaris();
-  const displaySafaris = safaris.slice(0, 2).map((s: any) => ({
+  const displaySafaris = safaris.slice(0, 2).map((s: { slug: string; title: string; duration?: string; summary?: string; price_from?: number; comfort_levels?: string[]; featured_image_url?: string }) => ({
     slug: s.slug,
     title: s.title,
     duration: s.duration || "",
@@ -109,7 +115,7 @@ export default async function DestinationDetailPage({ params }: Props) {
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
           <article className="space-y-10">
             <div className="grid gap-4 md:grid-cols-3">
-              {(destination.why_go || []).map((item: any) => (
+              {(destination.why_go || []).map((item: string) => (
                 <div key={item} className="rounded-[8px] bg-[#eef7f0] p-5">
                   <Sparkles className="text-[#2d6f55]" size={22} />
                   <p className="mt-3 text-sm font-black text-[#27382b]">
@@ -143,7 +149,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 Related Uganda safaris
               </h2>
               <div className="mt-6 grid gap-6 md:grid-cols-2">
-                {displaySafaris.map((safari: any) => (
+                {displaySafaris.map((safari: Safari) => (
                   <SafariCard key={safari.slug} safari={safari as Safari} />
                 ))}
               </div>

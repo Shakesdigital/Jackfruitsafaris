@@ -15,6 +15,15 @@ export async function createClient() {
   if (!url || !key) {
     // Return a mock client that will fail gracefully
     console.log("SUPABASE RETURNING MOCK - NOT CONFIGURED");
+    // Create a chainable mock that supports eq().eq().order() and eq().order()
+    const emptyResult = { data: [], error: null };
+    const nullResult = { data: null, error: null };
+    const chainable = {
+      eq: () => ({ ...chainable }),
+      order: () => ({ ...emptyResult }),
+      single: () => ({ ...nullResult }),
+      all: () => ({ ...emptyResult }),
+    };
     return {
       auth: {
         getUser: async () => ({ data: { user: null }, error: null }),
@@ -22,7 +31,7 @@ export async function createClient() {
         signOut: async () => ({}),
       },
       from: () => ({
-        select: () => ({ eq: () => ({ single: () => ({ data: null, error: null }) }) }),
+        select: () => ({ ...chainable }),
       }),
     } as any;
   }

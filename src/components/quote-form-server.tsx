@@ -59,7 +59,7 @@ export async function QuoteFormServer({
           className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[#2d6f55]"
         >
           <option value="custom safari">Custom Uganda safari</option>
-          {safaris.map((safari) => (
+          {safaris.map((safari: { slug: string; title: string }) => (
             <option key={safari.slug} value={safari.title}>
               {safari.title}
             </option>
