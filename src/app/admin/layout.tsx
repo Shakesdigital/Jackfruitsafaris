@@ -1,8 +1,9 @@
-export const dynamic = "force-dynamic";
-
 import type { Metadata } from "next";
 import Link from "next/link";
 import { logout } from "@/lib/server/actions";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Jackfruit Safaris",
@@ -27,6 +28,35 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const allCookies = cookieStore.getAll();
+
+  // Check for any Supabase auth cookies
+  const hasSupabaseCookie = allCookies.some(cookie =>
+    cookie.name.startsWith("sb:") ||
+    cookie.name.includes("supabase") ||
+    cookie.name.includes("auth")
+  );
+
+  // Also verify with Supabase if we have cookies
+  if (hasSupabaseCookie) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.SUPABASE_URL;
+    const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+    if (url && key) {
+      const supabase = createClient(url, key);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        redirect("/auth/login");
+      }
+    }
+  } else {
+    redirect("/auth/login");
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
@@ -42,6 +72,14 @@ export default async function AdminLayout({
                 className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
               >
                 Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/settings"
+                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+              >
+                Site Settings
               </Link>
             </li>
             <li>
@@ -66,6 +104,22 @@ export default async function AdminLayout({
                 className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
               >
                 Safari Packages
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/experiences"
+                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+              >
+                Experiences
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/admin/reviews"
+                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+              >
+                Reviews
               </Link>
             </li>
             <li>
