@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { ArrowRight, Clock, MapPin } from "lucide-react";
-import type { Safari } from "@/lib/content";
+
+type Safari = {
+  slug: string;
+  title: string;
+  duration: string;
+  summary: string;
+  price: string;
+  comfort: string;
+  image: string;
+};
 
 export function SafariCard({ safari }: { safari: Safari }) {
   return (

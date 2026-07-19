@@ -2,7 +2,27 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Award, Star } from "lucide-react";
 import { Section } from "@/components/section";
-import { testimonials } from "@/lib/content";
+import { getPublishedReviews } from "@/lib/cms-data";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+type Safari = {
+  slug: string;
+  title: string;
+  duration: string;
+  summary: string;
+  price: string;
+  comfort: string;
+  image: string;
+};
+
+type Review = {
+  name: string;
+  trip: string;
+  quote: string;
+};
 
 export const metadata: Metadata = {
   title: "Guest Reviews",
@@ -10,7 +30,15 @@ export const metadata: Metadata = {
     "Read Jackfruit Safaris review highlights and plan your Uganda safari with a local Jinja-based tour company.",
 };
 
-export default function ReviewsPage() {
+export default async function ReviewsPage() {
+  const reviews = await getPublishedReviews();
+
+  const testimonials = reviews.map((r: { guest_name: string; trip_type: string; quote: string }) => ({
+    name: r.guest_name,
+    trip: r.trip_type,
+    quote: r.quote,
+  }));
+
   return (
     <>
       <section className="bg-[#10251b] py-16 text-white sm:py-20">
@@ -23,7 +51,7 @@ export default function ReviewsPage() {
             Hear from travelers who explored Uganda with Jackfruit Safaris
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76">
-            Review content should be imported only with permission or embedded
+            Review content imported only with permission or embedded
             according to review platform rules. The CMS includes permission and
             source fields for that reason.
           </p>
@@ -31,7 +59,7 @@ export default function ReviewsPage() {
       </section>
       <Section>
         <div className="grid gap-5 md:grid-cols-3">
-          {testimonials.map((review) => (
+          {testimonials.map((review: Review) => (
             <article
               key={review.name}
               className="rounded-[8px] border border-black/10 bg-white p-6"

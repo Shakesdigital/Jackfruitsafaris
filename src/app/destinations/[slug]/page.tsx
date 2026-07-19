@@ -5,19 +5,52 @@ import { CalendarCheck, MapPin, Sparkles } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { Section } from "@/components/section";
 import { SafariCard } from "@/components/safari-card";
-import { destinations, safaris } from "@/lib/content";
+import { getDestinationBySlug, getPublishedSafaris } from "@/lib/cms-data";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+type Safari = {
+  slug: string;
+  title: string;
+  duration: string;
+  summary: string;
+  price: string;
+  comfort: string;
+  image: string;
+};
+
 export async function generateStaticParams() {
-  return destinations.map((destination) => ({ slug: destination.slug }));
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("destinations")
+    .select("slug")
+    .eq("status", "published");
+
+  return (data || []).map((item: { slug: string }) => ({ slug: item.slug }));
+}
+
+async function createClient() {
+  const { cookies } = await import("next/headers");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
+  return supabaseCreateClient(url!, key!, {
+    global: {
+      headers: {
+        cookie: (await cookies()).getAll()
+          .map((c) => `${c.name}=${c.value}`)
+          .join("; "),
+      },
+    },
+  });
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const destination = destinations.find((item) => item.slug === slug);
+  const destination = await getDestinationBySlug(slug);
 
   if (!destination) {
     return {};
@@ -25,23 +58,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${destination.name} Safari Guide`,
-    description: destination.summary,
+    description: destination.overview || destination.summary || "",
   };
 }
 
 export default async function DestinationDetailPage({ params }: Props) {
   const { slug } = await params;
-  const destination = destinations.find((item) => item.slug === slug);
+  const destination = await getDestinationBySlug(slug);
 
   if (!destination) {
     notFound();
   }
 
+  const safaris = await getPublishedSafaris();
+  const displaySafaris = safaris.slice(0, 2).map((s: any) => ({
+    slug: s.slug,
+    title: s.title,
+    duration: s.duration || "",
+    summary: s.summary || "",
+    price: s.price_from
+      ? `from USD ${s.price_from.toLocaleString()} per person`
+      : "quoted after dates and preferences",
+    comfort: (s.comfort_levels || []).join(", ") || "Budget to luxury",
+    image: s.featured_image_url || "",
+  }));
+
   return (
     <>
       <section
         className="relative min-h-[58vh] bg-cover bg-center text-white"
-        style={{ backgroundImage: `url(${destination.image})` }}
+        style={{ backgroundImage: `url(${destination.featured_image_url || ""})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/88 via-[#08170f]/58 to-[#08170f]/18" />
         <div className="relative mx-auto flex min-h-[58vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
@@ -53,7 +99,7 @@ export default async function DestinationDetailPage({ params }: Props) {
               {destination.name}
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-white/82">
-              {destination.summary}
+              {destination.overview || destination.summary}
             </p>
           </div>
         </div>
@@ -63,7 +109,7 @@ export default async function DestinationDetailPage({ params }: Props) {
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
           <article className="space-y-10">
             <div className="grid gap-4 md:grid-cols-3">
-              {destination.whyGo.map((item) => (
+              {(destination.why_go || []).map((item: any) => (
                 <div key={item} className="rounded-[8px] bg-[#eef7f0] p-5">
                   <Sparkles className="text-[#2d6f55]" size={22} />
                   <p className="mt-3 text-sm font-black text-[#27382b]">
@@ -79,7 +125,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                   Best time
                 </p>
                 <p className="mt-4 text-base leading-8 text-[#536154]">
-                  {destination.bestTime}
+                  {destination.best_time}
                 </p>
               </div>
               <div className="rounded-[8px] border border-black/10 bg-white p-6">
@@ -88,7 +134,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                   Recommended stay
                 </p>
                 <p className="mt-4 text-base leading-8 text-[#536154]">
-                  {destination.nights}
+                  {destination.recommended_nights}
                 </p>
               </div>
             </div>
@@ -97,8 +143,8 @@ export default async function DestinationDetailPage({ params }: Props) {
                 Related Uganda safaris
               </h2>
               <div className="mt-6 grid gap-6 md:grid-cols-2">
-                {safaris.slice(0, 2).map((safari) => (
-                  <SafariCard key={safari.slug} safari={safari} />
+                {displaySafaris.map((safari: any) => (
+                  <SafariCard key={safari.slug} safari={safari as Safari} />
                 ))}
               </div>
             </div>

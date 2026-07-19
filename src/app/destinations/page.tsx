@@ -2,7 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Map } from "lucide-react";
 import { Section } from "@/components/section";
-import { destinations } from "@/lib/content";
+import { getPublishedDestinations } from "@/lib/cms-data";
+
+type Destination = {
+  slug: string;
+  name: string;
+  region: string | null;
+  featured_image_url: string | null;
+  overview: string | null;
+  summary: string | null;
+};
 
 export const metadata: Metadata = {
   title: "Uganda Safari Destinations",
@@ -10,7 +19,9 @@ export const metadata: Metadata = {
     "Explore Bwindi, Murchison Falls, Queen Elizabeth, Kibale, Lake Mburo, Lake Bunyonyi, and Jinja with Jackfruit Safaris.",
 };
 
-export default function DestinationsPage() {
+export default async function DestinationsPage() {
+  const destinations = await getPublishedDestinations();
+
   return (
     <>
       <section className="bg-[#10251b] py-16 text-white sm:py-20">
@@ -31,7 +42,7 @@ export default function DestinationsPage() {
 
       <Section>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {destinations.map((destination) => (
+          {destinations.map((destination: any) => (
             <Link
               key={destination.slug}
               href={`/destinations/${destination.slug}`}
@@ -39,7 +50,7 @@ export default function DestinationsPage() {
             >
               <div
                 className="h-56 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
-                style={{ backgroundImage: `url(${destination.image})` }}
+                style={{ backgroundImage: `url(${destination.featured_image_url || ""})` }}
               />
               <div className="p-6">
                 <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#2d6f55]">
@@ -50,7 +61,7 @@ export default function DestinationsPage() {
                   {destination.name}
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-[#536154]">
-                  {destination.summary}
+                  {destination.overview || destination.summary}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#143c2d]">
                   View destination

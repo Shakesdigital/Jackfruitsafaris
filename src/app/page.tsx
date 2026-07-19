@@ -128,7 +128,7 @@ export default function Home() {
         intro="Choose a ready itinerary or ask Jackfruit Safaris to adjust the route, dates, accommodation tier, and pace around your group."
       >
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {safaris.map((safari) => (
+          {safaris.map((safari: any) => (
             <SafariCard key={safari.slug} safari={safari} />
           ))}
         </div>

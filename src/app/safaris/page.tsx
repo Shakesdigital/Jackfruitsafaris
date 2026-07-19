@@ -4,7 +4,17 @@ import { Filter, SlidersHorizontal } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
-import { safaris } from "@/lib/content";
+import { getPublishedSafaris } from "@/lib/cms-data";
+
+type Safari = {
+  slug: string;
+  title: string;
+  duration: string;
+  summary: string;
+  price: string;
+  comfort: string;
+  image: string;
+};
 
 export const metadata: Metadata = {
   title: "Uganda Safari Packages",
@@ -19,7 +29,22 @@ const filters = [
   "Start point: Entebbe, Kampala, Jinja",
 ];
 
-export default function SafarisPage() {
+export default async function SafarisPage() {
+  const cmsSafaris = await getPublishedSafaris();
+
+  // Transform CMS data for SafariCard
+  const safaris: Safari[] = cmsSafaris.map((s) => ({
+    slug: s.slug,
+    title: s.title,
+    duration: s.duration || "",
+    summary: s.summary || "",
+    price: s.price_from
+      ? `from USD ${s.price_from.toLocaleString()} per person`
+      : "quoted after dates and preferences",
+    comfort: (s.comfort_levels || []).join(", ") || "Budget to luxury",
+    image: s.featured_image_url || "",
+  }));
+
   return (
     <>
       <section className="bg-[#10251b] py-16 text-white sm:py-20">
@@ -53,7 +78,7 @@ export default function SafarisPage() {
               ))}
             </div>
             <div className="grid gap-6 md:grid-cols-2">
-              {safaris.map((safari) => (
+              {safaris.map((safari: any) => (
                 <SafariCard key={safari.slug} safari={safari} />
               ))}
             </div>

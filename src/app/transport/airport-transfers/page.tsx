@@ -57,7 +57,7 @@ export default function AirportTransfersPage() {
               Kampala, or your next safari destination.
             </p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {services.map((service) => (
+              {services.map((service: any) => (
                 <p
                   key={service}
                   className="flex gap-3 rounded-[8px] bg-[#eef7f0] p-4 text-sm font-bold leading-6 text-[#27382b]"
