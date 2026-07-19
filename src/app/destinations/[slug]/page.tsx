@@ -150,7 +150,7 @@ export default async function DestinationDetailPage({ params }: Props) {
               </h2>
               <div className="mt-6 grid gap-6 md:grid-cols-2">
                 {displaySafaris.map((safari: Safari) => (
-                  <SafariCard key={safari.slug} safari={safari as Safari} />
+                  <SafariCard key={safari.slug} safari={safari} />
                 ))}
               </div>
             </div>
