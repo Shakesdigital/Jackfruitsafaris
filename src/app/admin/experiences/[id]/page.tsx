@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminExperienceById } from "@/lib/cms-data";
 import { upsertExperience, uploadMedia } from "@/lib/server/cms-actions";
 
 type Props = {
@@ -14,13 +14,8 @@ export const metadata: Metadata = {
 
 export default async function ExperienceEditPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
-
-  const { data: experience } = await supabase
-    .from("experiences")
-    .select("*")
-    .eq("id", id)
-    .single();
+  // Fetch data with admin client (bypasses RLS)
+  const experience = await getAdminExperienceById(id);
 
   if (!experience && id !== "new") {
     notFound();

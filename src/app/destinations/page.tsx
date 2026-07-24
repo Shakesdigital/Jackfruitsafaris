@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Map } from "lucide-react";
 import { Section } from "@/components/section";
-import { getPublishedDestinations } from "@/lib/cms-data";
+import { getPublishedDestinations, getPageHero } from "@/lib/cms-data";
 
 type Destination = {
   slug: string;
@@ -13,29 +13,26 @@ type Destination = {
   summary: string | null;
 };
 
-export const metadata: Metadata = {
-  title: "Uganda Safari Destinations",
-  description:
-    "Explore Bwindi, Murchison Falls, Queen Elizabeth, Kibale, Lake Mburo, Lake Bunyonyi, and Jinja with Jackfruit Safaris.",
-};
+export const dynamic = "force-dynamic";
 
 export default async function DestinationsPage() {
-  const destinations = await getPublishedDestinations();
+  const [destinations, hero] = await Promise.all([
+    getPublishedDestinations(),
+    getPageHero("/destinations"),
+  ]);
 
   return (
     <>
       <section className="bg-[#10251b] py-16 text-white sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
-            Destinations
+            {hero?.eyebrow || "Destinations"}
           </p>
           <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
-            Uganda safari places, routed with care
+            {hero?.title || "Uganda safari places, routed with care"}
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76">
-            Destination pages give travelers the practical &quot;why go&quot;, best time,
-            recommended nights, and related route context they need before
-            requesting a quote.
+            {hero?.intro || "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote."}
           </p>
         </div>
       </section>

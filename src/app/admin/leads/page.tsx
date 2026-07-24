@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { createClient } from "@/lib/supabase/server";
+import { getAdminLeads } from "@/lib/cms-data";
 
 type Lead = {
   id: string;
@@ -16,12 +16,7 @@ export const metadata = {
 };
 
 export default async function LeadsPage() {
-  const supabase = await createClient();
-
-  const { data: leads } = await supabase
-    .from("inquiry_leads")
-    .select("id, first_name, email, service_type, status, created_at")
-    .order("created_at", { ascending: false }) as { data: Lead[] | null };
+  const leads = await getAdminLeads();
 
   return (
     <div>
@@ -49,7 +44,7 @@ export default async function LeadsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {leads?.map((l) => (
+            {leads?.map((l: Lead) => (
               <tr key={l.id}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {l.first_name}

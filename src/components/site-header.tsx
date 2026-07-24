@@ -1,8 +1,16 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { Menu, MessageCircle } from "lucide-react";
-import { navItems, site } from "@/lib/content";
+import { getSiteSettings } from "@/lib/cms-data";
+import { navItems } from "@/lib/content";
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const settings = await getSiteSettings();
+
+  // Build nav items - prefer CMS if available, fallback to hardcoded
+  const navigation = settings?.nav_items || navItems;
+
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-white/92 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -21,7 +29,7 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {navItems.map((item) => (
+          {navigation?.map((item: any) => (
             <Link
               key={item.href}
               href={item.href}
@@ -34,7 +42,7 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-2 md:flex">
           <a
-            href={site.whatsappHref}
+            href={settings?.whatsapp_href || `https://wa.me/${settings?.whatsapp_number || "256772550268"}?text=Hello%20Jackfruit%20Safaris%2C%20I%20would%20like%20help%20planning%20a%20Uganda%20trip.`}
             className="inline-flex items-center gap-2 rounded-full border border-[#1f5b44]/20 px-4 py-2 text-sm font-bold text-[#174331] transition hover:bg-[#eef7f0]"
           >
             <MessageCircle size={17} />
@@ -53,7 +61,7 @@ export function SiteHeader() {
             <Menu size={20} />
           </summary>
           <div className="absolute right-0 mt-3 w-72 rounded-2xl border border-black/10 bg-white p-3 shadow-2xl">
-            {navItems.map((item) => (
+            {navigation?.map((item: any) => (
               <Link
                 key={item.href}
                 href={item.href}

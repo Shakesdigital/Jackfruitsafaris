@@ -1,29 +1,24 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { getAdminDestinations } from "@/lib/cms-data";
+import { getAdminGuideArticles } from "@/lib/cms-data";
 
-type Destination = {
-  id: string;
-  slug: string;
-  name: string;
-  region: string | null;
-  status: string;
-  updated_at: string;
+export const metadata = {
+  title: "Travel Guide Articles",
 };
 
-export default async function DestinationsPage() {
-  const destinations = await getAdminDestinations();
+export default async function GuideArticlesPage() {
+  const articles = await getAdminGuideArticles();
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Destinations</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Travel Guide Articles</h1>
         <Link
-          href="/admin/destinations/new"
+          href="/admin/homepage/guide-articles/new"
           className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
         >
-          New Destination
+          New Article
         </Link>
       </div>
 
@@ -32,10 +27,7 @@ export default async function DestinationsPage() {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Region
+                Title
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
@@ -46,26 +38,25 @@ export default async function DestinationsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {destinations?.map((d: Destination) => (
-              <tr key={d.id}>
+            {articles?.map((article: any) => (
+              <tr key={article.id}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {d.name}
+                  {article.title}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{d.region}</td>
                 <td className="px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
-                      d.status === "published"
+                      article.status === "published"
                         ? "bg-green-100 text-green-800"
                         : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
-                    {d.status}
+                    {article.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right text-sm font-medium">
                   <Link
-                    href={`/admin/destinations/${d.id}`}
+                    href={`/admin/homepage/guide-articles/${article.id}`}
                     className="text-blue-600 hover:underline"
                   >
                     Edit

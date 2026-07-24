@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminReviewById } from "@/lib/cms-data";
 import { upsertReview, uploadMedia } from "@/lib/server/cms-actions";
 
 type Props = {
@@ -14,13 +14,8 @@ export const metadata: Metadata = {
 
 export default async function ReviewEditPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
-
-  const { data: review } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("id", id)
-    .single();
+  // Fetch data with admin client (bypasses RLS)
+  const review = await getAdminReviewById(id);
 
   if (!review && id !== "new") {
     notFound();

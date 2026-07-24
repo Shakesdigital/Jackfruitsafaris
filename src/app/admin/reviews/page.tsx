@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminReviews } from "@/lib/cms-data";
 
 type Review = {
   id: string;
@@ -18,12 +18,8 @@ export const metadata = {
 };
 
 export default async function ReviewsPage() {
-  const supabase = await createClient();
-
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select("id, guest_name, trip_type, rating, status, permission_status, created_at")
-    .order("created_at", { ascending: false }) as { data: Review[] | null };
+  // Fetch data with admin client (bypasses RLS)
+  const reviews = await getAdminReviews();
 
   return (
     <div>
@@ -62,7 +58,7 @@ export default async function ReviewsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {reviews?.map((r) => (
+            {reviews?.map((r: Review) => (
               <tr key={r.id}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {r.guest_name}

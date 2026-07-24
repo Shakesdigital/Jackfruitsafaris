@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminPages } from "@/lib/cms-data";
 
 type Page = {
   id: string;
@@ -16,23 +16,26 @@ export const metadata = {
 };
 
 export default async function PagesPage() {
-  const supabase = await createClient();
-
-  const { data: pages } = await supabase
-    .from("pages")
-    .select("id, slug, title, status, updated_at")
-    .order("updated_at", { ascending: false }) as { data: Page[] | null };
+  const pages = await getAdminPages();
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Pages</h1>
-        <Link
-          href="/admin/pages/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-        >
-          New Page
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href="/admin/pages/heroes"
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          >
+            Page Heroes
+          </Link>
+          <Link
+            href="/admin/pages/new"
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          >
+            New Page
+          </Link>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -57,7 +60,7 @@ export default async function PagesPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {pages?.map((page) => (
+            {pages?.map((page: Page) => (
               <tr key={page.id}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {page.title}

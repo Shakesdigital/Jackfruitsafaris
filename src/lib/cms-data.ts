@@ -192,7 +192,7 @@ export async function getAdminReviews() {
   const { data } = await supabase
     .from("reviews")
     .select("id, guest_name, trip_type, rating, status, permission_status, updated_at")
-    .order("updated_at", { ascending: false });
+    .order("updated_at", { descending: false });
   return data || [];
 }
 
@@ -211,7 +211,7 @@ export async function getAdminPages() {
   const { data } = await supabase
     .from("pages")
     .select("id, slug, title, status, updated_at")
-    .order("updated_at", { ascending: false });
+    .order("updated_at", { descending: false });
   return data || [];
 }
 
@@ -219,6 +219,173 @@ export async function getAdminPageById(id: string) {
   const supabase = await createAdminClient();
   const { data } = await supabase
     .from("pages")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data;
+}
+
+export async function getAdminLeads() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("inquiry_leads")
+    .select("id, first_name, email, service_type, status, created_at")
+    .order("created_at", { descending: false });
+  return data || [];
+}
+
+// Fetch all published homepage sections
+export async function getPublishedHomepageSections() {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("homepage_sections")
+    .select("*")
+    .eq("status", "published")
+    .order("order_index", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch all published quick links
+export async function getPublishedQuickLinks() {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("homepage_quick_links")
+    .select("*")
+    .eq("status", "published")
+    .order("order_index", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch all published trust items
+export async function getPublishedTrustItems() {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("homepage_trust_items")
+    .select("*")
+    .eq("status", "published")
+    .order("order_index", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch all published features
+export async function getPublishedFeatures() {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("homepage_features")
+    .select("*")
+    .eq("status", "published")
+    .order("order_index", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch homepage guide articles
+export async function getHomepageGuideArticles(limit?: number) {
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("homepage_guide_articles")
+    .select("*")
+    .eq("status", "published")
+    .order("order_index", { ascending: true });
+
+  if (limit) {
+    query = query.limit(limit);
+  }
+
+  const { data } = await query;
+  return data || [];
+}
+
+// Admin functions for homepage content
+export async function getAdminHomepageSections() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("homepage_sections")
+    .select("*")
+    .order("order_index", { ascending: true });
+  return data || [];
+}
+
+export async function getAdminHomepageSectionById(id: string) {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("homepage_sections")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data;
+}
+
+export async function getAdminQuickLinks() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("homepage_quick_links")
+    .select("*")
+    .order("order_index", { ascending: true });
+  return data || [];
+}
+
+export async function getAdminTrustItems() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("homepage_trust_items")
+    .select("*")
+    .order("order_index", { ascending: true });
+  return data || [];
+}
+
+export async function getAdminFeatures() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("homepage_features")
+    .select("*")
+    .order("order_index", { ascending: true });
+  return data || [];
+}
+
+export async function getAdminGuideArticles() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("homepage_guide_articles")
+    .select("*")
+    .order("order_index", { ascending: true });
+  return data || [];
+}
+
+// Fetch page hero content
+export async function getPageHero(pageSlug: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("page_heroes")
+    .select("*")
+    .eq("page_slug", pageSlug)
+    .eq("status", "published")
+    .single();
+  return data;
+}
+
+// Admin functions for page heroes
+export async function getAdminPageHeroes() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("page_heroes")
+    .select("*")
+    .order("page_slug", { ascending: true });
+  return data || [];
+}
+
+export async function getAdminPageHeroById(id: string) {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("page_heroes")
     .select("*")
     .eq("id", id)
     .single();

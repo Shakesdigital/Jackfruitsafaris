@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminPageById } from "@/lib/cms-data";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -13,13 +13,8 @@ export const metadata: Metadata = {
 
 export default async function PageEditPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
-
-  const { data: page } = await supabase
-    .from("pages")
-    .select("*")
-    .eq("id", id)
-    .single();
+  // Fetch data with admin client (bypasses RLS)
+  const page = await getAdminPageById(id);
 
   const isNew = id === "new";
 

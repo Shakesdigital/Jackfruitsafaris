@@ -2,36 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Award, Star } from "lucide-react";
 import { Section } from "@/components/section";
-import { getPublishedReviews } from "@/lib/cms-data";
+import { getPublishedReviews, getPageHero } from "@/lib/cms-data";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-type Safari = {
-  slug: string;
-  title: string;
-  duration: string;
-  summary: string;
-  price: string;
-  comfort: string;
-  image: string;
-};
-
-type Review = {
-  name: string;
-  trip: string;
-  quote: string;
-};
-
-export const metadata: Metadata = {
-  title: "Guest Reviews",
-  description:
-    "Read Jackfruit Safaris review highlights and plan your Uganda safari with a local Jinja-based tour company.",
-};
+export const dynamic = "force-dynamic";
 
 export default async function ReviewsPage() {
-  const reviews = await getPublishedReviews();
+  const [reviews, hero] = await Promise.all([
+    getPublishedReviews(),
+    getPageHero("/reviews"),
+  ]);
 
   const testimonials = reviews.map((r: { guest_name: string; trip_type: string; quote: string }) => ({
     name: r.guest_name,
@@ -45,21 +24,19 @@ export default async function ReviewsPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
             <Award size={18} />
-            Guest reviews
+            {hero?.eyebrow || "Guest reviews"}
           </p>
           <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
-            Hear from travelers who explored Uganda with Jackfruit Safaris
+            {hero?.title || "Hear from travelers who explored Uganda with Jackfruit Safaris"}
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76">
-            Review content imported only with permission or embedded
-            according to review platform rules. The CMS includes permission and
-            source fields for that reason.
+            {hero?.intro || "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason."}
           </p>
         </div>
       </section>
       <Section>
         <div className="grid gap-5 md:grid-cols-3">
-          {testimonials.map((review: Review) => (
+          {testimonials.map((review: any) => (
             <article
               key={review.name}
               className="rounded-[8px] border border-black/10 bg-white p-6"

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminDestinationById } from "@/lib/cms-data";
 import { upsertDestination, uploadMedia } from "@/lib/server/cms-actions";
 
 type Props = {
@@ -14,13 +14,7 @@ export const metadata: Metadata = {
 
 export default async function DestinationEditPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
-
-  const { data: destination } = await supabase
-    .from("destinations")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const destination = await getAdminDestinationById(id);
 
   if (!destination && id !== "new") {
     notFound();

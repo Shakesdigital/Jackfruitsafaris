@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminExperiences } from "@/lib/cms-data";
 
 type Experience = {
   id: string;
@@ -17,12 +17,7 @@ export const metadata = {
 };
 
 export default async function ExperiencesPage() {
-  const supabase = await createClient();
-
-  const { data: experiences } = await supabase
-    .from("experiences")
-    .select("id, slug, name, category, status, updated_at")
-    .order("updated_at", { ascending: false }) as { data: Experience[] | null };
+  const experiences = await getAdminExperiences();
 
   return (
     <div>
@@ -55,7 +50,7 @@ export default async function ExperiencesPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {experiences?.map((e) => (
+            {experiences?.map((e: Experience) => (
               <tr key={e.id}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {e.name}

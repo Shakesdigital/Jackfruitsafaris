@@ -110,6 +110,152 @@ export default async function SettingsPage() {
           </div>
         </div>
 
+        {/* Homepage Content Settings */}
+        <div className="border-b pb-6">
+          <h2 className="mb-4 text-lg font-medium">Homepage - Hero Section</h2>
+          <div className="grid gap-4">
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Hero Title</span>
+              <input
+                name="hero_title"
+                defaultValue={settings?.hero_title}
+                placeholder="Explore Uganda With Local Safari Experts"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Hero Subtitle</span>
+              <input
+                name="hero_subtitle"
+                defaultValue={settings?.hero_subtitle}
+                placeholder="Private Uganda safaris..."
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Badge Text</span>
+              <input
+                name="badge_text"
+                defaultValue={settings?.badge_text}
+                placeholder="Local safari experts from Jinja"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">CTA Primary Button</span>
+              <input
+                name="cta_primary"
+                defaultValue={settings?.cta_primary}
+                placeholder="Plan My Safari"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">CTA Secondary Button</span>
+              <input
+                name="cta_secondary"
+                defaultValue={settings?.cta_secondary}
+                placeholder="View Safari Packages"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+          </div>
+        </div>
+
+        <div className="border-b pb-6">
+          <h2 className="mb-4 text-lg font-medium">Homepage - Why Uganda Section</h2>
+          <div className="grid gap-4">
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Eyebrow</span>
+              <input
+                name="why_uganda_eyebrow"
+                defaultValue={settings?.why_uganda_eyebrow}
+                placeholder="Why Uganda"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Title</span>
+              <input
+                name="why_uganda_title"
+                defaultValue={settings?.why_uganda_title}
+                placeholder="One compact country, many safari worlds"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Intro</span>
+              <textarea
+                name="why_uganda_intro"
+                defaultValue={settings?.why_uganda_intro}
+                rows={2}
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Paragraph</span>
+              <textarea
+                name="why_uganda_paragraph"
+                defaultValue={settings?.why_uganda_paragraph}
+                rows={3}
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+          </div>
+        </div>
+
+        <div className="border-b pb-6">
+          <h2 className="mb-4 text-lg font-medium">Homepage - CTA Section</h2>
+          <div className="grid gap-4">
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Eyebrow</span>
+              <input
+                name="cta_eyebrow"
+                defaultValue={settings?.cta_eyebrow}
+                placeholder="Ready to plan?"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Title</span>
+              <input
+                name="cta_title"
+                defaultValue={settings?.cta_title}
+                placeholder="Tell us your dates..."
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Intro Text</span>
+              <textarea
+                name="cta_intro"
+                defaultValue={settings?.cta_intro}
+                rows={2}
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Button Text</span>
+              <input
+                name="cta_button"
+                defaultValue={settings?.cta_button}
+                placeholder="Request a Custom Quote"
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+          </div>
+        </div>
+
         <div className="border-b pb-6">
           <h2 className="mb-4 text-lg font-medium">Branding</h2>
           <div className="grid gap-4 sm:grid-cols-2">

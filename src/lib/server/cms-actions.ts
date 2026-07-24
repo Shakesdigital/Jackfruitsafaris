@@ -30,6 +30,20 @@ const siteSettingsSchema = z.object({
   footer_copy: z.string().optional(),
   seo: z.record(z.string(), z.any()).optional(),
   integrations: z.record(z.string(), z.any()).optional(),
+  // Homepage fields
+  hero_title: z.string().optional(),
+  hero_subtitle: z.string().optional(),
+  badge_text: z.string().optional(),
+  cta_primary: z.string().optional(),
+  cta_secondary: z.string().optional(),
+  why_uganda_eyebrow: z.string().optional(),
+  why_uganda_title: z.string().optional(),
+  why_uganda_intro: z.string().optional(),
+  why_uganda_paragraph: z.string().optional(),
+  cta_eyebrow: z.string().optional(),
+  cta_title: z.string().optional(),
+  cta_intro: z.string().optional(),
+  cta_button: z.string().optional(),
 });
 
 export async function upsertSiteSettings(formData: FormData) {
@@ -56,6 +70,19 @@ export async function upsertSiteSettings(formData: FormData) {
     footer_copy: formData.get("footer_copy") || undefined,
     seo: formData.get("seo") ? JSON.parse(formData.get("seo") as string) : undefined,
     integrations: formData.get("integrations") ? JSON.parse(formData.get("integrations") as string) : undefined,
+    hero_title: formData.get("hero_title") || undefined,
+    hero_subtitle: formData.get("hero_subtitle") || undefined,
+    badge_text: formData.get("badge_text") || undefined,
+    cta_primary: formData.get("cta_primary") || undefined,
+    cta_secondary: formData.get("cta_secondary") || undefined,
+    why_uganda_eyebrow: formData.get("why_uganda_eyebrow") || undefined,
+    why_uganda_title: formData.get("why_uganda_title") || undefined,
+    why_uganda_intro: formData.get("why_uganda_intro") || undefined,
+    why_uganda_paragraph: formData.get("why_uganda_paragraph") || undefined,
+    cta_eyebrow: formData.get("cta_eyebrow") || undefined,
+    cta_title: formData.get("cta_title") || undefined,
+    cta_intro: formData.get("cta_intro") || undefined,
+    cta_button: formData.get("cta_button") || undefined,
   });
 
   if (!parsed.success) return;
@@ -447,4 +474,224 @@ export async function upsertPage(formData: FormData) {
   }).select().single();
 
   redirect(`/admin/pages`);
+}
+
+// Homepage Section Actions
+const homepageSectionSchema = z.object({
+  section_type: z.string().min(1),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  content: z.record(z.string(), z.any()).optional(),
+  order_index: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertHomepageSection(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+
+  const parsed = homepageSectionSchema.safeParse({
+    section_type: formData.get("section_type"),
+    title: formData.get("title") || undefined,
+    subtitle: formData.get("subtitle") || undefined,
+    content: formData.get("content") ? JSON.parse(formData.get("content") as string) : {},
+    order_index: parseInt(formData.get("order_index") as string) || 0,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    console.error("Homepage section validation error:", parsed.error);
+    return;
+  }
+
+  await supabase.from("homepage_sections").upsert({
+    id: formData.get("id") as string || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+
+  redirect("/admin/homepage");
+}
+
+// Quick Link Actions
+const quickLinkSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().min(1),
+  order_index: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertQuickLink(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+
+  const parsed = quickLinkSchema.safeParse({
+    label: formData.get("label"),
+    href: formData.get("href"),
+    order_index: parseInt(formData.get("order_index") as string) || 0,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    console.error("Quick link validation error:", parsed.error);
+    return;
+  }
+
+  await supabase.from("homepage_quick_links").upsert({
+    id: formData.get("id") as string || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+
+  redirect("/admin/homepage/quick-links");
+}
+
+// Trust Item Actions
+const trustItemSchema = z.object({
+  text: z.string().min(1),
+  order_index: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertTrustItem(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+
+  const parsed = trustItemSchema.safeParse({
+    text: formData.get("text"),
+    order_index: parseInt(formData.get("order_index") as string) || 0,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    console.error("Trust item validation error:", parsed.error);
+    return;
+  }
+
+  await supabase.from("homepage_trust_items").upsert({
+    id: formData.get("id") as string || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+
+  redirect("/admin/homepage/trust-items");
+}
+
+// Feature Actions
+const featureSchema = z.object({
+  icon_name: z.string().min(1),
+  text: z.string().min(1),
+  order_index: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertFeature(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+
+  const parsed = featureSchema.safeParse({
+    icon_name: formData.get("icon_name"),
+    text: formData.get("text"),
+    order_index: parseInt(formData.get("order_index") as string) || 0,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    console.error("Feature validation error:", parsed.error);
+    return;
+  }
+
+  await supabase.from("homepage_features").upsert({
+    id: formData.get("id") as string || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+
+  redirect("/admin/homepage/features");
+}
+
+// Guide Article Actions
+const guideArticleSchema = z.object({
+  title: z.string().min(1),
+  order_index: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertGuideArticle(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+
+  const parsed = guideArticleSchema.safeParse({
+    title: formData.get("title"),
+    order_index: parseInt(formData.get("order_index") as string) || 0,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    console.error("Guide article validation error:", parsed.error);
+    return;
+  }
+
+  await supabase.from("homepage_guide_articles").upsert({
+    id: formData.get("id") as string || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+
+  redirect("/admin/homepage/guide-articles");
+}
+
+// Page Hero Actions
+const pageHeroSchema = z.object({
+  page_slug: z.string().min(1),
+  eyebrow: z.string().optional(),
+  title: z.string().optional(),
+  intro: z.string().optional(),
+  background_image: z.string().url().optional().or(z.literal("")),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertPageHero(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+
+  const parsed = pageHeroSchema.safeParse({
+    page_slug: formData.get("page_slug"),
+    eyebrow: formData.get("eyebrow") || undefined,
+    title: formData.get("title") || undefined,
+    intro: formData.get("intro") || undefined,
+    background_image: formData.get("background_image") || undefined,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    console.error("Page hero validation error:", parsed.error);
+    return;
+  }
+
+  await supabase.from("page_heroes").upsert({
+    id: formData.get("id") as string || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+
+  redirect("/admin/pages");
 }
