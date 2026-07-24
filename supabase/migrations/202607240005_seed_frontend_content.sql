@@ -1,5 +1,5 @@
 -- Seed all hardcoded frontend content into CMS tables
--- This migration mirrors content from src/lib/content.ts
+-- This migration adds page heroes and homepage content
 -- Safe to run multiple times - uses INSERT ... ON CONFLICT DO NOTHING
 
 -- Update site_settings with homepage fields (already exists, updating)
@@ -31,9 +31,8 @@ UPDATE public.site_settings SET
   hero_image = 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82'
 WHERE business_name = 'Jackfruit Safaris Uganda';
 
--- Seed page heroes (handle existing table)
+-- Seed page heroes for all secondary pages
 INSERT INTO public.page_heroes (page_slug, eyebrow, title, intro, status) VALUES
-  ('/', 'Local safari experts from Jinja', 'Explore Uganda With Local Safari Experts', 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.', 'published'),
   ('/safaris', 'Uganda safari packages', 'Choose a proven route, then make it yours', 'Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda''s landscapes and wildlife as budget, mid-range, or luxury private trips.', 'published'),
   ('/destinations', 'Destinations', 'Uganda safari places, routed with care', 'Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote.', 'published'),
   ('/experiences', 'Experiences', 'Build your Uganda trip around the moments that matter', 'Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary.', 'published'),
@@ -43,8 +42,7 @@ INSERT INTO public.page_heroes (page_slug, eyebrow, title, intro, status) VALUES
 ON CONFLICT (page_slug) DO UPDATE SET
   eyebrow = EXCLUDED.eyebrow,
   title = EXCLUDED.title,
-  intro = EXCLUDED.intro,
-  status = EXCLUDED.status;
+  intro = EXCLUDED.intro;
 
 -- Seed homepage sections
 INSERT INTO public.homepage_sections (section_type, title, subtitle, content, order_index, status) VALUES
@@ -107,12 +105,35 @@ INSERT INTO public.homepage_guide_articles (title, order_index, status) VALUES
   ('Is Uganda Safe for Safari Travelers?', 10, 'published')
 ON CONFLICT DO NOTHING;
 
--- Ensure safari_packages have featured_image_url populated
+-- Ensure safari_packages have featured_image_url populated (they already exist, just update if null)
 UPDATE public.safari_packages SET
   featured_image_url = CASE
     WHEN slug = '3-days-gorilla-tracking' THEN 'https://images.unsplash.com/photo-1549366021-9f761d040a94?auto=format&fit=crop&w=1600&q=82'
     WHEN slug = '3-days-murchison-falls' THEN 'https://images.unsplash.com/photo-1523805009345-7448845a9e53?auto=format&fit=crop&w=1600&q=82'
     WHEN slug = '10-days-uganda-safari' THEN 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1600&q=82'
     WHEN slug = 'custom-uganda-safari' THEN 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=82'
+  END
+WHERE featured_image_url IS NULL OR featured_image_url = '';
+
+-- Ensure experiences have featured_image_url
+UPDATE public.experiences SET
+  featured_image_url = CASE
+    WHEN slug = 'gorilla-trekking' THEN 'https://images.unsplash.com/photo-1549366021-9f761d040a94?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'jinja-adventures' THEN 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'cultural-experiences' THEN 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'wildlife-safaris' THEN 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1600&q=82'
+  END
+WHERE featured_image_url IS NULL OR featured_image_url = '';
+
+-- Ensure destinations have images
+UPDATE public.destinations SET
+  featured_image_url = CASE
+    WHEN slug = 'bwindi-impenetrable-national-park' THEN 'https://images.unsplash.com/photo-1549366021-9f761d040a94?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'murchison-falls-national-park' THEN 'https://images.unsplash.com/photo-1523805009345-7448845a9e53?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'queen-elizabeth-national-park' THEN 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'kibale-forest-national-park' THEN 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'lake-mburo-national-park' THEN 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'lake-bunyonyi' THEN 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=82'
+    WHEN slug = 'jinja-source-of-the-nile' THEN 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=82'
   END
 WHERE featured_image_url IS NULL OR featured_image_url = '';
