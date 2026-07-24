@@ -165,7 +165,7 @@ export default async function Home() {
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {experiences.map((experience: any) => {
             const Icon = iconMap[experience.icon as keyof typeof iconMap];
-            const iconComponent = Icon || BadgeCheck;
+            const IconComponent = Icon || BadgeCheck;
             return (
               <Link
                 key={experience.slug}
@@ -177,7 +177,7 @@ export default async function Home() {
                   style={{ backgroundImage: `url(${experience.image})` }}
                 />
                 <div className="p-5">
-                  <iconComponent className="text-[#2d6f55]" size={24} />
+                  <IconComponent className="text-[#2d6f55]" size={24} />
                   <h3 className="mt-3 text-xl font-black text-[#10251b]">
                     {experience.title}
                   </h3>
