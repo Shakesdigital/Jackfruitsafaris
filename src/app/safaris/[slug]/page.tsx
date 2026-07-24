@@ -12,14 +12,29 @@ import {
 import { Section } from "@/components/section";
 import { StickyQuoteCard } from "@/components/sticky-quote-card";
 import { getSafariBySlug, getPublishedSafaris } from "@/lib/cms-data";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
-  const safaris = await getPublishedSafaris();
-  return safaris.map((s: { slug: string }) => ({ slug: s.slug }));
+  // Use a stateless client for static generation (no cookies allowed in generateStaticParams)
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    // Return empty array if Supabase is not configured
+    return [];
+  }
+
+  const supabase = createSupabaseClient(url, key);
+  const { data: safaris } = await supabase
+    .from("safari_packages")
+    .select("slug")
+    .eq("status", "published");
+
+  return (safaris || []).map((s: { slug: string }) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
