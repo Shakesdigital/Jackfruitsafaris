@@ -3,7 +3,7 @@ import Link from "next/link";
 import { logout } from "@/lib/server/actions";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Jackfruit Safaris",
@@ -28,32 +28,14 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const allCookies = cookieStore.getAll();
+  const supabase = await createClient();
 
-  // Check for any Supabase auth cookies
-  const hasSupabaseCookie = allCookies.some(cookie =>
-    cookie.name.startsWith("sb:") ||
-    cookie.name.includes("supabase") ||
-    cookie.name.includes("auth")
-  );
+  // Verify session with Supabase (uses cookies internally via createClient)
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  // Also verify with Supabase if we have cookies
-  if (hasSupabaseCookie) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.SUPABASE_URL;
-    const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
-    if (url && key) {
-      const supabase = createClient(url, key);
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        redirect("/auth/login");
-      }
-    }
-  } else {
+  if (!session) {
     redirect("/auth/login");
   }
 

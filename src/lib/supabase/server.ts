@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
 
 export async function createClient() {
   // Try multiple env var names for flexibility
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL_KEY || process.env.SUPABASE_URL;
-  const key = process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
-  console.log("SUPABASE CLIENT INIT:", { 
-    hasUrl: !!url, 
+  console.log("SUPABASE CLIENT INIT:", {
+    hasUrl: !!url,
     hasKey: !!key,
     urlPrefix: url ? url.substring(0, 30) + "..." : "undefined"
   });
@@ -18,7 +18,7 @@ export async function createClient() {
     // Create a chainable mock that supports eq().eq().order() and eq().order()
     const emptyResult = { data: [], error: null };
     const nullResult = { data: null, error: null };
-    const chainable = {
+    const chainable: any = {
       eq: () => ({ ...chainable }),
       order: () => ({ ...emptyResult }),
       single: () => ({ ...nullResult }),
@@ -27,8 +27,9 @@ export async function createClient() {
     return {
       auth: {
         getUser: async () => ({ data: { user: null }, error: null }),
-        signInWithPassword: async () => ({ error: { message: "Not configured: check NEXT_PUBLIC_SUPABASE_URL_KEY and NEXT_SUPABASE_ANON_KEY" } }),
+        signInWithPassword: async () => ({ error: { message: "Not configured: check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY" } }),
         signOut: async () => ({}),
+        getSession: async () => ({ data: { session: null }, error: null }),
       },
       from: () => ({
         select: () => ({ ...chainable }),
@@ -39,15 +40,22 @@ export async function createClient() {
   const { cookies } = await import("next/headers");
   const cookieStore = await cookies();
 
-  return createSupabaseClient(
+  return createServerClient(
     url,
     key,
     {
-      global: {
-        headers: {
-          cookie: cookieStore.getAll()
-            .map((c) => `${c.name}=${c.value}`)
-            .join("; "),
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet: { name: string; value: string; options: any }[], _headers?: Record<string, string>) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // The `setAll` method may be called from a Server Component
+          }
         },
       },
     }
