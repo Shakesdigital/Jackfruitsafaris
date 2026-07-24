@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Section } from "@/components/section";
-import { iconMap } from "@/lib/content";
-import { getPublishedExperiences, getPageHero } from "@/lib/cms-data";
+import { experiences as hardcodedExperiences, iconMap } from "@/lib/content";
+import { getPublishedExperiences, getPageHero, getSiteSettings } from "@/lib/cms-data";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +12,17 @@ export default async function ExperiencesPage() {
     getPublishedExperiences(),
     getPageHero("/experiences"),
   ]);
+
+  // Use CMS data if available, otherwise fall back to hardcoded content
+  const displayedExperiences = experiences.length
+    ? experiences
+    : hardcodedExperiences.map((e) => ({
+        slug: e.slug,
+        title: e.title,
+        icon: e.icon,
+        image: e.image,
+        summary: e.summary,
+      }));
 
   return (
     <>
@@ -30,7 +41,7 @@ export default async function ExperiencesPage() {
       </section>
       <Section>
         <div className="grid gap-6 md:grid-cols-2">
-          {experiences.map((experience: any) => {
+          {displayedExperiences.map((experience: any) => {
             const Icon = iconMap[experience.icon as keyof typeof iconMap] || ArrowRight;
             return (
               <Link

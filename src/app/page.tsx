@@ -10,7 +10,13 @@ import { QuoteForm } from "@/components/quote-form";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
 import {
+  experiences as hardcodedExperiences,
   iconMap,
+  safaris as hardcodedSafaris,
+  testimonials as hardcodedTestimonials,
+  guideArticles as hardcodedGuideArticles,
+  trustItems as hardcodedTrustItems,
+  images,
 } from "@/lib/content";
 import {
   getPublishedSafaris,
@@ -27,7 +33,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   // Fetch CMS data
-  const [safaris, experiences, testimonials, guideArticles, quickLinks, trustItems, features, settings] = await Promise.all([
+  const [cmsSafaris, cmsExperiences, cmsTestimonials, guideArticles, quickLinks, trustItems, features, settings] = await Promise.all([
     getPublishedSafaris(),
     getPublishedExperiences(),
     getPublishedReviews(),
@@ -38,14 +44,32 @@ export default async function Home() {
     getSiteSettings(),
   ]);
 
+  // Use hardcoded data as fallbacks when CMS returns empty
+  const safaris = cmsSafaris.length ? cmsSafaris : hardcodedSafaris.map(s => ({
+    slug: s.slug, title: s.title, duration: s.duration, summary: s.summary,
+    price_from: s.price ? parseInt(s.price.match(/\d+/)?.[0] || "0") : null,
+    comfort_levels: [s.comfort],
+    featured_image_url: s.image,
+  }));
+
+  const experiences = cmsExperiences.length ? cmsExperiences : hardcodedExperiences.map(e => ({
+    slug: e.slug, title: e.title, icon: e.icon, image: e.image, summary: e.summary,
+  }));
+
+  const testimonials = cmsTestimonials.length ? cmsTestimonials : hardcodedTestimonials.map(t => ({
+    guest_name: t.name, trip_type: t.trip, quote: t.quote,
+  }));
+
+  const featuresList = features.length ? features : hardcodedSafaris.slice(0, 4).map((s, i) => ({
+    id: i.toString(), text: ["Private, flexible trips", "Clear package inclusions", "Permit and lodge guidance", "Warm care from arrival to departure"][i] || "",
+  }));
+
   return (
     <>
       {/* Hero Section */}
       <section
         className="relative min-h-[86vh] bg-cover bg-center text-white"
-        style={{
-          backgroundImage: `url(https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82)`,
-        }}
+        style={{ backgroundImage: `url(${settings?.hero_image || images.hero})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/90 via-[#08170f]/62 to-[#08170f]/20" />
         <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
@@ -76,13 +100,7 @@ export default async function Home() {
               </Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-2">
-              {(quickLinks?.length ? quickLinks : [
-                { label: "Gorilla Trekking", href: "/experiences/gorilla-trekking" },
-                { label: "Murchison Falls", href: "/safaris/3-days-murchison-falls" },
-                { label: "10 Days Uganda", href: "/safaris/10-days-uganda-safari" },
-                { label: "Jinja Activities", href: "/experiences/jinja-adventures" },
-                { label: "Airport Transfer", href: "/transport/airport-transfers" },
-              ]).map((item: any) => (
+              {quickLinks.length ? quickLinks.map((item: any) => (
                 <Link
                   key={item.id || item.href}
                   href={item.href}
@@ -90,7 +108,19 @@ export default async function Home() {
                 >
                   {item.label}
                 </Link>
-              ))}
+              )) : (
+                [
+                  { label: "Gorilla Trekking", href: "/experiences/gorilla-trekking" },
+                  { label: "Murchison Falls", href: "/safaris/3-days-murchison-falls" },
+                  { label: "10 Days Uganda", href: "/safaris/10-days-uganda-safari" },
+                  { label: "Jinja Activities", href: "/experiences/jinja-adventures" },
+                  { label: "Airport Transfer", href: "/transport/airport-transfers" },
+                ].map(item => (
+                  <Link key={item.href} href={item.href} className="rounded-full bg-white/12 px-4 py-2 text-sm font-bold text-white ring-1 ring-white/18 hover:bg-white/20">
+                    {item.label}
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -99,17 +129,19 @@ export default async function Home() {
       {/* Trust Bar */}
       <section className="border-y border-black/10 bg-white py-5">
         <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:px-6 md:grid-cols-4 lg:px-8">
-          {(trustItems?.length ? trustItems : [
-            "2024 Tripadvisor Travelers' Choice Award",
-            "Registered tour company based in Jinja, Uganda",
-            "Private and custom safari planning",
-            "WhatsApp support before and during your trip",
-          ]).map((item: any) => (
-            <div key={item.id || item} className="flex items-start gap-3 text-sm">
+          {trustItems.length ? trustItems.map((item: any) => (
+            <div key={item.id || item.text} className="flex items-start gap-3 text-sm">
               <ShieldCheck className="mt-0.5 text-[#2d6f55]" size={18} />
-              <span className="font-bold leading-6 text-[#27382b]">{item.text || item}</span>
+              <span className="font-bold leading-6 text-[#27382b]">{item.text}</span>
             </div>
-          ))}
+          )) : (
+            ["2024 Tripadvisor Travelers' Choice Award", "Registered tour company based in Jinja, Uganda", "Private and custom safari planning", "WhatsApp support before and during your trip"].map(item => (
+              <div key={item} className="flex items-start gap-3 text-sm">
+                <ShieldCheck className="mt-0.5 text-[#2d6f55]" size={18} />
+                <span className="font-bold leading-6 text-[#27382b]">{item}</span>
+              </div>
+            ))
+          )}
         </div>
       </section>
 
@@ -125,15 +157,10 @@ export default async function Home() {
               {settings?.why_uganda_paragraph || "Jackfruit Safaris helps you experience Uganda smoothly, with local guides who understand the roads, parks, permits, lodges, and small details that make a trip feel effortless."}
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {(features?.length ? features : [
-                "Private, flexible trips",
-                "Clear package inclusions",
-                "Permit and lodge guidance",
-                "Warm care from arrival to departure",
-              ]).map((item: any) => (
-                <p key={item.id || item.text || item} className="flex items-center gap-3 font-bold">
+              {featuresList.map((item: any) => (
+                <p key={item.id || item.text} className="flex items-center gap-3 font-bold">
                   <BadgeCheck className="text-[#f5bf2f]" size={18} />
-                  {item.text || item}
+                  {item.text}
                 </p>
               ))}
             </div>
@@ -151,7 +178,15 @@ export default async function Home() {
       >
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {safaris.map((safari: any) => (
-            <SafariCard key={safari.slug} safari={safari} />
+            <SafariCard key={safari.slug} safari={{
+              slug: safari.slug,
+              title: safari.title,
+              duration: safari.duration || "",
+              summary: safari.summary || "",
+              price: safari.price_from ? `from USD ${safari.price_from.toLocaleString()} per person` : (safari.price || "quoted"),
+              comfort: (safari.comfort_levels || []).join(", ") || safari.comfort || "Budget to luxury",
+              image: safari.featured_image_url || safari.image || "",
+            }} />
           ))}
         </div>
       </Section>
@@ -174,7 +209,7 @@ export default async function Home() {
               >
                 <div
                   className="h-44 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
-                  style={{ backgroundImage: `url(${experience.image})` }}
+                  style={{ backgroundImage: `url(${experience.image || experience.featured_image_url})` }}
                 />
                 <div className="p-5">
                   <IconComponent className="text-[#2d6f55]" size={24} />
@@ -199,19 +234,16 @@ export default async function Home() {
         intro="The new inquiry flow puts trust, price guidance, route logic, and WhatsApp access close to every major booking decision."
       >
         <div className="grid gap-5 md:grid-cols-3">
-          {testimonials.map((review: any) => (
-            <article
-              key={review.name || review.id}
-              className="rounded-[8px] border border-black/10 bg-[#fbfaf5] p-6"
-            >
+          {testimonials.map((review: any, index: number) => (
+            <article key={review.guest_name || index} className="rounded-[8px] border border-black/10 bg-[#fbfaf5] p-6">
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2d6f55]">
-                {review.trip || review.trip_type}
+                {review.trip_type}
               </p>
               <p className="mt-4 text-lg font-bold leading-8 text-[#10251b]">
                 &quot;{review.quote}&quot;
               </p>
               <p className="mt-4 text-sm font-bold text-[#536154]">
-                {review.name || review.guest_name}
+                {review.guest_name}
               </p>
             </article>
           ))}
@@ -226,20 +258,14 @@ export default async function Home() {
         intro="Priority guide topics are ready for CMS publishing, SEO expansion, and AI-search visibility."
       >
         <div className="grid gap-3 md:grid-cols-2">
-          {(guideArticles?.length ? guideArticles : [
-            "Best Time to Visit Uganda for Safari and Gorilla Trekking",
-            "Gorilla Trekking Permit Guide",
-            "What to Pack for a Uganda Safari",
-            "How Many Days Do You Need in Uganda?",
-            "Murchison Falls Safari Guide",
-            "Jinja Adventure Guide",
-          ]).map((article: any) => (
-            <Link
-              key={article.id || article}
-              href="/travel-guide"
-              className="flex items-center justify-between rounded-[8px] bg-white/8 p-4 text-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12"
-            >
+          {guideArticles.length ? guideArticles.map((article: any) => (
+            <Link key={article.id || article.title || article} href="/travel-guide" className="flex items-center justify-between rounded-[8px] bg-white/8 p-4 text-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12">
               {article.title || article}
+              <ArrowRight size={16} />
+            </Link>
+          )) : hardcodedGuideArticles.map(article => (
+            <Link key={article} href="/travel-guide" className="flex items-center justify-between rounded-[8px] bg-white/8 p-4 text-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12">
+              {article}
               <ArrowRight size={16} />
             </Link>
           ))}
@@ -262,16 +288,10 @@ export default async function Home() {
             </p>
           </div>
           <div className="grid gap-3">
-            <Link
-              href="/request-quote"
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#143c2d] px-6 text-sm font-black text-white"
-            >
+            <Link href="/request-quote" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#143c2d] px-6 text-sm font-black text-white">
               {settings?.cta_button || "Request a Custom Quote"}
             </Link>
-            <a
-              href={settings?.whatsappHref || "https://wa.me/256772550268?text=Hello%20Jackfruit%20Safaris%2C%20I%20would%20like%20help%20planning%20a%20Uganda%20trip."}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-black text-[#143c2d]"
-            >
+            <a href={settings?.whatsappHref || "https://wa.me/256772550268?text=Hello%20Jackfruit%20Safaris%2C%20I%20would%20like%20help%20planning%20a%20Uganda%20trip."} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-black text-[#143c2d]">
               <MessageCircle size={18} />
               WhatsApp Jackfruit
             </a>

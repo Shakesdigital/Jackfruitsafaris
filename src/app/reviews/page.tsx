@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Award, Star } from "lucide-react";
 import { Section } from "@/components/section";
-import { getPublishedReviews, getPageHero } from "@/lib/cms-data";
+import { testimonials as hardcodedTestimonials } from "@/lib/content";
+import { getPublishedReviews, getPageHero, getSiteSettings } from "@/lib/cms-data";
 
 export const dynamic = "force-dynamic";
 
@@ -12,11 +13,18 @@ export default async function ReviewsPage() {
     getPageHero("/reviews"),
   ]);
 
-  const testimonials = reviews.map((r: { guest_name: string; trip_type: string; quote: string }) => ({
-    name: r.guest_name,
-    trip: r.trip_type,
-    quote: r.quote,
-  }));
+  // Use CMS data if available, otherwise fall back to hardcoded content
+  const testimonials = reviews.length
+    ? reviews.map((r: { guest_name: string; trip_type: string; quote: string }) => ({
+        name: r.guest_name,
+        trip: r.trip_type,
+        quote: r.quote,
+      }))
+    : hardcodedTestimonials.map((t) => ({
+        name: t.name,
+        trip: t.trip,
+        quote: t.quote,
+      }));
 
   return (
     <>
@@ -36,14 +44,14 @@ export default async function ReviewsPage() {
       </section>
       <Section>
         <div className="grid gap-5 md:grid-cols-3">
-          {testimonials.map((review: any) => (
+          {testimonials.map((review: any, index: number) => (
             <article
-              key={review.name}
+              key={review.name + index}
               className="rounded-[8px] border border-black/10 bg-white p-6"
             >
               <div className="flex gap-1 text-[#f5bf2f]">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Star key={index} size={18} fill="currentColor" />
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={18} fill="currentColor" />
                 ))}
               </div>
               <p className="mt-5 text-lg font-bold leading-8 text-[#10251b]">

@@ -4,7 +4,8 @@ import { Filter, SlidersHorizontal } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
-import { getPublishedSafaris, getPageHero } from "@/lib/cms-data";
+import { safaris as hardcodedSafaris } from "@/lib/content";
+import { getPublishedSafaris, getPageHero, getSiteSettings } from "@/lib/cms-data";
 
 type Safari = {
   slug: string;
@@ -19,23 +20,39 @@ type Safari = {
 export const dynamic = "force-dynamic";
 
 export default async function SafarisPage() {
-  const [cmsSafaris, hero] = await Promise.all([
+  const [cmsSafaris, hero, settings] = await Promise.all([
     getPublishedSafaris(),
     getPageHero("/safaris"),
+    getSiteSettings(),
   ]);
 
-  // Transform CMS data for SafariCard
-  const safaris: Safari[] = cmsSafaris.map((s: { slug: string; title: string; duration?: string; summary?: string; price_from?: number; comfort_levels?: string[]; featured_image_url?: string }) => ({
-    slug: s.slug,
-    title: s.title,
-    duration: s.duration || "",
-    summary: s.summary || "",
-    price: s.price_from
-      ? `from USD ${s.price_from.toLocaleString()} per person`
-      : "quoted after dates and preferences",
-    comfort: (s.comfort_levels || []).join(", ") || "Budget to luxury",
-    image: s.featured_image_url || "",
-  }));
+  // Use CMS data if available, otherwise fall back to hardcoded content
+  let safaris: Safari[];
+
+  if (cmsSafaris && cmsSafaris.length > 0) {
+    safaris = cmsSafaris.map((s: { slug: string; title: string; duration?: string; summary?: string; price_from?: number; comfort_levels?: string[]; featured_image_url?: string; image?: string }) => ({
+      slug: s.slug,
+      title: s.title,
+      duration: s.duration || hardcodedSafaris.find(hs => hs.slug === s.slug)?.duration || "",
+      summary: s.summary || hardcodedSafaris.find(hs => hs.slug === s.slug)?.summary || "",
+      price: s.price_from
+        ? `from USD ${s.price_from.toLocaleString()} per person`
+        : s.price || hardcodedSafaris.find(hs => hs.slug === s.slug)?.price || "quoted",
+      comfort: (s.comfort_levels || []).join(", ") || s.comfort || "Budget to luxury",
+      image: s.featured_image_url || s.image || hardcodedSafaris.find(hs => hs.slug === s.slug)?.image || "",
+    }));
+  } else {
+    // Use hardcoded safaris as fallback
+    safaris = hardcodedSafaris.map((s) => ({
+      slug: s.slug,
+      title: s.title,
+      duration: s.duration,
+      summary: s.summary,
+      price: s.price,
+      comfort: s.comfort,
+      image: s.image,
+    }));
+  }
 
   return (
     <>

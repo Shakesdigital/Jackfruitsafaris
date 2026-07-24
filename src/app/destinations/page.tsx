@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Map } from "lucide-react";
 import { Section } from "@/components/section";
-import { getPublishedDestinations, getPageHero } from "@/lib/cms-data";
+import { destinations as hardcodedDestinations, images } from "@/lib/content";
+import { getPublishedDestinations, getPageHero, getSiteSettings } from "@/lib/cms-data";
 
 type Destination = {
   slug: string;
@@ -20,6 +21,17 @@ export default async function DestinationsPage() {
     getPublishedDestinations(),
     getPageHero("/destinations"),
   ]);
+
+  // Use CMS data if available, otherwise fall back to hardcoded content
+  const displayedDestinations = destinations.length
+    ? destinations
+    : hardcodedDestinations.map((d) => ({
+        slug: d.slug,
+        name: d.name,
+        region: d.region,
+        overview: d.summary,
+        featured_image_url: d.image,
+      }));
 
   return (
     <>
@@ -39,7 +51,7 @@ export default async function DestinationsPage() {
 
       <Section>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {destinations.map((destination: any) => (
+          {displayedDestinations.map((destination: any) => (
             <Link
               key={destination.slug}
               href={`/destinations/${destination.slug}`}
