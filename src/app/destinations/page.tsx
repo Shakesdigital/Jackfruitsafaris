@@ -24,13 +24,19 @@ export default async function DestinationsPage() {
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const displayedDestinations = destinations.length
-    ? destinations
+    ? destinations.map((d: any) => ({
+        slug: d.slug,
+        name: d.name,
+        region: d.region,
+        featured_image_url: d.featured_image_url || hardcodedDestinations.find(hd => hd.slug === d.slug)?.image || "",
+        overview: d.overview || d.summary,
+      }))
     : hardcodedDestinations.map((d) => ({
         slug: d.slug,
         name: d.name,
         region: d.region,
-        overview: d.summary,
         featured_image_url: d.image,
+        overview: d.summary,
       }));
 
   return (
@@ -70,7 +76,7 @@ export default async function DestinationsPage() {
                   {destination.name}
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-[#536154]">
-                  {destination.overview || destination.summary}
+                  {destination.overview}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#143c2d]">
                   View destination

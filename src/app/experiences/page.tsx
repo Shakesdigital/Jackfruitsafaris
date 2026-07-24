@@ -15,7 +15,13 @@ export default async function ExperiencesPage() {
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const displayedExperiences = experiences.length
-    ? experiences
+    ? experiences.map((e: any) => ({
+        slug: e.slug,
+        title: e.title,
+        icon: e.icon || hardcodedExperiences.find(h => h.slug === e.slug)?.icon || "star",
+        featured_image_url: e.featured_image_url || e.image,
+        summary: e.summary,
+      }))
     : hardcodedExperiences.map((e) => ({
         slug: e.slug,
         title: e.title,
@@ -51,7 +57,7 @@ export default async function ExperiencesPage() {
               >
                 <div
                   className="h-64 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
-                  style={{ backgroundImage: `url(${experience.featured_image_url || experience.image})` }}
+                  style={{ backgroundImage: `url(${experience.featured_image_url || experience.image || ""})` }}
                 />
                 <div className="p-6">
                   <Icon className="text-[#2d6f55]" size={26} />

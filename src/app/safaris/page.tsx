@@ -30,17 +30,21 @@ export default async function SafarisPage() {
   let safaris: Safari[];
 
   if (cmsSafaris && cmsSafaris.length > 0) {
-    safaris = cmsSafaris.map((s: { slug: string; title: string; duration?: string; summary?: string; price_from?: number; comfort_levels?: string[]; featured_image_url?: string; image?: string }) => ({
-      slug: s.slug,
-      title: s.title,
-      duration: s.duration || hardcodedSafaris.find(hs => hs.slug === s.slug)?.duration || "",
-      summary: s.summary || hardcodedSafaris.find(hs => hs.slug === s.slug)?.summary || "",
-      price: s.price_from
-        ? `from USD ${s.price_from.toLocaleString()} per person`
-        : s.price || hardcodedSafaris.find(hs => hs.slug === s.slug)?.price || "quoted",
-      comfort: (s.comfort_levels || []).join(", ") || s.comfort || "Budget to luxury",
-      image: s.featured_image_url || s.image || hardcodedSafaris.find(hs => hs.slug === s.slug)?.image || "",
-    }));
+    safaris = cmsSafaris.map((s: any) => {
+      // Find matching hardcoded safari for fallback values
+      const hardcoded = hardcodedSafaris.find(hs => hs.slug === s.slug);
+      return {
+        slug: s.slug,
+        title: s.title,
+        duration: s.duration || hardcoded?.duration || "",
+        summary: s.summary || hardcoded?.summary || "",
+        price: s.price_from
+          ? `from USD ${s.price_from.toLocaleString()} per person`
+          : hardcoded?.price || "quoted after dates and preferences",
+        comfort: (s.comfort_levels || []).join(", ") || hardcoded?.comfort || "Budget to luxury",
+        image: s.featured_image_url || s.image || hardcoded?.image || "",
+      };
+    });
   } else {
     // Use hardcoded safaris as fallback
     safaris = hardcodedSafaris.map((s) => ({

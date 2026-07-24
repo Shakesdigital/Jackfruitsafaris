@@ -15,15 +15,16 @@ export default async function ReviewsPage() {
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const testimonials = reviews.length
-    ? reviews.map((r: { guest_name: string; trip_type: string; quote: string }) => ({
-        name: r.guest_name,
-        trip: r.trip_type,
+    ? reviews.map((r: any) => ({
+        guest_name: r.guest_name,
+        trip_type: r.trip_type,
         quote: r.quote,
       }))
-    : hardcodedTestimonials.map((t) => ({
-        name: t.name,
-        trip: t.trip,
+    : hardcodedTestimonials.map((t, i) => ({
+        guest_name: t.name,
+        trip_type: t.trip,
         quote: t.quote,
+        id: i,
       }));
 
   return (
@@ -45,10 +46,7 @@ export default async function ReviewsPage() {
       <Section>
         <div className="grid gap-5 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (
-            <article
-              key={review.name + index}
-              className="rounded-[8px] border border-black/10 bg-white p-6"
-            >
+            <article key={review.guest_name + index} className="rounded-[8px] border border-black/10 bg-white p-6">
               <div className="flex gap-1 text-[#f5bf2f]">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={18} fill="currentColor" />
@@ -58,18 +56,15 @@ export default async function ReviewsPage() {
                 &quot;{review.quote}&quot;
               </p>
               <p className="mt-5 text-sm font-black uppercase tracking-[0.16em] text-[#2d6f55]">
-                {review.trip}
+                {review.trip_type}
               </p>
               <p className="mt-1 text-sm font-bold text-[#536154]">
-                {review.name}
+                {review.guest_name}
               </p>
             </article>
           ))}
         </div>
-        <Link
-          href="/request-quote"
-          className="mt-8 inline-flex rounded-full bg-[#143c2d] px-6 py-3 text-sm font-black text-white"
-        >
+        <Link href="/request-quote" className="mt-8 inline-flex rounded-full bg-[#143c2d] px-6 py-3 text-sm font-black text-white">
           Plan your trip
         </Link>
       </Section>
