@@ -10,12 +10,15 @@ export async function POST(request: NextRequest) {
   const response = NextResponse.redirect(new URL("/admin", request.url));
 
   // Get the response's cookie store to set cookies on it
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
+    const missing = [];
+    if (!supabaseUrl) missing.push("NEXT_PUBLIC_SUPABASE_URL");
+    if (!supabaseKey) missing.push("NEXT_PUBLIC_SUPABASE_ANON_KEY");
     const errorUrl = new URL("/auth/login", request.url);
-    errorUrl.searchParams.set("error", encodeURIComponent("Server misconfigured - check environment variables"));
+    errorUrl.searchParams.set("error", encodeURIComponent(`Missing env vars: ${missing.join(", ")}`));
     return NextResponse.redirect(errorUrl);
   }
 
