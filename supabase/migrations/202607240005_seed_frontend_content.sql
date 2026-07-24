@@ -1,5 +1,6 @@
 -- Seed all hardcoded frontend content into CMS tables
 -- This migration mirrors content from src/lib/content.ts
+-- Safe to run multiple times - uses INSERT ... ON CONFLICT DO NOTHING
 
 -- Update site_settings with homepage fields (already exists, updating)
 UPDATE public.site_settings SET
@@ -30,7 +31,7 @@ UPDATE public.site_settings SET
   hero_image = 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82'
 WHERE business_name = 'Jackfruit Safaris Uganda';
 
--- Seed page heroes (already exists in 202607240004_page_heroes.sql but re-running won't hurt)
+-- Seed page heroes (handle existing table)
 INSERT INTO public.page_heroes (page_slug, eyebrow, title, intro, status) VALUES
   ('/', 'Local safari experts from Jinja', 'Explore Uganda With Local Safari Experts', 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.', 'published'),
   ('/safaris', 'Uganda safari packages', 'Choose a proven route, then make it yours', 'Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda''s landscapes and wildlife as budget, mid-range, or luxury private trips.', 'published'),
