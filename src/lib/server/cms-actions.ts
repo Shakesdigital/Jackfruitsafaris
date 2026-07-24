@@ -1,8 +1,18 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createAnonClient, createAdminClient } from "@/lib/supabase/server";
 import { z } from "zod";
+
+// For reading data in server components/actions
+async function getSupabase() {
+  return await createAnonClient();
+}
+
+// For admin writes (uses service role key)
+async function getAdminSupabase() {
+  return await createAdminClient();
+}
 
 // Site Settings Actions
 const siteSettingsSchema = z.object({
@@ -23,9 +33,13 @@ const siteSettingsSchema = z.object({
 });
 
 export async function upsertSiteSettings(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   const parsed = siteSettingsSchema.safeParse({
     business_name: formData.get("business_name"),
@@ -76,9 +90,13 @@ const safariSchema = z.object({
 });
 
 export async function upsertSafariPackage(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   const id = formData.get("id") as string;
   const isNew = !id;
@@ -185,9 +203,13 @@ const destinationSchema = z.object({
 });
 
 export async function upsertDestination(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   const parsed = destinationSchema.safeParse({
     slug: formData.get("slug"),
@@ -234,9 +256,13 @@ const experienceSchema = z.object({
 });
 
 export async function upsertExperience(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   const parsed = experienceSchema.safeParse({
     slug: formData.get("slug"),
@@ -284,9 +310,13 @@ const reviewSchema = z.object({
 });
 
 export async function upsertReview(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   const parsed = reviewSchema.safeParse({
     guest_name: formData.get("guest_name"),
@@ -315,9 +345,13 @@ export async function upsertReview(formData: FormData) {
 
 // Media Upload Actions
 export async function uploadMedia(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   const file = formData.get("file") as File;
   const altText = formData.get("alt_text") as string;
@@ -357,9 +391,13 @@ export async function uploadMedia(formData: FormData) {
 
 // Delete entity
 export async function deleteEntity(table: string, id: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   await supabase.from(table).delete().eq("id", id);
   redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table}`);
@@ -379,9 +417,13 @@ const pageSchema = z.object({
 });
 
 export async function upsertPage(formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
   if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
 
   const parsed = pageSchema.safeParse({
     slug: formData.get("slug"),

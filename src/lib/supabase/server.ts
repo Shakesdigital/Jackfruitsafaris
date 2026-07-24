@@ -61,3 +61,44 @@ export async function createClient() {
     }
   );
 }
+
+// For use in Server Actions - uses service role key for admin operations
+export async function createAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_SUPABASE_SECRET_KEY;
+
+  if (!url || !key) {
+    // Return a mock client that will fail gracefully
+    console.log("SUPABASE ADMIN CLIENT: service role key not configured");
+    const emptyResult = { data: [], error: null };
+    const nullResult = { data: null, error: null };
+    const chainable: any = {
+      eq: () => ({ ...chainable }),
+      order: () => ({ ...emptyResult }),
+      single: () => ({ ...nullResult }),
+      all: () => ({ ...emptyResult }),
+    };
+    return {
+      auth: {
+        getUser: async () => ({ data: { user: null }, error: null }),
+        from: () => ({
+          select: () => ({ ...chainable }),
+          upsert: async () => ({}),
+          insert: async () => ({}),
+          delete: () => ({ ...chainable }),
+        }),
+        storage: {
+          from: () => ({
+            upload: async () => ({ error: { message: "Not configured" } }),
+            getPublicUrl: () => ({ data: { publicUrl: "" } }),
+          }),
+        },
+      },
+    } as any;
+  }
+
+  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
+  return supabaseCreateClient(url, key, {
+    auth: { persistSession: false },
+  });
+}
