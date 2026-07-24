@@ -13,10 +13,18 @@ export async function POST(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
+  // Debug logging
+  console.log("LOGIN ENV CHECK:", { 
+    hasUrl: !!supabaseUrl, 
+    hasKey: !!supabaseKey,
+    urlSet: supabaseUrl ? "yes" : "no",
+    keySet: supabaseKey ? "yes" : "no"
+  });
+
   if (!supabaseUrl || !supabaseKey) {
     const missing = [];
-    if (!supabaseUrl) missing.push("NEXT_PUBLIC_SUPABASE_URL");
-    if (!supabaseKey) missing.push("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+    if (!supabaseUrl) missing.push("NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL_KEY");
+    if (!supabaseKey) missing.push("NEXT_PUBLIC_SUPABASE_ANON_KEY or NEXT_SUPABASE_ANON_KEY");
     const errorUrl = new URL("/auth/login", request.url);
     errorUrl.searchParams.set("error", encodeURIComponent(`Missing env vars: ${missing.join(", ")}`));
     return NextResponse.redirect(errorUrl);
