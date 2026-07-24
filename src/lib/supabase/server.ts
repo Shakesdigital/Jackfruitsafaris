@@ -62,43 +62,41 @@ export async function createClient() {
   );
 }
 
-// For use in Server Actions - uses service role key for admin operations
+// Admin client that uses service role key to bypass RLS
 export async function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_SUPABASE_SECRET_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_SUPABASE_SECRET_KEY;
 
-  if (!url || !key) {
-    // Return a mock client that will fail gracefully
-    console.log("SUPABASE ADMIN CLIENT: service role key not configured");
-    const emptyResult = { data: [], error: null };
-    const nullResult = { data: null, error: null };
-    const chainable: any = {
-      eq: () => ({ ...chainable }),
-      order: () => ({ ...emptyResult }),
-      single: () => ({ ...nullResult }),
-      all: () => ({ ...emptyResult }),
-    };
-    return {
-      auth: {
-        getUser: async () => ({ data: { user: null }, error: null }),
+  if (!url || !serviceKey) {
+    // Fallback to anon key if service role not available
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+    if (!anonKey) {
+      console.log("SUPABASE ADMIN CLIENT: no keys configured");
+      const emptyResult = { data: [], error: null };
+      const nullResult = { data: null, error: null };
+      const chainable: any = {
+        eq: () => ({ ...chainable }),
+        order: () => ({ ...emptyResult }),
+        single: () => ({ ...nullResult }),
+        all: () => ({ ...emptyResult }),
+      };
+      return {
         from: () => ({
           select: () => ({ ...chainable }),
           upsert: async () => ({}),
           insert: async () => ({}),
           delete: () => ({ ...chainable }),
         }),
-        storage: {
-          from: () => ({
-            upload: async () => ({ error: { message: "Not configured" } }),
-            getPublicUrl: () => ({ data: { publicUrl: "" } }),
-          }),
-        },
-      },
-    } as any;
+      } as any;
+    }
+    // Return anon client without cookie handling (for build-time/static generation)
+    const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
+    return supabaseCreateClient(url!, anonKey);
   }
 
+  // Use service role key for admin operations
   const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
-  return supabaseCreateClient(url, key, {
+  return supabaseCreateClient(url, serviceKey, {
     auth: { persistSession: false },
   });
 }

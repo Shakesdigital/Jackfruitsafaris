@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminSafariById } from "@/lib/cms-data";
 import { upsertSafariPackage, uploadMedia, deleteEntity } from "@/lib/server/cms-actions";
 
 type Props = {
@@ -14,13 +14,8 @@ export const metadata: Metadata = {
 
 export default async function SafariEditPage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
-
-  const { data: safari } = await supabase
-    .from("safari_packages")
-    .select("*")
-    .eq("id", id)
-    .single();
+  // Fetch data with admin client (bypasses RLS)
+  const safari = await getAdminSafariById(id);
 
   if (!safari && id !== "new") {
     notFound();

@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminSafaris } from "@/lib/cms-data";
 
 type Safari = {
   id: string;
@@ -17,12 +17,7 @@ export const metadata = {
 };
 
 export default async function SafarisPage() {
-  const supabase = await createClient();
-
-  const { data: safaris } = await supabase
-    .from("safari_packages")
-    .select("id, slug, title, duration, status, updated_at")
-    .order("updated_at", { ascending: false }) as { data: Safari[] | null };
+  const safaris = await getAdminSafaris();
 
   return (
     <div>

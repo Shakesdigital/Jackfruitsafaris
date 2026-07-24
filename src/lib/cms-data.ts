@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 // Helper for generateStaticParams - does NOT use cookies (build-time safe)
@@ -57,7 +57,7 @@ export async function getPublishedReviews() {
     .select("*")
     .eq("status", "published")
     .eq("permission_status", "approved")
-    .order("created_at", { ascending: false });
+    .order("created_at", { descending: true });
 
   return data || [];
 }
@@ -127,4 +127,100 @@ export async function getGalleryMedia() {
     .eq("permission_status", "approved");
 
   return data || [];
+}
+
+// Admin fetch functions - use service role key to bypass RLS
+export async function getAdminSafaris() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("safari_packages")
+    .select("id, slug, title, duration, status, updated_at")
+    .order("updated_at", { ascending: false });
+  return data || [];
+}
+
+export async function getAdminSafariById(id: string) {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("safari_packages")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data;
+}
+
+export async function getAdminDestinations() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("destinations")
+    .select("id, slug, name, region, status, updated_at")
+    .order("updated_at", { ascending: false });
+  return data || [];
+}
+
+export async function getAdminDestinationById(id: string) {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("destinations")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data;
+}
+
+export async function getAdminExperiences() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("experiences")
+    .select("id, slug, name, category, status, updated_at")
+    .order("updated_at", { ascending: false });
+  return data || [];
+}
+
+export async function getAdminExperienceById(id: string) {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("experiences")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data;
+}
+
+export async function getAdminReviews() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("reviews")
+    .select("id, guest_name, trip_type, rating, status, permission_status, updated_at")
+    .order("updated_at", { ascending: false });
+  return data || [];
+}
+
+export async function getAdminReviewById(id: string) {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data;
+}
+
+export async function getAdminPages() {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("pages")
+    .select("id, slug, title, status, updated_at")
+    .order("updated_at", { ascending: false });
+  return data || [];
+}
+
+export async function getAdminPageById(id: string) {
+  const supabase = await createAdminClient();
+  const { data } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data;
 }
