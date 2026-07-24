@@ -1,2 +1,8 @@
-// Server actions for quick links
-export { upsertQuickLink as default } from "@/lib/server/cms-actions";
+import { upsertQuickLink } from "@/lib/server/cms-actions";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const formData = await request.formData();
+  await upsertQuickLink(formData);
+  return NextResponse.json({ success: true });
+}

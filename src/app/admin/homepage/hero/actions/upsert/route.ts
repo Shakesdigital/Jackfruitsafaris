@@ -1,3 +1,8 @@
-// Server action for hero section
 import { upsertHomepageSection } from "@/lib/server/cms-actions";
-export default upsertHomepageSection;
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const formData = await request.formData();
+  await upsertHomepageSection(formData);
+  return NextResponse.json({ success: true });
+}
