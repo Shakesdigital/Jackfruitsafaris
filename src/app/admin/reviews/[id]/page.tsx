@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAdminReviewById } from "@/lib/cms-data";
-import { upsertReview, uploadMedia } from "@/lib/server/cms-actions";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Edit Review",
@@ -32,7 +33,9 @@ export default async function ReviewEditPage({ params }: Props) {
         {!isNew && (
           <button
             form="review-form"
-            formAction={`/admin/reviews/actions/delete`}
+            formAction={`/admin/reviews/actions`}
+            name="delete"
+            value={review?.id}
             className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
             onClick={(e) => {
               if (!confirm("Delete this review?")) e.preventDefault();
@@ -45,7 +48,7 @@ export default async function ReviewEditPage({ params }: Props) {
 
       <form
         id="review-form"
-        action={upsertReview}
+        action="/admin/reviews/actions"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={review?.id} />

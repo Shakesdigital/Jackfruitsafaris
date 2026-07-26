@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAdminSafariById } from "@/lib/cms-data";
-import { upsertSafariPackage, uploadMedia, deleteEntity } from "@/lib/server/cms-actions";
+import { uploadMedia } from "@/lib/server/cms-actions";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Edit Safari Package",
@@ -32,7 +34,9 @@ export default async function SafariEditPage({ params }: Props) {
         {!isNew && (
           <button
             form="safari-form"
-            formAction={`/admin/safaris/actions/delete`}
+            formAction={`/admin/safaris/actions`}
+            name="delete"
+            value={safari?.id}
             className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
             onClick={(e) => {
               if (!confirm("Delete this safari package?")) e.preventDefault();
@@ -45,7 +49,7 @@ export default async function SafariEditPage({ params }: Props) {
 
       <form
         id="safari-form"
-        action={upsertSafariPackage}
+        action="/admin/safaris/actions"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
         encType="multipart/form-data"
       >

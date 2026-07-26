@@ -7,6 +7,8 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Edit Page",
 };
@@ -31,7 +33,9 @@ export default async function PageEditPage({ params }: Props) {
         {!isNew && (
           <button
             form="page-form"
-            formAction={`/admin/pages/actions/delete`}
+            formAction={`/admin/pages/actions`}
+            name="delete"
+            value={page?.id}
             className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
             onClick={(e) => {
               if (!confirm("Delete this page?")) e.preventDefault();
@@ -44,7 +48,7 @@ export default async function PageEditPage({ params }: Props) {
 
       <form
         id="page-form"
-        action="/admin/pages/actions/upsert"
+        action="/admin/pages/actions"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={page?.id} />

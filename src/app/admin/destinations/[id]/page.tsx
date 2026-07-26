@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAdminDestinationById } from "@/lib/cms-data";
-import { upsertDestination, uploadMedia } from "@/lib/server/cms-actions";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Edit Destination",
@@ -31,7 +32,9 @@ export default async function DestinationEditPage({ params }: Props) {
         {!isNew && (
           <button
             form="destination-form"
-            formAction={`/admin/destinations/actions/delete`}
+            formAction={`/admin/destinations/actions`}
+            name="delete"
+            value={destination?.id}
             className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
             onClick={(e) => {
               if (!confirm("Delete this destination?")) e.preventDefault();
@@ -44,7 +47,7 @@ export default async function DestinationEditPage({ params }: Props) {
 
       <form
         id="destination-form"
-        action={upsertDestination}
+        action="/admin/destinations/actions"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={destination?.id} />
