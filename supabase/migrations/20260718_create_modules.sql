@@ -1,13 +1,3 @@
--- Up
-CREATE TABLE IF NOT EXISTS modules (
-  id SERIAL PRIMARY KEY,
-  page_id INTEGER REFERENCES pages(id) ON DELETE CASCADE,
-  type TEXT NOT NULL,
-  "order" INTEGER NOT NULL,
-  json_data JSONB NOT NULL DEFAULT '{}'::jsonb,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-
--- Down
-DROP TABLE IF EXISTS modules;
+-- Modules table (already exists in 202606270001_jackfruit_cms.sql)
+-- This migration is superseded by the main CMS migration
+-- Keeping for backwards compatibility if needed elsewhere

@@ -1,8 +1,8 @@
 create extension if not exists "pgcrypto";
 
-create type public.content_status as enum ('draft', 'published', 'archived');
-create type public.lead_status as enum ('new', 'contacted', 'quoted', 'follow_up', 'booked', 'lost');
-create type public.app_role as enum ('admin', 'editor', 'booking_manager', 'guide');
+create type if not exists public.content_status as enum ('draft', 'published', 'archived');
+create type if not exists public.lead_status as enum ('new', 'contacted', 'quoted', 'follow_up', 'booked', 'lost');
+create type if not exists public.app_role as enum ('admin', 'editor', 'booking_manager', 'guide');
 
 create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,

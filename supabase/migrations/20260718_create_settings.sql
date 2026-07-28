@@ -1,17 +1,3 @@
--- Up
-CREATE TABLE IF NOT EXISTS settings (
-  id SERIAL PRIMARY KEY,
-  brand_name TEXT NOT NULL,
-  logo TEXT,
-  favicon TEXT,
-  contact_email TEXT,
-  facebook TEXT,
-  instagram TEXT,
-  meta_title TEXT,
-  meta_description TEXT,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-
--- Down
-DROP TABLE IF EXISTS settings;
+-- Settings table (already exists in 202606270001_jackfruit_cms.sql)
+-- This migration is superseded by the main CMS migration
+-- Keeping for backwards compatibility if needed elsewhere
