@@ -1,7 +1,7 @@
 -- Page hero content tables for CMS editing
-create table public.page_heroes (
+create table if not exists public.page_heroes (
   id uuid primary key default gen_random_uuid(),
-  page_slug text not null unique, -- '/', '/safaris', '/destinations', etc.
+  page_slug text not null unique,
   eyebrow text,
   title text,
   intro text,

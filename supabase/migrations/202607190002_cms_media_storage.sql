@@ -1,4 +1,4 @@
-create table public.media_metadata (
+create table if not exists public.media_metadata (
   id uuid primary key default gen_random_uuid(),
   storage_path text not null,
   bucket_name text not null default 'cms-media',
@@ -14,5 +14,5 @@ create table public.media_metadata (
   updated_at timestamptz not null default now()
 );
 
-create index media_entity_idx on public.media_metadata(entity_type, entity_id);
-create index media_status_idx on public.media_metadata(content_status, permission_status);
+create index if not exists media_entity_idx on public.media_metadata(entity_type, entity_id);
+create index if not exists media_status_idx on public.media_metadata(content_status, permission_status);

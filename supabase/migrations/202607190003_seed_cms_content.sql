@@ -1,4 +1,4 @@
--- Seed site settings
+-- Seed site settings (safe to run multiple times)
 insert into public.site_settings (
   business_name,
   contact_email,
@@ -17,9 +17,9 @@ insert into public.site_settings (
   '9 AM - 5 PM, with WhatsApp support for travel inquiries',
   '{"tripadvisor": "https://tripadvisor.com", "facebook": "https://facebook.com"}'::jsonb,
   '© 2024 Jackfruit Safaris Uganda. All rights reserved.'
-);
+) on conflict (id) do nothing;
 
--- Seed destinations
+-- Seed destinations (safe to run multiple times)
 insert into public.destinations (
   slug, name, region, overview, why_go, top_experiences, wildlife, best_time, recommended_nights, status, order_column
 ) values
@@ -77,9 +77,10 @@ insert into public.destinations (
  '{"Rafting", "Cycling", "Craft visits"}',
  '{"Nile", "Views"}',
  'Great before or after safari, especially for travelers with a free day around Kampala, Entebbe, or Jinja.',
- '1-3 nights', 'published', 7);
+ '1-3 nights', 'published', 7)
+on conflict (slug) do nothing;
 
--- Seed experiences
+-- Seed experiences (safe to run multiple times)
 insert into public.experiences (
   slug, name, category, summary, included, location, status, order_column
 ) values
@@ -101,9 +102,10 @@ insert into public.experiences (
 ('wildlife-safaris', 'Wildlife Safaris', 'Wildlife',
  'Explore Murchison Falls, Queen Elizabeth, Lake Mburo, and other wildlife regions with private game drives, boat cruises, and local guides.',
  '{"Savannah game drives and boat safaris", "Rhino tracking at Ziwa on northern routes", "Elephants, giraffes, buffaloes, hippos, antelopes, lions, and birds", "Private pacing for couples, families, and groups"}',
- 'National Parks', 'published', 4);
+ 'National Parks', 'published', 4)
+on conflict (slug) do nothing;
 
--- Seed safari packages
+-- Seed safari packages (safe to run multiple times)
 insert into public.safari_packages (
   slug, title, duration, route, start_point, end_point, summary, price_from, currency,
   highlights, included, excluded, itinerary, accommodation_options, faq, status, order_column,
@@ -133,13 +135,7 @@ insert into public.safari_packages (
  ]'::jsonb, 'published', 1,
  '3 Days Gorilla Tracking Safari in Uganda | Bwindi Gorilla Trek',
  'Plan a private 3-day Uganda gorilla trekking safari to Bwindi with Jackfruit Safaris, including permit guidance, 4x4 transport, lodge options, and local support.',
- 'Gorilla permit rates and lodge availability must be verified with current Uganda Wildlife Authority and lodge tariffs before final quotation.');
-
-insert into public.safari_packages (
-  slug, title, duration, route, start_point, end_point, summary, price_from, currency,
-  highlights, included, excluded, itinerary, accommodation_options, faq, status, order_column,
-  meta_title, meta_description
-) values
+ 'Gorilla permit rates and lodge availability must be verified with current Uganda Wildlife Authority and lodge tariffs before final quotation.'),
 ('3-days-murchison-falls', '3 Days Murchison Falls Safari', '3 days',
  'Kampala/Entebbe - Ziwa - Murchison Falls - Kampala/Entebbe', 'Starts in Kampala or Entebbe', 'Kampala/Entebbe',
  'A classic short Uganda wildlife safari with Ziwa rhinos, savannah game drives, a Nile boat cruise, and the dramatic top of Murchison Falls.',
@@ -162,13 +158,7 @@ insert into public.safari_packages (
   {"question": "Can I add Jinja before or after?", "answer": "Yes. Jinja pairs well with arrival or departure days if you want Nile activities or a relaxed extension."}
  ]'::jsonb, 'published', 2,
  '3 Days Murchison Falls Safari | Ziwa Rhinos, Game Drives and Nile Cruise',
- 'Book a private 3-day Murchison Falls safari with Jackfruit Safaris, including Ziwa rhino tracking, game drives, Nile boat cruise, and local guide support.');
-
-insert into public.safari_packages (
-  slug, title, duration, route, start_point, end_point, summary, price_from, currency,
-  highlights, included, excluded, itinerary, accommodation_options, faq, status, order_column,
-  meta_title, meta_description
-) values
+ 'Book a private 3-day Murchison Falls safari with Jackfruit Safaris, including Ziwa rhino tracking, game drives, Nile boat cruise, and local guide support.'),
 ('10-days-uganda-safari', '10 Days Uganda Safari', '10 days',
  'Entebbe - Lake Mburo - Kibale - Queen Elizabeth - Ishasha - Bwindi - Lake Bunyonyi - Entebbe', 'Starts and ends in Entebbe', 'Entebbe',
  'Jackfruit Safaris'' complete Uganda circuit, combining savannah wildlife, chimpanzees, gorillas, boat cruises, crater landscapes, and lakeside rest.',
@@ -198,13 +188,7 @@ insert into public.safari_packages (
   {"question": "Can it be luxury?", "answer": "Yes. Lodge upgrades and domestic flight segments can make the journey more comfortable."}
  ]'::jsonb, 'published', 3,
  '10 Days Uganda Safari | Gorillas, Chimps, Queen Elizabeth and Lake Mburo',
- 'Explore Uganda on a private 10-day safari circuit with Jackfruit Safaris, including Lake Mburo, Kibale chimps, Queen Elizabeth, Bwindi gorillas, and Lake Bunyonyi.');
-
-insert into public.safari_packages (
-  slug, title, duration, route, start_point, end_point, summary, price_from, currency,
-  highlights, included, excluded, itinerary, accommodation_options, faq, status, order_column,
-  meta_title, meta_description
-) values
+ 'Explore Uganda on a private 10-day safari circuit with Jackfruit Safaris, including Lake Mburo, Kibale chimps, Queen Elizabeth, Bwindi gorillas, and Lake Bunyonyi.'),
 ('custom-uganda-safari', 'Custom Uganda Safari Planning', 'Custom',
  'Built around your dates, pace, interests, and budget', 'Flexible starts from Entebbe, Kampala, Jinja, or by request', 'Flexible',
  'A tailored planning service for gorilla trekking, wildlife, photography, culture, Jinja adventure, family travel, group transport, and smooth Uganda logistics.',
@@ -227,9 +211,10 @@ insert into public.safari_packages (
   {"question": "Can Jackfruit work with agents or NGOs?", "answer": "Yes. The team can support group transport, Jinja logistics, safari add-ons, and visiting teams."}
  ]'::jsonb, 'published', 4,
  'Custom Uganda Safari Planning | Jackfruit Safaris',
- 'Request a custom Uganda safari quote from Jackfruit Safaris for gorilla trekking, wildlife, Jinja adventures, family travel, transport, and group logistics.');
+ 'Request a custom Uganda safari quote from Jackfruit Safaris for gorilla trekking, wildlife, Jinja adventures, family travel, transport, and group logistics.')
+on conflict (slug) do nothing;
 
--- Seed testimonials as reviews
+-- Seed testimonials as reviews (safe to run multiple times)
 insert into public.reviews (
   guest_name, country, trip_type, rating, quote, source, status, permission_status
 ) values
@@ -241,4 +226,5 @@ insert into public.reviews (
  'Direct submission', 'published', 'approved'),
 ('Small group traveler', 'Uganda', 'Uganda circuit', 5,
  'We always knew what was included, what was optional, and what needed live confirmation.',
- 'Direct submission', 'published', 'approved');
+ 'Direct submission', 'published', 'approved')
+on conflict (guest_name, trip_type) do nothing;

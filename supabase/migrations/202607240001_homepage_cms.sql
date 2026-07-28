@@ -1,7 +1,7 @@
 -- Homepage sections table for editable landing page content
-create table public.homepage_sections (
+create table if not exists public.homepage_sections (
   id uuid primary key default gen_random_uuid(),
-  section_type text not null, -- 'hero', 'trust_bar', 'why_uganda', 'featured_safaris', 'experiences', 'reviews', 'travel_guide', 'cta'
+  section_type text not null,
   title text,
   subtitle text,
   content jsonb not null default '{}'::jsonb,
@@ -12,7 +12,7 @@ create table public.homepage_sections (
 );
 
 -- Homepage quick links (editable navigation buttons)
-create table public.homepage_quick_links (
+create table if not exists public.homepage_quick_links (
   id uuid primary key default gen_random_uuid(),
   label text not null,
   href text not null,
@@ -23,7 +23,7 @@ create table public.homepage_quick_links (
 );
 
 -- Homepage trust items (editable badges)
-create table public.homepage_trust_items (
+create table if not exists public.homepage_trust_items (
   id uuid primary key default gen_random_uuid(),
   text text not null,
   order_index int not null default 0,
@@ -33,9 +33,9 @@ create table public.homepage_trust_items (
 );
 
 -- Feature bullets for the Why Uganda section
-create table public.homepage_features (
+create table if not exists public.homepage_features (
   id uuid primary key default gen_random_uuid(),
-  icon_name text not null, -- icon identifier
+  icon_name text not null,
   text text not null,
   order_index int not null default 0,
   status public.content_status not null default 'published',
@@ -44,7 +44,7 @@ create table public.homepage_features (
 );
 
 -- Travel guide articles list for homepage
-create table public.homepage_guide_articles (
+create table if not exists public.homepage_guide_articles (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   order_index int not null default 0,
