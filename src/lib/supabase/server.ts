@@ -6,16 +6,8 @@ export async function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
-  console.log("SUPABASE CLIENT INIT:", {
-    hasUrl: !!url,
-    hasKey: !!key,
-    urlPrefix: url ? url.substring(0, 30) + "..." : "undefined"
-  });
-
   if (!url || !key) {
     // Return a mock client that will fail gracefully
-    console.log("SUPABASE RETURNING MOCK - NOT CONFIGURED");
-    // Create a chainable mock that supports eq().eq().order() and eq().order()
     const emptyResult = { data: [], error: null };
     const nullResult = { data: null, error: null };
     const chainable: any = {
@@ -37,29 +29,35 @@ export async function createClient() {
     } as any;
   }
 
-  const { cookies } = await import("next/headers");
-  const cookieStore = await cookies();
+  try {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
 
-  return createServerClient(
-    url,
-    key,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
+    return createServerClient(
+      url,
+      key,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet: { name: string; value: string; options: any }[], _headers?: Record<string, string>) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore.set(name, value, options)
+              );
+            } catch {
+              // The `setAll` method may be called from a Server Component
+            }
+          },
         },
-        setAll(cookiesToSet: { name: string; value: string; options: any }[], _headers?: Record<string, string>) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // The `setAll` method may be called from a Server Component
-          }
-        },
-      },
-    }
-  );
+      }
+    );
+  } catch {
+    // In production builds without proper cookie context, fallback to anon client
+    const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
+    return supabaseCreateClient(url, key);
+  }
 }
 
 // Admin client that uses service role key to bypass RLS
@@ -71,7 +69,6 @@ export async function createAdminClient() {
     // Fallback to anon key if service role not available
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
     if (!anonKey) {
-      console.log("SUPABASE ADMIN CLIENT: no keys configured");
       const emptyResult = { data: [], error: null };
       const nullResult = { data: null, error: null };
       const chainable: any = {

@@ -27,12 +27,17 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
+  let session = null;
 
-  // Verify session with Supabase (uses cookies internally via createClient)
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  try {
+    const supabase = await createClient();
+
+    // Verify session with Supabase (uses cookies internally via createClient)
+    const result = await supabase.auth.getSession();
+    session = result?.data?.session;
+  } catch {
+    // If Supabase client fails, session remains null
+  }
 
   if (!session) {
     redirect("/auth/login");

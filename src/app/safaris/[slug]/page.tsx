@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Section } from "@/components/section";
 import { StickyQuoteCard } from "@/components/sticky-quote-card";
-import { getSafariBySlug, getPublishedSafaris } from "@/lib/cms-data";
+import { getSafariBySlug } from "@/lib/cms-data";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 type Props = {
