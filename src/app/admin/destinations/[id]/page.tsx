@@ -4,6 +4,10 @@ import Link from "next/link";
 import { getAdminDestinationByIdResult } from "@/lib/cms-data";
 import { DeleteButton } from "@/app/admin/_components/delete-button";
 import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
+import {
+  ImageUploadField,
+  ListEditor,
+} from "@/app/admin/_components/cms-form-controls";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -61,6 +65,7 @@ export default async function DestinationEditPage({ params }: Props) {
         action="/admin/destinations/actions"
         method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
+        encType="multipart/form-data"
       >
         <input type="hidden" name="id" value={destination?.id} />
 
@@ -133,16 +138,12 @@ export default async function DestinationEditPage({ params }: Props) {
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Featured Image URL</span>
-          <input
-            type="url"
-            name="featured_image_url"
-            defaultValue={destination?.featured_image_url}
-            placeholder="https://..."
-            className="mt-1 block w-full rounded-md border-gray-300"
-          />
-        </label>
+        <ImageUploadField
+          name="featured_image_url"
+          fileName="featured_image_file"
+          label="Featured Image"
+          currentUrl={destination?.featured_image_url}
+        />
 
         <div className="grid gap-4">
           <label className="block">
@@ -155,38 +156,29 @@ export default async function DestinationEditPage({ params }: Props) {
             />
           </label>
 
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Why Go (JSON array)</span>
-            <textarea
-              name="why_go"
-              defaultValue={JSON.stringify(destination?.why_go || [])}
-              rows={3}
-              placeholder='["Mountain gorillas", "Rainforest trekking"]'
-              className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
-            />
-          </label>
+          <ListEditor
+            name="why_go"
+            label="Why Go"
+            values={destination?.why_go || []}
+            placeholder="Mountain gorillas"
+            emptyRows={3}
+          />
 
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Top Experiences (JSON array)</span>
-            <textarea
-              name="top_experiences"
-              defaultValue={JSON.stringify(destination?.top_experiences || [])}
-              rows={2}
-              placeholder='["Gorilla trekking", "Community walks"]'
-              className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
-            />
-          </label>
+          <ListEditor
+            name="top_experiences"
+            label="Top Experiences"
+            values={destination?.top_experiences || []}
+            placeholder="Gorilla trekking"
+            emptyRows={2}
+          />
 
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Wildlife (JSON array)</span>
-            <textarea
-              name="wildlife"
-              defaultValue={JSON.stringify(destination?.wildlife || [])}
-              rows={2}
-              placeholder='["Elephants", "Birds"]'
-              className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
-            />
-          </label>
+          <ListEditor
+            name="wildlife"
+            label="Wildlife"
+            values={destination?.wildlife || []}
+            placeholder="Elephants"
+            emptyRows={2}
+          />
         </div>
 
         <SEOFields destination={destination} />
@@ -210,7 +202,11 @@ export default async function DestinationEditPage({ params }: Props) {
   );
 }
 
-function SEOFields({ destination }: { destination: any }) {
+function SEOFields({
+  destination,
+}: {
+  destination: Record<string, string | null | undefined> | null;
+}) {
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">SEO</h3>
@@ -219,7 +215,7 @@ function SEOFields({ destination }: { destination: any }) {
           <span className="text-sm font-medium text-gray-700">Meta Title</span>
           <input
             name="meta_title"
-            defaultValue={destination?.meta_title}
+            defaultValue={destination?.meta_title ?? ""}
             placeholder="Destination SEO title"
             className="mt-1 block w-full rounded-md border-gray-300"
           />
@@ -228,7 +224,7 @@ function SEOFields({ destination }: { destination: any }) {
           <span className="text-sm font-medium text-gray-700">Meta Description</span>
           <textarea
             name="meta_description"
-            defaultValue={destination?.meta_description}
+            defaultValue={destination?.meta_description ?? ""}
             rows={2}
             className="mt-1 block w-full rounded-md border-gray-300"
           />

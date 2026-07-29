@@ -214,7 +214,7 @@ export default async function Home() {
                 <div className="p-5">
                   <IconComponent className="text-[#2d6f55]" size={24} />
                   <h3 className="mt-3 text-xl font-black text-[#10251b]">
-                    {experience.title}
+                    {experience.name || experience.title}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-[#536154]">
                     {experience.summary}

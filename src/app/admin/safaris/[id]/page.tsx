@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAdminSafariByIdResult } from "@/lib/cms-data";
-import { uploadMedia } from "@/lib/server/cms-actions";
 import { DeleteButton } from "@/app/admin/_components/delete-button";
 import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
+import {
+  ImageUploadField,
+  ListEditor,
+} from "@/app/admin/_components/cms-form-controls";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -34,7 +37,10 @@ type SafariRecord = {
   title?: string | null;
   duration?: string | null;
   route?: string | null;
+  start_point?: string | null;
+  end_point?: string | null;
   price_from?: string | number | null;
+  comfort_levels?: unknown;
   summary?: string | null;
   featured_image_url?: string | null;
   itinerary?: unknown;
@@ -183,6 +189,29 @@ export default async function SafariEditPage({ params }: Props) {
           </label>
         </div>
 
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Start Point</span>
+            <input
+              required
+              name="start_point"
+              defaultValue={fieldValue(safari?.start_point)}
+              placeholder="Starts in Entebbe, Kampala, or Jinja"
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">End Point</span>
+            <input
+              name="end_point"
+              defaultValue={fieldValue(safari?.end_point)}
+              placeholder="Ends in Entebbe or Kampala"
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+        </div>
+
         <label className="block">
           <span className="text-sm font-medium text-gray-700">Summary</span>
           <textarea
@@ -193,18 +222,20 @@ export default async function SafariEditPage({ params }: Props) {
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Featured Image URL</span>
-          <input
-            type="url"
-            name="featured_image_url"
-            defaultValue={fieldValue(safari?.featured_image_url)}
-            placeholder="https://..."
-            className="mt-1 block w-full rounded-md border-gray-300"
-          />
-        </label>
+        <ImageUploadField
+          name="featured_image_url"
+          fileName="featured_image_file"
+          label="Featured Image"
+          currentUrl={safari?.featured_image_url}
+        />
 
-        <ImageUploadSection safariId={id} safari={safari} />
+        <ListEditor
+          name="comfort_levels"
+          label="Comfort Levels"
+          values={asArray<string>(safari?.comfort_levels)}
+          placeholder="Budget, Mid-range, Luxury"
+          emptyRows={3}
+        />
 
         <ItinerarySection safari={safari} />
 
@@ -233,50 +264,6 @@ export default async function SafariEditPage({ params }: Props) {
           </button>
         </div>
       </form>
-    </div>
-  );
-}
-
-// Image Upload Section
-function ImageUploadSection({
-  safariId,
-  safari,
-}: {
-  safariId: string;
-  safari: SafariRecord | null;
-}) {
-  return (
-    <div className="border-t pt-6">
-      <h3 className="mb-4 text-lg font-medium">Image Upload</h3>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <form action={uploadMedia} encType="multipart/form-data" className="space-y-3">
-          <input type="hidden" name="entity_type" value="safari_packages" />
-          <input type="hidden" name="entity_id" value={safariId} />
-          <input type="hidden" name="alt_text" value={safari?.title || "Safari image"} />
-          <input
-            type="file"
-            name="file"
-            accept="image/*"
-            required
-            className="block w-full text-sm"
-          />
-          <button
-            type="submit"
-            className="rounded-md bg-gray-100 px-3 py-1.5 text-sm hover:bg-gray-200"
-          >
-            Upload Image
-          </button>
-        </form>
-        {safari?.featured_image_url && (
-          <div>
-            <img
-              src={safari.featured_image_url}
-              alt="Featured"
-              className="h-32 w-full rounded-md object-cover"
-            />
-          </div>
-        )}
-      </div>
     </div>
   );
 }
@@ -360,13 +347,12 @@ function HighlightsSection({ safari }: { safari: SafariRecord | null }) {
   const highlights = asArray<string>(safari?.highlights);
   return (
     <div className="border-t pt-6">
-      <h3 className="mb-4 text-lg font-medium">Highlights</h3>
-      <textarea
+      <ListEditor
         name="highlights"
-        defaultValue={JSON.stringify(highlights)}
-        rows={4}
-        placeholder='["Highlight 1", "Highlight 2"]'
-        className="block w-full rounded-md border-gray-300 font-mono text-sm"
+        label="Highlights"
+        values={highlights}
+        placeholder="Scenic drive through western Uganda"
+        emptyRows={4}
       />
     </div>
   );
@@ -381,24 +367,20 @@ function IncludedExcludedSection({ safari }: { safari: SafariRecord | null }) {
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">Inclusions & Exclusions</h3>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Included (JSON array)</span>
-          <textarea
-            name="included"
-            defaultValue={JSON.stringify(included)}
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
-          />
-        </label>
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Excluded (JSON array)</span>
-          <textarea
-            name="excluded"
-            defaultValue={JSON.stringify(excluded)}
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
-          />
-        </label>
+        <ListEditor
+          name="included"
+          label="Included"
+          values={included}
+          placeholder="Private 4x4 safari vehicle"
+          emptyRows={4}
+        />
+        <ListEditor
+          name="excluded"
+          label="Excluded"
+          values={excluded}
+          placeholder="International flights"
+          emptyRows={4}
+        />
       </div>
     </div>
   );

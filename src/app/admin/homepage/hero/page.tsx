@@ -3,14 +3,26 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAdminHomepageSections } from "@/lib/cms-data";
+import { ImageUploadField } from "@/app/admin/_components/cms-form-controls";
 
 export const metadata: Metadata = {
   title: "Hero Section",
 };
 
+type HomepageSection = {
+  id?: string;
+  section_type?: string;
+  title?: string | null;
+  subtitle?: string | null;
+  content?: Record<string, string | null | undefined>;
+};
+
 export default async function HeroEditPage() {
   const sections = await getAdminHomepageSections();
-  const hero = sections?.find((s: any) => s.section_type === "hero");
+  const hero = sections?.find(
+    (section: HomepageSection) => section.section_type === "hero",
+  );
+  const content = hero?.content || {};
 
   return (
     <div className="max-w-4xl">
@@ -22,6 +34,7 @@ export default async function HeroEditPage() {
         action="/admin/homepage/hero/actions/upsert"
         method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
+        encType="multipart/form-data"
       >
         <input type="hidden" name="id" value={hero?.id} />
         <input type="hidden" name="section_type" value="hero" />
@@ -47,18 +60,44 @@ export default async function HeroEditPage() {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-700">Hero Content (JSON)</span>
+          <span className="text-sm font-medium text-gray-700">Hero Description</span>
           <textarea
-            name="content"
-            rows={6}
-            defaultValue={JSON.stringify(hero?.content || {
-              subtitle: "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.",
-              cta_primary: "Plan My Safari",
-              cta_secondary: "View Safari Packages"
-            }, null, 2)}
-            className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
+            name="content_subtitle"
+            rows={3}
+            defaultValue={
+              content.subtitle ||
+              "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja."
+            }
+            className="mt-1 block w-full rounded-md border-gray-300"
           />
         </label>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Primary Button Text</span>
+            <input
+              name="content_cta_primary"
+              defaultValue={content.cta_primary || "Plan My Safari"}
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Secondary Button Text</span>
+            <input
+              name="content_cta_secondary"
+              defaultValue={content.cta_secondary || "View Safari Packages"}
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+        </div>
+
+        <ImageUploadField
+          name="background_image"
+          fileName="background_image_file"
+          label="Hero Background Image"
+          currentUrl={content.background_image}
+        />
 
         <div className="flex gap-3 pt-4">
           <Link

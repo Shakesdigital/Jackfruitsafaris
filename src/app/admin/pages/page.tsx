@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { getAdminPages } from "@/lib/cms-data";
+import { getAdminPageHeroes, getAdminPages } from "@/lib/cms-data";
 
 type Page = {
   id: string;
@@ -11,12 +11,28 @@ type Page = {
   updated_at: string;
 };
 
+type PageHeroSummary = {
+  id: string;
+  page_slug: string;
+  status: string;
+};
+
 export const metadata = {
   title: "Pages",
 };
 
+const CORE_LANDING_PAGES = [
+  { slug: "/", cmsSlug: "home", label: "Home", publicHref: "/" },
+  { slug: "/safaris", cmsSlug: "safaris", label: "Safaris", publicHref: "/safaris" },
+  { slug: "/destinations", cmsSlug: "destinations", label: "Destinations", publicHref: "/destinations" },
+  { slug: "/experiences", cmsSlug: "experiences", label: "Experiences", publicHref: "/experiences" },
+  { slug: "/reviews", cmsSlug: "reviews", label: "Reviews", publicHref: "/reviews" },
+  { slug: "/about", cmsSlug: "about", label: "About", publicHref: "/about" },
+  { slug: "/travel-guide", cmsSlug: "travel-guide", label: "Travel Guide", publicHref: "/travel-guide" },
+];
+
 export default async function PagesPage() {
-  const pages = await getAdminPages();
+  const [pages, heroes] = await Promise.all([getAdminPages(), getAdminPageHeroes()]);
 
   return (
     <div>
@@ -37,6 +53,63 @@ export default async function PagesPage() {
           </Link>
         </div>
       </div>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold text-gray-900">
+          Main Landing Pages
+        </h2>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {CORE_LANDING_PAGES.map((page) => {
+            const cmsPage = pages?.find((item: Page) => item.slug === page.cmsSlug);
+            const hero = heroes?.find(
+              (item: PageHeroSummary) => item.page_slug === page.slug,
+            );
+            return (
+              <div key={page.slug} className="rounded-lg border border-gray-200 bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{page.label}</h3>
+                    <p className="mt-1 font-mono text-xs text-gray-500">
+                      {page.publicHref}
+                    </p>
+                  </div>
+                  <span
+                    className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                      cmsPage?.status === "published" || hero?.status === "published"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {cmsPage?.status || hero?.status || "not seeded"}
+                  </span>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-3 text-sm">
+                  {cmsPage && (
+                    <Link
+                      href={`/admin/pages/${cmsPage.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      Edit Page Details
+                    </Link>
+                  )}
+                  <Link
+                    href={`/admin/pages/heroes/${hero ? hero.id : "new"}?slug=${page.slug}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {hero ? "Edit Hero" : "Create Hero"}
+                  </Link>
+                  <Link
+                    href={page.publicHref}
+                    className="text-gray-600 hover:underline"
+                  >
+                    View Frontend
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">

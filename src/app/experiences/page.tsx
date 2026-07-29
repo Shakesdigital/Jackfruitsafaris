@@ -17,7 +17,7 @@ export default async function ExperiencesPage() {
   const displayedExperiences = experiences.length
     ? experiences.map((e: any) => ({
         slug: e.slug,
-        title: e.title,
+        title: e.name || e.title,
         icon: e.icon || hardcodedExperiences.find(h => h.slug === e.slug)?.icon || "star",
         featured_image_url: e.featured_image_url || e.image,
         summary: e.summary,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getAdminReviewByIdResult } from "@/lib/cms-data";
 import { DeleteButton } from "@/app/admin/_components/delete-button";
 import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
+import { ImageUploadField } from "@/app/admin/_components/cms-form-controls";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -62,6 +63,7 @@ export default async function ReviewEditPage({ params }: Props) {
         action="/admin/reviews/actions"
         method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
+        encType="multipart/form-data"
       >
         <input type="hidden" name="id" value={review?.id} />
 
@@ -154,16 +156,12 @@ export default async function ReviewEditPage({ params }: Props) {
           </label>
         </div>
 
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Image URL (optional)</span>
-          <input
-            type="url"
-            name="image_url"
-            defaultValue={review?.image_url}
-            placeholder="Guest photo URL"
-            className="mt-1 block w-full rounded-md border-gray-300"
-          />
-        </label>
+        <ImageUploadField
+          name="image_url"
+          fileName="image_file"
+          label="Guest Image"
+          currentUrl={review?.image_url}
+        />
 
         <label className="block">
           <span className="text-sm font-medium text-gray-700">Quote/Testimonial</span>

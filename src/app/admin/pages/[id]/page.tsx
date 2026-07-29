@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getAdminPageByIdResult } from "@/lib/cms-data";
 import { DeleteButton } from "@/app/admin/_components/delete-button";
 import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
+import { ImageUploadField } from "@/app/admin/_components/cms-form-controls";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -62,6 +63,7 @@ export default async function PageEditPage({ params }: Props) {
         action="/admin/pages/actions"
         method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
+        encType="multipart/form-data"
       >
         <input type="hidden" name="id" value={page?.id} />
 
@@ -112,6 +114,13 @@ export default async function PageEditPage({ params }: Props) {
           />
         </label>
 
+        <ImageUploadField
+          name="featured_image_url"
+          fileName="featured_image_file"
+          label="Featured Image"
+          currentUrl={page?.featured_image_url}
+        />
+
         <SEOFields page={page} />
 
         <div className="flex gap-3 pt-4">
@@ -133,7 +142,11 @@ export default async function PageEditPage({ params }: Props) {
   );
 }
 
-function SEOFields({ page }: { page: any }) {
+function SEOFields({
+  page,
+}: {
+  page: Record<string, string | null | undefined> | null;
+}) {
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">SEO</h3>
@@ -142,7 +155,7 @@ function SEOFields({ page }: { page: any }) {
           <span className="text-sm font-medium text-gray-700">Meta Title</span>
           <input
             name="meta_title"
-            defaultValue={page?.meta_title}
+            defaultValue={page?.meta_title ?? ""}
             placeholder="SEO page title"
             className="mt-1 block w-full rounded-md border-gray-300"
           />
@@ -151,11 +164,17 @@ function SEOFields({ page }: { page: any }) {
           <span className="text-sm font-medium text-gray-700">Meta Description</span>
           <textarea
             name="meta_description"
-            defaultValue={page?.meta_description}
+            defaultValue={page?.meta_description ?? ""}
             rows={2}
             className="mt-1 block w-full rounded-md border-gray-300"
           />
         </label>
+        <ImageUploadField
+          name="meta_image_url"
+          fileName="meta_image_file"
+          label="SEO Share Image"
+          currentUrl={page?.meta_image_url}
+        />
       </div>
     </div>
   );

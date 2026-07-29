@@ -4,6 +4,19 @@ import { redirect } from "next/navigation";
 import { createClient as createAnonClient, createAdminClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
+type StorageClient = {
+  storage: {
+    from: (bucket: string) => {
+      upload: (
+        path: string,
+        body: Buffer,
+        options: { contentType: string; upsert: boolean },
+      ) => Promise<{ error: unknown }>;
+      getPublicUrl: (path: string) => { data: { publicUrl: string } };
+    };
+  };
+};
+
 // For reading data in server components/actions
 async function getSupabase() {
   return await createAnonClient();
@@ -12,6 +25,43 @@ async function getSupabase() {
 // For admin writes (uses service role key)
 async function getAdminSupabase() {
   return await createAdminClient();
+}
+
+function parseJsonField<T>(value: FormDataEntryValue | null, fallback: T): T {
+  if (!value || typeof value !== "string") return fallback;
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+async function uploadImageFromForm(
+  supabase: StorageClient,
+  formData: FormData,
+  fieldName: string,
+  destinationFolder: string,
+) {
+  const file = formData.get(fieldName) as File | null;
+  if (!file || !file.size) return null;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+  const path = `${destinationFolder}/${Date.now()}-${safeName}`;
+
+  const { error } = await supabase.storage.from("cms-media").upload(path, buffer, {
+    contentType: file.type,
+    upsert: false,
+  });
+
+  if (error) {
+    console.error("CMS image upload error:", error);
+    return null;
+  }
+
+  const { data } = supabase.storage.from("cms-media").getPublicUrl(path);
+  return data.publicUrl as string;
 }
 
 // Site Settings Actions
@@ -44,6 +94,7 @@ const siteSettingsSchema = z.object({
   cta_title: z.string().optional(),
   cta_intro: z.string().optional(),
   cta_button: z.string().optional(),
+  hero_image: z.string().url().optional().or(z.literal("")),
 });
 
 export async function upsertSiteSettings(formData: FormData) {
@@ -54,11 +105,23 @@ export async function upsertSiteSettings(formData: FormData) {
 
   // Use admin client for writes
   const supabase = await getAdminSupabase();
+  const logoUrl =
+    (await uploadImageFromForm(supabase, formData, "logo_file", "branding/logos")) ||
+    formData.get("logo_url") ||
+    undefined;
+  const faviconUrl =
+    (await uploadImageFromForm(supabase, formData, "favicon_file", "branding/favicons")) ||
+    formData.get("favicon_url") ||
+    undefined;
+  const heroImage =
+    (await uploadImageFromForm(supabase, formData, "hero_image_file", "branding/heroes")) ||
+    formData.get("hero_image") ||
+    undefined;
 
   const parsed = siteSettingsSchema.safeParse({
     business_name: formData.get("business_name"),
-    logo_url: formData.get("logo_url") || undefined,
-    favicon_url: formData.get("favicon_url") || undefined,
+    logo_url: logoUrl,
+    favicon_url: faviconUrl,
     contact_email: formData.get("contact_email") || undefined,
     phone: formData.get("phone") || undefined,
     whatsapp_number: formData.get("whatsapp_number") || undefined,
@@ -66,10 +129,10 @@ export async function upsertSiteSettings(formData: FormData) {
     alternate_phone: formData.get("alternate_phone") || undefined,
     address: formData.get("address") || undefined,
     operating_hours: formData.get("operating_hours") || undefined,
-    social_links: formData.get("social_links") ? JSON.parse(formData.get("social_links") as string) : undefined,
+    social_links: parseJsonField(formData.get("social_links"), undefined),
     footer_copy: formData.get("footer_copy") || undefined,
-    seo: formData.get("seo") ? JSON.parse(formData.get("seo") as string) : undefined,
-    integrations: formData.get("integrations") ? JSON.parse(formData.get("integrations") as string) : undefined,
+    seo: parseJsonField(formData.get("seo"), undefined),
+    integrations: parseJsonField(formData.get("integrations"), undefined),
     hero_title: formData.get("hero_title") || undefined,
     hero_subtitle: formData.get("hero_subtitle") || undefined,
     badge_text: formData.get("badge_text") || undefined,
@@ -83,6 +146,7 @@ export async function upsertSiteSettings(formData: FormData) {
     cta_title: formData.get("cta_title") || undefined,
     cta_intro: formData.get("cta_intro") || undefined,
     cta_button: formData.get("cta_button") || undefined,
+    hero_image: heroImage,
   });
 
   if (!parsed.success) return;
@@ -127,6 +191,15 @@ export async function upsertSafariPackage(formData: FormData) {
 
   const id = formData.get("id") as string;
   const isNew = !id;
+  const featuredImageUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "featured_image_file",
+      `media/safari_packages/${id || "new"}`,
+    )) ||
+    formData.get("featured_image_url") ||
+    undefined;
 
   const parsed = safariSchema.safeParse({
     slug: formData.get("slug"),
@@ -138,14 +211,14 @@ export async function upsertSafariPackage(formData: FormData) {
     summary: formData.get("summary"),
     price_from: formData.get("price_from") ? parseFloat(formData.get("price_from") as string) : undefined,
     currency: formData.get("currency") || "USD",
-    comfort_levels: formData.get("comfort_levels") ? JSON.parse(formData.get("comfort_levels") as string) : [],
-    highlights: formData.get("highlights") ? JSON.parse(formData.get("highlights") as string) : [],
-    included: formData.get("included") ? JSON.parse(formData.get("included") as string) : [],
-    excluded: formData.get("excluded") ? JSON.parse(formData.get("excluded") as string) : [],
+    comfort_levels: parseJsonField(formData.get("comfort_levels"), []),
+    highlights: parseJsonField(formData.get("highlights"), []),
+    included: parseJsonField(formData.get("included"), []),
+    excluded: parseJsonField(formData.get("excluded"), []),
     status: formData.get("status") || "draft",
     meta_title: formData.get("meta_title") || undefined,
     meta_description: formData.get("meta_description") || undefined,
-    featured_image_url: formData.get("featured_image_url") || undefined,
+    featured_image_url: featuredImageUrl,
     permit_rate_warning: formData.get("permit_rate_warning") || undefined,
   });
 
@@ -156,7 +229,7 @@ export async function upsertSafariPackage(formData: FormData) {
 
   const { itinerary, accommodations, faqs } = parseSafariDetails(formData);
 
-  const data: any = {
+  const data: Record<string, unknown> = {
     id: isNew ? undefined : id,
     ...parsed.data,
     itinerary,
@@ -237,21 +310,31 @@ export async function upsertDestination(formData: FormData) {
 
   // Use admin client for writes
   const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const featuredImageUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "featured_image_file",
+      `media/destinations/${id || "new"}`,
+    )) ||
+    formData.get("featured_image_url") ||
+    undefined;
 
   const parsed = destinationSchema.safeParse({
     slug: formData.get("slug"),
     name: formData.get("name"),
     region: formData.get("region") || undefined,
     overview: formData.get("overview") || undefined,
-    why_go: formData.get("why_go") ? JSON.parse(formData.get("why_go") as string) : [],
-    top_experiences: formData.get("top_experiences") ? JSON.parse(formData.get("top_experiences") as string) : [],
-    wildlife: formData.get("wildlife") ? JSON.parse(formData.get("wildlife") as string) : [],
+    why_go: parseJsonField(formData.get("why_go"), []),
+    top_experiences: parseJsonField(formData.get("top_experiences"), []),
+    wildlife: parseJsonField(formData.get("wildlife"), []),
     best_time: formData.get("best_time") || undefined,
     recommended_nights: formData.get("recommended_nights") || undefined,
     status: formData.get("status") || "draft",
     meta_title: formData.get("meta_title") || undefined,
     meta_description: formData.get("meta_description") || undefined,
-    featured_image_url: formData.get("featured_image_url") || undefined,
+    featured_image_url: featuredImageUrl,
   });
 
   if (!parsed.success) {
@@ -260,7 +343,7 @@ export async function upsertDestination(formData: FormData) {
   }
 
   await supabase.from("destinations").upsert({
-    id: formData.get("id") as string || undefined,
+    id: id || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
@@ -290,6 +373,16 @@ export async function upsertExperience(formData: FormData) {
 
   // Use admin client for writes
   const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const featuredImageUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "featured_image_file",
+      `media/experiences/${id || "new"}`,
+    )) ||
+    formData.get("featured_image_url") ||
+    undefined;
 
   const parsed = experienceSchema.safeParse({
     slug: formData.get("slug"),
@@ -302,7 +395,7 @@ export async function upsertExperience(formData: FormData) {
     status: formData.get("status") || "draft",
     meta_title: formData.get("meta_title") || undefined,
     meta_description: formData.get("meta_description") || undefined,
-    featured_image_url: formData.get("featured_image_url") || undefined,
+    featured_image_url: featuredImageUrl,
   });
 
   if (!parsed.success) {
@@ -310,12 +403,10 @@ export async function upsertExperience(formData: FormData) {
     return;
   }
 
-  const bullets = formData.get("bullets")
-    ? JSON.parse(formData.get("bullets") as string)
-    : [];
+  const bullets = parseJsonField(formData.get("bullets"), []);
 
   await supabase.from("experiences").upsert({
-    id: formData.get("id") as string || undefined,
+    id: id || undefined,
     ...parsed.data,
     included: bullets,
     updated_at: new Date().toISOString(),
@@ -344,6 +435,16 @@ export async function upsertReview(formData: FormData) {
 
   // Use admin client for writes
   const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const imageUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "image_file",
+      `media/reviews/${id || "new"}`,
+    )) ||
+    formData.get("image_url") ||
+    undefined;
 
   const parsed = reviewSchema.safeParse({
     guest_name: formData.get("guest_name"),
@@ -354,7 +455,7 @@ export async function upsertReview(formData: FormData) {
     source: formData.get("source") || undefined,
     status: formData.get("status") || "draft",
     permission_status: formData.get("permission_status") || "needs_permission",
-    image_url: formData.get("image_url") || undefined,
+    image_url: imageUrl,
   });
 
   if (!parsed.success) {
@@ -363,7 +464,7 @@ export async function upsertReview(formData: FormData) {
   }
 
   await supabase.from("reviews").upsert({
-    id: formData.get("id") as string || undefined,
+    id: id || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
@@ -451,27 +552,36 @@ export async function upsertPage(formData: FormData) {
 
   // Use admin client for writes
   const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const featuredImageUrl =
+    (await uploadImageFromForm(supabase, formData, "featured_image_file", `media/pages/${id || "new"}`)) ||
+    formData.get("featured_image_url") ||
+    undefined;
+  const metaImageUrl =
+    (await uploadImageFromForm(supabase, formData, "meta_image_file", `media/pages/${id || "new"}/seo`)) ||
+    formData.get("meta_image_url") ||
+    undefined;
 
   const parsed = pageSchema.safeParse({
     slug: formData.get("slug"),
     title: formData.get("title"),
     summary: formData.get("summary") || undefined,
-    hero: formData.get("hero") ? JSON.parse(formData.get("hero") as string) : undefined,
-    sections: formData.get("sections") ? JSON.parse(formData.get("sections") as string) : undefined,
-    featured_image_url: formData.get("featured_image_url") || undefined,
+    hero: parseJsonField(formData.get("hero"), undefined),
+    sections: parseJsonField(formData.get("sections"), undefined),
+    featured_image_url: featuredImageUrl,
     status: formData.get("status") || "draft",
     meta_title: formData.get("meta_title") || undefined,
     meta_description: formData.get("meta_description") || undefined,
-    meta_image_url: formData.get("meta_image_url") || undefined,
+    meta_image_url: metaImageUrl,
   });
 
   if (!parsed.success) return;
 
-  const { data } = await supabase.from("pages").upsert({
-    id: formData.get("id") as string || undefined,
+  await supabase.from("pages").upsert({
+    id: id || undefined,
     ...parsed.data,
     published_at: parsed.data.status === "published" ? new Date().toISOString() : null,
-  }).select().single();
+  });
 
   redirect(`/admin/pages`);
 }
@@ -492,12 +602,26 @@ export async function upsertHomepageSection(formData: FormData) {
   if (!user) redirect("/auth/login");
 
   const supabase = await getAdminSupabase();
+  const contentFromFields = {
+    subtitle: formData.get("content_subtitle") || undefined,
+    cta_primary: formData.get("content_cta_primary") || undefined,
+    cta_secondary: formData.get("content_cta_secondary") || undefined,
+    background_image:
+      (await uploadImageFromForm(supabase, formData, "background_image_file", "media/homepage/hero")) ||
+      formData.get("background_image") ||
+      undefined,
+  };
+  const content = formData.has("content_subtitle")
+    ? Object.fromEntries(
+        Object.entries(contentFromFields).filter(([, value]) => Boolean(value)),
+      )
+    : parseJsonField(formData.get("content"), {});
 
   const parsed = homepageSectionSchema.safeParse({
     section_type: formData.get("section_type"),
     title: formData.get("title") || undefined,
     subtitle: formData.get("subtitle") || undefined,
-    content: formData.get("content") ? JSON.parse(formData.get("content") as string) : {},
+    content,
     order_index: parseInt(formData.get("order_index") as string) || 0,
     status: formData.get("status") || "published",
   });
@@ -512,6 +636,35 @@ export async function upsertHomepageSection(formData: FormData) {
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+
+  if (parsed.data.section_type === "hero") {
+    const settingsPatch = {
+      hero_title: parsed.data.title,
+      badge_text: parsed.data.subtitle,
+      hero_subtitle: parsed.data.content?.subtitle,
+      cta_primary: parsed.data.content?.cta_primary,
+      cta_secondary: parsed.data.content?.cta_secondary,
+      hero_image: parsed.data.content?.background_image,
+      updated_at: new Date().toISOString(),
+    };
+    const { data: existingSettings } = await supabase
+      .from("site_settings")
+      .select("id")
+      .limit(1)
+      .maybeSingle();
+
+    if (existingSettings?.id) {
+      await supabase
+        .from("site_settings")
+        .update(settingsPatch)
+        .eq("id", existingSettings.id);
+    } else {
+      await supabase.from("site_settings").insert({
+        business_name: "Jackfruit Safaris Uganda",
+        ...settingsPatch,
+      });
+    }
+  }
 
   redirect("/admin/homepage");
 }
@@ -663,6 +816,7 @@ const pageHeroSchema = z.object({
   title: z.string().optional(),
   intro: z.string().optional(),
   background_image: z.string().url().optional().or(z.literal("")),
+  content: z.record(z.string(), z.any()).optional(),
   status: z.enum(["draft", "published", "archived"]).default("published"),
 });
 
@@ -672,13 +826,36 @@ export async function upsertPageHero(formData: FormData) {
   if (!user) redirect("/auth/login");
 
   const supabase = await getAdminSupabase();
+  const backgroundImage =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "background_image_file",
+      `media/page_heroes/${String(formData.get("page_slug") || "page").replace(/[^a-zA-Z0-9-]/g, "_")}`,
+    )) ||
+    formData.get("background_image") ||
+    undefined;
 
   const parsed = pageHeroSchema.safeParse({
     page_slug: formData.get("page_slug"),
     eyebrow: formData.get("eyebrow") || undefined,
     title: formData.get("title") || undefined,
     intro: formData.get("intro") || undefined,
-    background_image: formData.get("background_image") || undefined,
+    background_image: backgroundImage,
+    content: Object.fromEntries(
+      [
+        "why_jackfruit_title",
+        "why_jackfruit_body",
+        "where_operates_title",
+        "where_operates_body",
+        "guiding_style_title",
+        "guiding_style_body",
+        "services_title",
+        "services_intro",
+      ]
+        .map((key) => [key, formData.get(key)])
+        .filter(([, value]) => typeof value === "string" && value.trim()),
+    ),
     status: formData.get("status") || "published",
   });
 

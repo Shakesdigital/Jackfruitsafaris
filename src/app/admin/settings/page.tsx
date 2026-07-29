@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { upsertSiteSettings } from "@/lib/server/cms-actions";
+import {
+  ImageUploadField,
+  KeyValueEditor,
+} from "@/app/admin/_components/cms-form-controls";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +27,7 @@ export default async function SettingsPage() {
       <form
         action={upsertSiteSettings}
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
+        encType="multipart/form-data"
       >
         <input type="hidden" name="id" value={settings?.id} />
 
@@ -165,6 +170,13 @@ export default async function SettingsPage() {
                 className="mt-1 block w-full rounded-md border-gray-300"
               />
             </label>
+
+            <ImageUploadField
+              name="hero_image"
+              fileName="hero_image_file"
+              label="Homepage Hero Image"
+              currentUrl={settings?.hero_image}
+            />
           </div>
         </div>
 
@@ -261,39 +273,30 @@ export default async function SettingsPage() {
         <div className="border-b pb-6">
           <h2 className="mb-4 text-lg font-medium">Branding</h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block">
-              <span className="text-sm font-medium text-gray-700">Logo URL</span>
-              <input
-                type="url"
-                name="logo_url"
-                defaultValue={settings?.logo_url}
-                placeholder="https://..."
-                className="mt-1 block w-full rounded-md border-gray-300"
-              />
-            </label>
+            <ImageUploadField
+              name="logo_url"
+              fileName="logo_file"
+              label="Logo"
+              currentUrl={settings?.logo_url}
+            />
 
-            <label className="block">
-              <span className="text-sm font-medium text-gray-700">Favicon URL</span>
-              <input
-                type="url"
-                name="favicon_url"
-                defaultValue={settings?.favicon_url}
-                placeholder="https://..."
-                className="mt-1 block w-full rounded-md border-gray-300"
-              />
-            </label>
+            <ImageUploadField
+              name="favicon_url"
+              fileName="favicon_file"
+              label="Favicon"
+              currentUrl={settings?.favicon_url}
+            />
           </div>
         </div>
 
         <div className="border-b pb-6">
           <h2 className="mb-4 text-lg font-medium">Social Links</h2>
-          <p className="mb-4 text-sm text-gray-500">Enter as JSON key-value pairs</p>
-          <textarea
+          <KeyValueEditor
             name="social_links"
-            defaultValue={JSON.stringify(settings?.social_links || {}, null, 2)}
-            rows={4}
-            placeholder='{"facebook": "https://...", "instagram": "https://...", "tripadvisor": "https://..."}'
-            className="block w-full rounded-md border-gray-300 font-mono text-sm"
+            label="Social Links"
+            value={settings?.social_links}
+            keyPlaceholder="facebook"
+            valuePlaceholder="https://..."
           />
         </div>
 
@@ -310,12 +313,12 @@ export default async function SettingsPage() {
 
         <div className="border-b pb-6">
           <h2 className="mb-4 text-lg font-medium">SEO Defaults</h2>
-          <textarea
+          <KeyValueEditor
             name="seo"
-            defaultValue={JSON.stringify(settings?.seo || {}, null, 2)}
-            rows={4}
-            placeholder='{"title": "...", "description": "...", "keywords": "..."}'
-            className="block w-full rounded-md border-gray-300 font-mono text-sm"
+            label="SEO Defaults"
+            value={settings?.seo}
+            keyPlaceholder="title"
+            valuePlaceholder="Default SEO value"
           />
         </div>
 
