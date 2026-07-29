@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAdminSafariById } from "@/lib/cms-data";
+import { getAdminSafariByIdResult } from "@/lib/cms-data";
 import { uploadMedia } from "@/lib/server/cms-actions";
+import { DeleteButton } from "@/app/admin/_components/delete-button";
+import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -17,7 +19,20 @@ export const metadata: Metadata = {
 export default async function SafariEditPage({ params }: Props) {
   const { id } = await params;
   // Fetch data with admin client (bypasses RLS)
-  const safari = await getAdminSafariById(id);
+  const safariResult = await getAdminSafariByIdResult(id);
+  const safari = safariResult.data;
+
+  if (safariResult.error) {
+    return (
+      <AdminLoadError
+        title="Safari package could not be loaded"
+        message={safariResult.error}
+        code={safariResult.code}
+        backHref="/admin/safaris"
+        backLabel="Back to safari packages"
+      />
+    );
+  }
 
   if (!safari && id !== "new") {
     notFound();
@@ -32,24 +47,21 @@ export default async function SafariEditPage({ params }: Props) {
           {isNew ? "New Safari Package" : "Edit Safari Package"}
         </h1>
         {!isNew && (
-          <button
+          <DeleteButton
             form="safari-form"
             formAction={`/admin/safaris/actions`}
-            name="delete"
-            value={safari?.id}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-            onClick={(e) => {
-              if (!confirm("Delete this safari package?")) e.preventDefault();
-            }}
+            value={safari?.id ?? ""}
+            confirmMessage="Delete this safari package?"
           >
             Delete
-          </button>
+          </DeleteButton>
         )}
       </div>
 
       <form
         id="safari-form"
         action="/admin/safaris/actions"
+        method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
         encType="multipart/form-data"
       >

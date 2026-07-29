@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAdminReviewById } from "@/lib/cms-data";
+import { getAdminReviewByIdResult } from "@/lib/cms-data";
+import { DeleteButton } from "@/app/admin/_components/delete-button";
+import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -16,7 +18,20 @@ export const metadata: Metadata = {
 export default async function ReviewEditPage({ params }: Props) {
   const { id } = await params;
   // Fetch data with admin client (bypasses RLS)
-  const review = await getAdminReviewById(id);
+  const reviewResult = await getAdminReviewByIdResult(id);
+  const review = reviewResult.data;
+
+  if (reviewResult.error) {
+    return (
+      <AdminLoadError
+        title="Review could not be loaded"
+        message={reviewResult.error}
+        code={reviewResult.code}
+        backHref="/admin/reviews"
+        backLabel="Back to reviews"
+      />
+    );
+  }
 
   if (!review && id !== "new") {
     notFound();
@@ -31,24 +46,21 @@ export default async function ReviewEditPage({ params }: Props) {
           {isNew ? "New Review" : "Edit Review"}
         </h1>
         {!isNew && (
-          <button
+          <DeleteButton
             form="review-form"
             formAction={`/admin/reviews/actions`}
-            name="delete"
-            value={review?.id}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-            onClick={(e) => {
-              if (!confirm("Delete this review?")) e.preventDefault();
-            }}
+            value={review?.id ?? ""}
+            confirmMessage="Delete this review?"
           >
             Delete
-          </button>
+          </DeleteButton>
         )}
       </div>
 
       <form
         id="review-form"
         action="/admin/reviews/actions"
+        method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={review?.id} />

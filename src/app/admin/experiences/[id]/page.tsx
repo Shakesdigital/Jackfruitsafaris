@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAdminExperienceById } from "@/lib/cms-data";
+import { getAdminExperienceByIdResult } from "@/lib/cms-data";
+import { DeleteButton } from "@/app/admin/_components/delete-button";
+import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -16,7 +18,20 @@ export const metadata: Metadata = {
 export default async function ExperienceEditPage({ params }: Props) {
   const { id } = await params;
   // Fetch data with admin client (bypasses RLS)
-  const experience = await getAdminExperienceById(id);
+  const experienceResult = await getAdminExperienceByIdResult(id);
+  const experience = experienceResult.data;
+
+  if (experienceResult.error) {
+    return (
+      <AdminLoadError
+        title="Experience could not be loaded"
+        message={experienceResult.error}
+        code={experienceResult.code}
+        backHref="/admin/experiences"
+        backLabel="Back to experiences"
+      />
+    );
+  }
 
   if (!experience && id !== "new") {
     notFound();
@@ -31,24 +46,21 @@ export default async function ExperienceEditPage({ params }: Props) {
           {isNew ? "New Experience" : "Edit Experience"}
         </h1>
         {!isNew && (
-          <button
+          <DeleteButton
             form="experience-form"
             formAction={`/admin/experiences/actions`}
-            name="delete"
-            value={experience?.id}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-            onClick={(e) => {
-              if (!confirm("Delete this experience?")) e.preventDefault();
-            }}
+            value={experience?.id ?? ""}
+            confirmMessage="Delete this experience?"
           >
             Delete
-          </button>
+          </DeleteButton>
         )}
       </div>
 
       <form
         id="experience-form"
         action="/admin/experiences/actions"
+        method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={experience?.id} />

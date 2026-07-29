@@ -39,12 +39,22 @@ insert into public.page_heroes (page_slug, eyebrow, title, intro, background_ima
 
 ('/travel-guide', 'Uganda safari travel guide', 'Practical articles that answer booking questions',
  'These are ready as CMS article topics for SEO, buyer education, and AI-search visibility.',
- NULL, 'published');
+ NULL, 'published')
+on conflict (page_slug) do update
+set eyebrow = excluded.eyebrow,
+    title = excluded.title,
+    intro = excluded.intro,
+    background_image = excluded.background_image,
+    status = excluded.status,
+    updated_at = now();
 
 -- Enable RLS
 alter table public.page_heroes enable row level security;
 
 -- Public read policy
+drop policy if exists "public read published page heroes" on public.page_heroes;
+drop policy if exists "content team manage page heroes" on public.page_heroes;
+
 create policy "public read published page heroes" on public.page_heroes
   for select using (status = 'published');
 
@@ -53,4 +63,4 @@ create policy "content team manage page heroes" on public.page_heroes
   for all using (public.can_manage_content()) with check (public.can_manage_content());
 
 -- Index
-create index page_heroes_slug_idx on public.page_heroes(page_slug);
+create index if not exists page_heroes_slug_idx on public.page_heroes(page_slug);

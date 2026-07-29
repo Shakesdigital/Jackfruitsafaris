@@ -1,6 +1,67 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
+type AdminRecord = Record<string, any>;
+
+export type AdminRecordResult<T extends AdminRecord = AdminRecord> = {
+  data: T | null;
+  error: string | null;
+  code?: string;
+};
+
+function describeAdminFetchError(error: unknown) {
+  if (!error) return null;
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  if (typeof error === "object" && "message" in error) {
+    return String((error as { message?: unknown }).message);
+  }
+  return "The CMS could not load this record from Supabase.";
+}
+
+function getAdminFetchCode(error: unknown) {
+  if (typeof error === "object" && error && "code" in error) {
+    return String((error as { code?: unknown }).code);
+  }
+  return undefined;
+}
+
+async function getAdminRecordById(
+  table: string,
+  id: string,
+): Promise<AdminRecordResult> {
+  if (id === "new") {
+    return { data: null, error: null };
+  }
+
+  try {
+    const supabase = await createAdminClient();
+    const { data, error } = await supabase
+      .from(table)
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`Admin CMS fetch error on ${table}`, error);
+      return {
+        data: null,
+        error: describeAdminFetchError(error),
+        code: getAdminFetchCode(error),
+      };
+    }
+
+    return { data: (data as AdminRecord | null) ?? null, error: null };
+  } catch (error) {
+    console.error(`Admin CMS fetch exception on ${table}`, error);
+    return {
+      data: null,
+      error: describeAdminFetchError(error),
+      code: getAdminFetchCode(error),
+    };
+  }
+}
+
 // Helper for generateStaticParams - does NOT use cookies (build-time safe)
 function createAnonClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL;
@@ -140,13 +201,12 @@ export async function getAdminSafaris() {
 }
 
 export async function getAdminSafariById(id: string) {
-  const supabase = await createAdminClient();
-  const { data } = await supabase
-    .from("safari_packages")
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data;
+  const result = await getAdminSafariByIdResult(id);
+  return result.data;
+}
+
+export async function getAdminSafariByIdResult(id: string) {
+  return getAdminRecordById("safari_packages", id);
 }
 
 export async function getAdminDestinations() {
@@ -159,13 +219,12 @@ export async function getAdminDestinations() {
 }
 
 export async function getAdminDestinationById(id: string) {
-  const supabase = await createAdminClient();
-  const { data } = await supabase
-    .from("destinations")
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data;
+  const result = await getAdminDestinationByIdResult(id);
+  return result.data;
+}
+
+export async function getAdminDestinationByIdResult(id: string) {
+  return getAdminRecordById("destinations", id);
 }
 
 export async function getAdminExperiences() {
@@ -178,13 +237,12 @@ export async function getAdminExperiences() {
 }
 
 export async function getAdminExperienceById(id: string) {
-  const supabase = await createAdminClient();
-  const { data } = await supabase
-    .from("experiences")
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data;
+  const result = await getAdminExperienceByIdResult(id);
+  return result.data;
+}
+
+export async function getAdminExperienceByIdResult(id: string) {
+  return getAdminRecordById("experiences", id);
 }
 
 export async function getAdminReviews() {
@@ -197,13 +255,12 @@ export async function getAdminReviews() {
 }
 
 export async function getAdminReviewById(id: string) {
-  const supabase = await createAdminClient();
-  const { data } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data;
+  const result = await getAdminReviewByIdResult(id);
+  return result.data;
+}
+
+export async function getAdminReviewByIdResult(id: string) {
+  return getAdminRecordById("reviews", id);
 }
 
 export async function getAdminPages() {
@@ -216,13 +273,12 @@ export async function getAdminPages() {
 }
 
 export async function getAdminPageById(id: string) {
-  const supabase = await createAdminClient();
-  const { data } = await supabase
-    .from("pages")
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data;
+  const result = await getAdminPageByIdResult(id);
+  return result.data;
+}
+
+export async function getAdminPageByIdResult(id: string) {
+  return getAdminRecordById("pages", id);
 }
 
 export async function getAdminLeads() {

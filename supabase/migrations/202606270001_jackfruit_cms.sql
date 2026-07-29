@@ -1,10 +1,25 @@
 create extension if not exists "pgcrypto";
 
-create type if not exists public.content_status as enum ('draft', 'published', 'archived');
-create type if not exists public.lead_status as enum ('new', 'contacted', 'quoted', 'follow_up', 'booked', 'lost');
-create type if not exists public.app_role as enum ('admin', 'editor', 'booking_manager', 'guide');
+-- Create types if they don't exist - remove IF NOT EXISTS for PostgreSQL compatibility
+do $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'content_status' AND typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')) THEN
+    CREATE TYPE public.content_status AS ENUM ('draft', 'published', 'archived');
+  END IF;
+END $$;
 
-create table public.profiles (
+do $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'lead_status' AND typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')) THEN
+    CREATE TYPE public.lead_status AS ENUM ('new', 'contacted', 'quoted', 'follow_up', 'booked', 'lost');
+  END IF;
+END $$;
+
+do $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'app_role' AND typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')) THEN
+    CREATE TYPE public.app_role AS ENUM ('admin', 'editor', 'booking_manager', 'guide');
+  END IF;
+END $$;
+
+create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text,
   avatar_url text,
@@ -12,7 +27,14 @@ create table public.profiles (
   updated_at timestamptz not null default now()
 );
 
-create table public.user_roles (
+-- Supabase starter projects often already have a profiles table. Reconcile the
+-- CMS-owned columns without deleting or replacing existing profile data.
+alter table public.profiles add column if not exists full_name text;
+alter table public.profiles add column if not exists avatar_url text;
+alter table public.profiles add column if not exists created_at timestamptz not null default now();
+alter table public.profiles add column if not exists updated_at timestamptz not null default now();
+
+create table if not exists public.user_roles (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   role public.app_role not null,
@@ -47,7 +69,7 @@ as $$
     or public.has_role('booking_manager');
 $$;
 
-create table public.site_settings (
+create table if not exists public.site_settings (
   id uuid primary key default gen_random_uuid(),
   business_name text not null default 'Jackfruit Safaris Uganda',
   logo_url text,
@@ -67,7 +89,7 @@ create table public.site_settings (
   updated_at timestamptz not null default now()
 );
 
-create table public.menus (
+create table if not exists public.menus (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
   location text not null,
@@ -76,7 +98,7 @@ create table public.menus (
   updated_at timestamptz not null default now()
 );
 
-create table public.menu_items (
+create table if not exists public.menu_items (
   id uuid primary key default gen_random_uuid(),
   menu_id uuid not null references public.menus(id) on delete cascade,
   parent_id uuid references public.menu_items(id) on delete cascade,
@@ -87,7 +109,7 @@ create table public.menu_items (
   updated_at timestamptz not null default now()
 );
 
-create table public.pages (
+create table if not exists public.pages (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -104,7 +126,7 @@ create table public.pages (
   updated_at timestamptz not null default now()
 );
 
-create table public.modules (
+create table if not exists public.modules (
   id uuid primary key default gen_random_uuid(),
   module_type text not null,
   title text,
@@ -114,7 +136,7 @@ create table public.modules (
   updated_at timestamptz not null default now()
 );
 
-create table public.modulables (
+create table if not exists public.modulables (
   id uuid primary key default gen_random_uuid(),
   module_id uuid not null references public.modules(id) on delete cascade,
   owner_table text not null,
@@ -123,7 +145,7 @@ create table public.modulables (
   created_at timestamptz not null default now()
 );
 
-create table public.destinations (
+create table if not exists public.destinations (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   name text not null,
@@ -146,7 +168,7 @@ create table public.destinations (
   updated_at timestamptz not null default now()
 );
 
-create table public.experiences (
+create table if not exists public.experiences (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   name text not null,
@@ -174,7 +196,7 @@ create table public.experiences (
   updated_at timestamptz not null default now()
 );
 
-create table public.safari_packages (
+create table if not exists public.safari_packages (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -210,7 +232,7 @@ create table public.safari_packages (
   updated_at timestamptz not null default now()
 );
 
-create table public.transfer_services (
+create table if not exists public.transfer_services (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   route text not null,
@@ -227,7 +249,7 @@ create table public.transfer_services (
   updated_at timestamptz not null default now()
 );
 
-create table public.accommodations (
+create table if not exists public.accommodations (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   name text not null,
@@ -242,7 +264,7 @@ create table public.accommodations (
   updated_at timestamptz not null default now()
 );
 
-create table public.reviews (
+create table if not exists public.reviews (
   id uuid primary key default gen_random_uuid(),
   guest_name text not null,
   country text,
@@ -258,7 +280,7 @@ create table public.reviews (
   updated_at timestamptz not null default now()
 );
 
-create table public.gallery_media (
+create table if not exists public.gallery_media (
   id uuid primary key default gen_random_uuid(),
   media_url text not null,
   media_type text not null default 'image',
@@ -274,7 +296,7 @@ create table public.gallery_media (
   updated_at timestamptz not null default now()
 );
 
-create table public.faqs (
+create table if not exists public.faqs (
   id uuid primary key default gen_random_uuid(),
   question text not null,
   answer text not null,
@@ -287,7 +309,7 @@ create table public.faqs (
   updated_at timestamptz not null default now()
 );
 
-create table public.travel_guide_articles (
+create table if not exists public.travel_guide_articles (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   title text not null,
@@ -305,7 +327,7 @@ create table public.travel_guide_articles (
   updated_at timestamptz not null default now()
 );
 
-create table public.partners (
+create table if not exists public.partners (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   logo_url text,
@@ -318,7 +340,7 @@ create table public.partners (
   updated_at timestamptz not null default now()
 );
 
-create table public.inquiry_leads (
+create table if not exists public.inquiry_leads (
   id uuid primary key default gen_random_uuid(),
   first_name text not null,
   email text not null,
@@ -337,7 +359,7 @@ create table public.inquiry_leads (
   updated_at timestamptz not null default now()
 );
 
-create table public.redirects (
+create table if not exists public.redirects (
   id uuid primary key default gen_random_uuid(),
   source_path text not null unique,
   destination_path text not null,
@@ -367,6 +389,61 @@ alter table public.travel_guide_articles enable row level security;
 alter table public.partners enable row level security;
 alter table public.inquiry_leads enable row level security;
 alter table public.redirects enable row level security;
+
+-- PostgreSQL has no CREATE POLICY IF NOT EXISTS. Remove only policies owned by
+-- this migration so rerunning it refreshes their definitions without failing.
+do $$
+declare
+  existing_policy record;
+begin
+  for existing_policy in
+    select schemaname, tablename, policyname
+    from pg_policies
+    where schemaname = 'public'
+      and policyname::text = any (array[
+        'public read published pages',
+        'public read published destinations',
+        'public read published experiences',
+        'public read published safari packages',
+        'public read published transfer services',
+        'public read published accommodations',
+        'public read published reviews',
+        'public read published media',
+        'public read published faqs',
+        'public read published guides',
+        'public read published partners',
+        'public read active redirects',
+        'public create inquiry leads',
+        'admins manage profiles',
+        'admins manage roles',
+        'content team manage settings',
+        'content team manage menus',
+        'content team manage menu items',
+        'content team manage pages',
+        'content team manage modules',
+        'content team manage modulables',
+        'content team manage destinations',
+        'content team manage experiences',
+        'content team manage safari packages',
+        'content team manage transfer services',
+        'content team manage accommodations',
+        'content team manage reviews',
+        'content team manage media',
+        'content team manage faqs',
+        'content team manage guides',
+        'content team manage partners',
+        'booking team manage inquiry leads',
+        'content team manage redirects'
+      ])
+  loop
+    execute format(
+      'drop policy if exists %I on %I.%I',
+      existing_policy.policyname,
+      existing_policy.schemaname,
+      existing_policy.tablename
+    );
+  end loop;
+end $$;
 
 create policy "public read published pages" on public.pages
 for select using (status = 'published');
@@ -437,11 +514,11 @@ for all using (public.can_manage_content()) with check (public.can_manage_conten
 create policy "content team manage redirects" on public.redirects
 for all using (public.can_manage_content()) with check (public.can_manage_content());
 
-create index pages_status_slug_idx on public.pages(status, slug);
-create index safari_packages_status_slug_idx on public.safari_packages(status, slug);
-create index destinations_status_slug_idx on public.destinations(status, slug);
-create index experiences_status_slug_idx on public.experiences(status, slug);
-create index inquiry_leads_status_created_idx on public.inquiry_leads(status, created_at desc);
+create index if not exists pages_status_slug_idx on public.pages(status, slug);
+create index if not exists safari_packages_status_slug_idx on public.safari_packages(status, slug);
+create index if not exists destinations_status_slug_idx on public.destinations(status, slug);
+create index if not exists experiences_status_slug_idx on public.experiences(status, slug);
+create index if not exists inquiry_leads_status_created_idx on public.inquiry_leads(status, created_at desc);
 
 insert into public.redirects (source_path, destination_path) values
   ('/tours-in-uganda', '/about'),
@@ -453,4 +530,6 @@ insert into public.redirects (source_path, destination_path) values
   ('/airport-pickups', '/transport/airport-transfers'),
   ('/cultural-experiences', '/experiences/cultural-experiences'),
   ('/jackfruit-safaris', '/contact'),
-  ('/uganda-safari-tour-experience', '/safaris/custom-uganda-safari');
+  ('/uganda-safari-tour-experience', '/safaris/custom-uganda-safari')
+on conflict (source_path) do update
+set destination_path = excluded.destination_path;

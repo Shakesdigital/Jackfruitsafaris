@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAdminDestinationById } from "@/lib/cms-data";
+import { getAdminDestinationByIdResult } from "@/lib/cms-data";
+import { DeleteButton } from "@/app/admin/_components/delete-button";
+import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -15,7 +17,20 @@ export const metadata: Metadata = {
 
 export default async function DestinationEditPage({ params }: Props) {
   const { id } = await params;
-  const destination = await getAdminDestinationById(id);
+  const destinationResult = await getAdminDestinationByIdResult(id);
+  const destination = destinationResult.data;
+
+  if (destinationResult.error) {
+    return (
+      <AdminLoadError
+        title="Destination could not be loaded"
+        message={destinationResult.error}
+        code={destinationResult.code}
+        backHref="/admin/destinations"
+        backLabel="Back to destinations"
+      />
+    );
+  }
 
   if (!destination && id !== "new") {
     notFound();
@@ -30,24 +45,21 @@ export default async function DestinationEditPage({ params }: Props) {
           {isNew ? "New Destination" : "Edit Destination"}
         </h1>
         {!isNew && (
-          <button
+          <DeleteButton
             form="destination-form"
             formAction={`/admin/destinations/actions`}
-            name="delete"
-            value={destination?.id}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-            onClick={(e) => {
-              if (!confirm("Delete this destination?")) e.preventDefault();
-            }}
+            value={destination?.id ?? ""}
+            confirmMessage="Delete this destination?"
           >
             Delete
-          </button>
+          </DeleteButton>
         )}
       </div>
 
       <form
         id="destination-form"
         action="/admin/destinations/actions"
+        method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={destination?.id} />

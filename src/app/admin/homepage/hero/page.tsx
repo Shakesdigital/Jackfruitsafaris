@@ -20,6 +20,7 @@ export default async function HeroEditPage() {
 
       <form
         action="/admin/homepage/hero/actions/upsert"
+        method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={hero?.id} />

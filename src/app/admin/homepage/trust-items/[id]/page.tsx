@@ -33,6 +33,7 @@ export default async function TrustItemEditPage({ params }: Props) {
 
       <form
         action="/admin/homepage/trust-items/actions/upsert"
+        method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={item?.id} />

@@ -1,6 +1,29 @@
 -- Seed all hardcoded frontend content into CMS tables
 -- This migration adds page heroes and homepage content
--- Safe to run multiple times - uses INSERT ... ON CONFLICT DO NOTHING
+-- Safe to run multiple times with guarded seed inserts and upserts.
+
+-- Reconcile frontend-facing columns that may not exist if this seed is run
+-- directly in Supabase or after a partially completed migration sequence.
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS hero_title text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS hero_subtitle text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS badge_text text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS cta_primary text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS cta_secondary text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS why_uganda_eyebrow text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS why_uganda_title text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS why_uganda_intro text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS why_uganda_paragraph text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS cta_eyebrow text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS cta_title text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS cta_intro text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS cta_button text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS footer_tagline text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS footer_note text;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS nav_items jsonb;
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS hero_image text;
+ALTER TABLE public.safari_packages ADD COLUMN IF NOT EXISTS featured_image_url text;
+ALTER TABLE public.experiences ADD COLUMN IF NOT EXISTS featured_image_url text;
+ALTER TABLE public.destinations ADD COLUMN IF NOT EXISTS featured_image_url text;
 
 -- Update site_settings with homepage fields (already exists, updating)
 UPDATE public.site_settings SET
@@ -45,7 +68,15 @@ ON CONFLICT (page_slug) DO UPDATE SET
   intro = EXCLUDED.intro;
 
 -- Seed homepage sections
-INSERT INTO public.homepage_sections (section_type, title, subtitle, content, order_index, status) VALUES
+INSERT INTO public.homepage_sections (section_type, title, subtitle, content, order_index, status)
+SELECT
+  seed.section_type,
+  seed.title,
+  seed.subtitle,
+  seed.content,
+  seed.order_index,
+  seed.status::public.content_status
+FROM (VALUES
   ('hero', 'Explore Uganda With Local Safari Experts', 'Local safari experts from Jinja',
    jsonb_build_object(
      'subtitle', 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.',
@@ -64,35 +95,78 @@ INSERT INTO public.homepage_sections (section_type, title, subtitle, content, or
      'box_title', 'Tell us your dates, group size, budget, and dream experiences.',
      'button_label', 'Request a Custom Quote'
    ), 8, 'published')
-ON CONFLICT DO NOTHING;
+) AS seed(section_type, title, subtitle, content, order_index, status)
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.homepage_sections existing
+  WHERE existing.section_type = seed.section_type
+);
 
 -- Seed trust items
-INSERT INTO public.homepage_trust_items (text, order_index, status) VALUES
+INSERT INTO public.homepage_trust_items (text, order_index, status)
+SELECT
+  seed.text,
+  seed.order_index,
+  seed.status::public.content_status
+FROM (VALUES
   ('2024 Tripadvisor Travelers'' Choice Award', 1, 'published'),
   ('Registered tour company based in Jinja, Uganda', 2, 'published'),
   ('Private and custom safari planning', 3, 'published'),
   ('WhatsApp support before and during your trip', 4, 'published')
-ON CONFLICT DO NOTHING;
+) AS seed(text, order_index, status)
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.homepage_trust_items existing
+  WHERE existing.text = seed.text
+);
 
 -- Seed quick links
-INSERT INTO public.homepage_quick_links (label, href, order_index, status) VALUES
+INSERT INTO public.homepage_quick_links (label, href, order_index, status)
+SELECT
+  seed.label,
+  seed.href,
+  seed.order_index,
+  seed.status::public.content_status
+FROM (VALUES
   ('Gorilla Trekking', '/experiences/gorilla-trekking', 1, 'published'),
   ('Murchison Falls', '/safaris/3-days-murchison-falls', 2, 'published'),
   ('10 Days Uganda', '/safaris/10-days-uganda-safari', 3, 'published'),
   ('Jinja Activities', '/experiences/jinja-adventures', 4, 'published'),
   ('Airport Transfer', '/transport/airport-transfers', 5, 'published')
-ON CONFLICT DO NOTHING;
+) AS seed(label, href, order_index, status)
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.homepage_quick_links existing
+  WHERE existing.label = seed.label
+    AND existing.href = seed.href
+);
 
 -- Seed features (Why Uganda section)
-INSERT INTO public.homepage_features (icon_name, text, order_index, status) VALUES
+INSERT INTO public.homepage_features (icon_name, text, order_index, status)
+SELECT
+  seed.icon_name,
+  seed.text,
+  seed.order_index,
+  seed.status::public.content_status
+FROM (VALUES
   ('check', 'Private, flexible trips', 1, 'published'),
   ('check', 'Clear package inclusions', 2, 'published'),
   ('check', 'Permit and lodge guidance', 3, 'published'),
   ('check', 'Warm care from arrival to departure', 4, 'published')
-ON CONFLICT DO NOTHING;
+) AS seed(icon_name, text, order_index, status)
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.homepage_features existing
+  WHERE existing.text = seed.text
+);
 
 -- Seed guide articles
-INSERT INTO public.homepage_guide_articles (title, order_index, status) VALUES
+INSERT INTO public.homepage_guide_articles (title, order_index, status)
+SELECT
+  seed.title,
+  seed.order_index,
+  seed.status::public.content_status
+FROM (VALUES
   ('Best Time to Visit Uganda for Safari and Gorilla Trekking', 1, 'published'),
   ('Gorilla Trekking Permit Guide', 2, 'published'),
   ('What to Pack for a Uganda Safari', 3, 'published'),
@@ -103,7 +177,12 @@ INSERT INTO public.homepage_guide_articles (title, order_index, status) VALUES
   ('Entebbe to Jinja Travel Guide', 8, 'published'),
   ('Family Safari in Uganda', 9, 'published'),
   ('Is Uganda Safe for Safari Travelers?', 10, 'published')
-ON CONFLICT DO NOTHING;
+) AS seed(title, order_index, status)
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.homepage_guide_articles existing
+  WHERE existing.title = seed.title
+);
 
 -- Ensure safari_packages have featured_image_url populated (they already exist, just update if null)
 UPDATE public.safari_packages SET

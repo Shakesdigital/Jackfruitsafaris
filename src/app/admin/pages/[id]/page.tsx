@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAdminPageById } from "@/lib/cms-data";
+import { getAdminPageByIdResult } from "@/lib/cms-data";
+import { DeleteButton } from "@/app/admin/_components/delete-button";
+import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -16,9 +18,22 @@ export const metadata: Metadata = {
 export default async function PageEditPage({ params }: Props) {
   const { id } = await params;
   // Fetch data with admin client (bypasses RLS)
-  const page = await getAdminPageById(id);
+  const pageResult = await getAdminPageByIdResult(id);
+  const page = pageResult.data;
 
   const isNew = id === "new";
+
+  if (pageResult.error) {
+    return (
+      <AdminLoadError
+        title="Page could not be loaded"
+        message={pageResult.error}
+        code={pageResult.code}
+        backHref="/admin/pages"
+        backLabel="Back to pages"
+      />
+    );
+  }
 
   if (!page && !isNew) {
     notFound();
@@ -31,24 +46,21 @@ export default async function PageEditPage({ params }: Props) {
           {isNew ? "New Page" : "Edit Page"}
         </h1>
         {!isNew && (
-          <button
+          <DeleteButton
             form="page-form"
             formAction={`/admin/pages/actions`}
-            name="delete"
-            value={page?.id}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-            onClick={(e) => {
-              if (!confirm("Delete this page?")) e.preventDefault();
-            }}
+            value={page?.id ?? ""}
+            confirmMessage="Delete this page?"
           >
             Delete
-          </button>
+          </DeleteButton>
         )}
       </div>
 
       <form
         id="page-form"
         action="/admin/pages/actions"
+        method="post"
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
       >
         <input type="hidden" name="id" value={page?.id} />

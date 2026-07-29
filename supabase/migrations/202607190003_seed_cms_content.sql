@@ -8,7 +8,9 @@ insert into public.site_settings (
   operating_hours,
   social_links,
   footer_copy
-) values (
+)
+select *
+from (values (
   'Jackfruit Safaris Uganda',
   'jackfruitsafarisuganda@gmail.com',
   '+256 772 550 268',
@@ -17,7 +19,20 @@ insert into public.site_settings (
   '9 AM - 5 PM, with WhatsApp support for travel inquiries',
   '{"tripadvisor": "https://tripadvisor.com", "facebook": "https://facebook.com"}'::jsonb,
   '© 2024 Jackfruit Safaris Uganda. All rights reserved.'
-) on conflict (id) do nothing;
+)) as seed(
+  business_name,
+  contact_email,
+  phone,
+  alternate_phone,
+  address,
+  operating_hours,
+  social_links,
+  footer_copy
+)
+where not exists (
+  select 1
+  from public.site_settings
+);
 
 -- Seed destinations (safe to run multiple times)
 insert into public.destinations (
@@ -158,7 +173,8 @@ insert into public.safari_packages (
   {"question": "Can I add Jinja before or after?", "answer": "Yes. Jinja pairs well with arrival or departure days if you want Nile activities or a relaxed extension."}
  ]'::jsonb, 'published', 2,
  '3 Days Murchison Falls Safari | Ziwa Rhinos, Game Drives and Nile Cruise',
- 'Book a private 3-day Murchison Falls safari with Jackfruit Safaris, including Ziwa rhino tracking, game drives, Nile boat cruise, and local guide support.'),
+ 'Book a private 3-day Murchison Falls safari with Jackfruit Safaris, including Ziwa rhino tracking, game drives, Nile boat cruise, and local guide support.',
+ 'Park fees, activity rates, and lodge availability must be verified before final quotation.'),
 ('10-days-uganda-safari', '10 Days Uganda Safari', '10 days',
  'Entebbe - Lake Mburo - Kibale - Queen Elizabeth - Ishasha - Bwindi - Lake Bunyonyi - Entebbe', 'Starts and ends in Entebbe', 'Entebbe',
  'Jackfruit Safaris'' complete Uganda circuit, combining savannah wildlife, chimpanzees, gorillas, boat cruises, crater landscapes, and lakeside rest.',
@@ -188,7 +204,8 @@ insert into public.safari_packages (
   {"question": "Can it be luxury?", "answer": "Yes. Lodge upgrades and domestic flight segments can make the journey more comfortable."}
  ]'::jsonb, 'published', 3,
  '10 Days Uganda Safari | Gorillas, Chimps, Queen Elizabeth and Lake Mburo',
- 'Explore Uganda on a private 10-day safari circuit with Jackfruit Safaris, including Lake Mburo, Kibale chimps, Queen Elizabeth, Bwindi gorillas, and Lake Bunyonyi.'),
+ 'Explore Uganda on a private 10-day safari circuit with Jackfruit Safaris, including Lake Mburo, Kibale chimps, Queen Elizabeth, Bwindi gorillas, and Lake Bunyonyi.',
+ 'Gorilla permits, chimpanzee permits, park fees, and lodge availability must be verified before final quotation.'),
 ('custom-uganda-safari', 'Custom Uganda Safari Planning', 'Custom',
  'Built around your dates, pace, interests, and budget', 'Flexible starts from Entebbe, Kampala, Jinja, or by request', 'Flexible',
  'A tailored planning service for gorilla trekking, wildlife, photography, culture, Jinja adventure, family travel, group transport, and smooth Uganda logistics.',
@@ -211,13 +228,24 @@ insert into public.safari_packages (
   {"question": "Can Jackfruit work with agents or NGOs?", "answer": "Yes. The team can support group transport, Jinja logistics, safari add-ons, and visiting teams."}
  ]'::jsonb, 'published', 4,
  'Custom Uganda Safari Planning | Jackfruit Safaris',
- 'Request a custom Uganda safari quote from Jackfruit Safaris for gorilla trekking, wildlife, Jinja adventures, family travel, transport, and group logistics.')
+ 'Request a custom Uganda safari quote from Jackfruit Safaris for gorilla trekking, wildlife, Jinja adventures, family travel, transport, and group logistics.',
+ 'Permit rates, park fees, activity rates, and lodge availability depend on the selected route and must be verified before final quotation.')
 on conflict (slug) do nothing;
 
 -- Seed testimonials as reviews (safe to run multiple times)
 insert into public.reviews (
   guest_name, country, trip_type, rating, quote, source, status, permission_status
-) values
+)
+select
+  seed.guest_name,
+  seed.country,
+  seed.trip_type,
+  seed.rating,
+  seed.quote,
+  seed.source,
+  seed.status::public.content_status,
+  seed.permission_status
+from (values
 ('Private safari guest', 'Uganda', 'Gorilla trekking', 5,
  'The team made the route feel easy, from permit planning to lodge timing and the long drives.',
  'Direct submission', 'published', 'approved'),
@@ -227,4 +255,10 @@ insert into public.reviews (
 ('Small group traveler', 'Uganda', 'Uganda circuit', 5,
  'We always knew what was included, what was optional, and what needed live confirmation.',
  'Direct submission', 'published', 'approved')
-on conflict (guest_name, trip_type) do nothing;
+) as seed(guest_name, country, trip_type, rating, quote, source, status, permission_status)
+where not exists (
+  select 1
+  from public.reviews existing
+  where existing.guest_name = seed.guest_name
+    and existing.trip_type is not distinct from seed.trip_type
+);
