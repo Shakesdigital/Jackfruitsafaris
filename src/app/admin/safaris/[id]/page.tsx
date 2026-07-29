@@ -10,17 +10,63 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+type SafariDay = {
+  day?: string;
+  title?: string;
+  body?: string;
+  meals?: string;
+};
+
+type AccommodationOption = {
+  tier?: string;
+  options?: string;
+};
+
+type SafariFaq = {
+  question?: string;
+  answer?: string;
+};
+
+type SafariRecord = {
+  id?: string;
+  slug?: string | null;
+  status?: string | null;
+  title?: string | null;
+  duration?: string | null;
+  route?: string | null;
+  price_from?: string | number | null;
+  summary?: string | null;
+  featured_image_url?: string | null;
+  itinerary?: unknown;
+  accommodation_options?: unknown;
+  highlights?: unknown;
+  included?: unknown;
+  excluded?: unknown;
+  faq?: unknown;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  permit_rate_warning?: string | null;
+};
+
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Edit Safari Package",
 };
 
+function asArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function fieldValue(value: string | number | null | undefined) {
+  return value ?? "";
+}
+
 export default async function SafariEditPage({ params }: Props) {
   const { id } = await params;
   // Fetch data with admin client (bypasses RLS)
   const safariResult = await getAdminSafariByIdResult(id);
-  const safari = safariResult.data;
+  const safari = safariResult.data as SafariRecord | null;
 
   if (safariResult.error) {
     return (
@@ -65,7 +111,7 @@ export default async function SafariEditPage({ params }: Props) {
         className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
         encType="multipart/form-data"
       >
-        <input type="hidden" name="id" value={safari?.id} />
+        <input type="hidden" name="id" value={safari?.id ?? ""} />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
@@ -73,7 +119,7 @@ export default async function SafariEditPage({ params }: Props) {
             <input
               required
               name="slug"
-              defaultValue={safari?.slug}
+              defaultValue={fieldValue(safari?.slug)}
               placeholder="3-days-gorilla-tracking"
               className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
             />
@@ -98,7 +144,7 @@ export default async function SafariEditPage({ params }: Props) {
           <input
             required
             name="title"
-            defaultValue={safari?.title}
+            defaultValue={fieldValue(safari?.title)}
             placeholder="3 Days Gorilla Tracking Safari"
             className="mt-1 block w-full rounded-md border-gray-300"
           />
@@ -109,7 +155,7 @@ export default async function SafariEditPage({ params }: Props) {
             <span className="text-sm font-medium text-gray-700">Duration</span>
             <input
               name="duration"
-              defaultValue={safari?.duration}
+              defaultValue={fieldValue(safari?.duration)}
               placeholder="3 days"
               className="mt-1 block w-full rounded-md border-gray-300"
             />
@@ -119,7 +165,7 @@ export default async function SafariEditPage({ params }: Props) {
             <span className="text-sm font-medium text-gray-700">Route</span>
             <input
               name="route"
-              defaultValue={safari?.route}
+              defaultValue={fieldValue(safari?.route)}
               placeholder="Entebbe - Bwindi - Entebbe"
               className="mt-1 block w-full rounded-md border-gray-300"
             />
@@ -130,7 +176,7 @@ export default async function SafariEditPage({ params }: Props) {
             <input
               type="number"
               name="price_from"
-              defaultValue={safari?.price_from || ""}
+              defaultValue={fieldValue(safari?.price_from)}
               placeholder="1250"
               className="mt-1 block w-full rounded-md border-gray-300"
             />
@@ -141,7 +187,7 @@ export default async function SafariEditPage({ params }: Props) {
           <span className="text-sm font-medium text-gray-700">Summary</span>
           <textarea
             name="summary"
-            defaultValue={safari?.summary}
+            defaultValue={fieldValue(safari?.summary)}
             rows={3}
             className="mt-1 block w-full rounded-md border-gray-300"
           />
@@ -152,7 +198,7 @@ export default async function SafariEditPage({ params }: Props) {
           <input
             type="url"
             name="featured_image_url"
-            defaultValue={safari?.featured_image_url}
+            defaultValue={fieldValue(safari?.featured_image_url)}
             placeholder="https://..."
             className="mt-1 block w-full rounded-md border-gray-300"
           />
@@ -192,7 +238,13 @@ export default async function SafariEditPage({ params }: Props) {
 }
 
 // Image Upload Section
-function ImageUploadSection({ safariId, safari }: { safariId: string; safari: any }) {
+function ImageUploadSection({
+  safariId,
+  safari,
+}: {
+  safariId: string;
+  safari: SafariRecord | null;
+}) {
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">Image Upload</h3>
@@ -230,13 +282,16 @@ function ImageUploadSection({ safariId, safari }: { safariId: string; safari: an
 }
 
 // Itinerary Section
-function ItinerarySection({ safari }: { safari: any }) {
-  const itinerary = safari?.itinerary || [];
+function ItinerarySection({ safari }: { safari: SafariRecord | null }) {
+  const itinerary = asArray<SafariDay>(safari?.itinerary);
+  const rows: Array<SafariDay | null> =
+    itinerary.length > 0 ? itinerary : [null, null, null];
+
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">Day-by-Day Itinerary</h3>
-      <input type="hidden" name="days_count" value={itinerary.length || 3} />
-      {(itinerary.length > 0 ? itinerary : [null, null, null]).map((day: any, i: number) => (
+      <input type="hidden" name="days_count" value={rows.length} />
+      {rows.map((day, i) => (
         <div key={i} className="mb-4 grid gap-3 rounded-md border p-3">
           <div className="grid gap-2 sm:grid-cols-3">
             <input
@@ -272,22 +327,25 @@ function ItinerarySection({ safari }: { safari: any }) {
 }
 
 // Accommodations Section
-function AccommodationsSection({ safari }: { safari: any }) {
-  const acc = safari?.accommodation_options || [];
+function AccommodationsSection({ safari }: { safari: SafariRecord | null }) {
+  const acc = asArray<AccommodationOption>(safari?.accommodation_options);
+  const rows: Array<AccommodationOption | null> =
+    acc.length > 0 ? acc : [null, null, null];
+
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">Accommodation Options</h3>
-      {acc.length > 0 ? acc : [null, null, null].map((_: any, i: number) => (
+      {rows.map((item, i) => (
         <div key={i} className="mb-3 grid gap-2 sm:grid-cols-2">
           <input
             name={`acc_${i + 1}_tier`}
-            defaultValue={acc[i]?.tier}
+            defaultValue={item?.tier}
             placeholder="Luxury / Mid-range / Budget"
             className="rounded-md border-gray-300 text-sm"
           />
           <input
             name={`acc_${i + 1}_options`}
-            defaultValue={acc[i]?.options}
+            defaultValue={item?.options}
             placeholder="Lodge options..."
             className="rounded-md border-gray-300 text-sm"
           />
@@ -298,8 +356,8 @@ function AccommodationsSection({ safari }: { safari: any }) {
 }
 
 // Highlights Section
-function HighlightsSection({ safari }: { safari: any }) {
-  const highlights = safari?.highlights || [];
+function HighlightsSection({ safari }: { safari: SafariRecord | null }) {
+  const highlights = asArray<string>(safari?.highlights);
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">Highlights</h3>
@@ -315,7 +373,10 @@ function HighlightsSection({ safari }: { safari: any }) {
 }
 
 // Included/Excluded Section
-function IncludedExcludedSection({ safari }: { safari: any }) {
+function IncludedExcludedSection({ safari }: { safari: SafariRecord | null }) {
+  const included = asArray<string>(safari?.included);
+  const excluded = asArray<string>(safari?.excluded);
+
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">Inclusions & Exclusions</h3>
@@ -324,7 +385,7 @@ function IncludedExcludedSection({ safari }: { safari: any }) {
           <span className="text-sm font-medium text-gray-700">Included (JSON array)</span>
           <textarea
             name="included"
-            defaultValue={JSON.stringify(safari?.included || [])}
+            defaultValue={JSON.stringify(included)}
             rows={4}
             className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
           />
@@ -333,7 +394,7 @@ function IncludedExcludedSection({ safari }: { safari: any }) {
           <span className="text-sm font-medium text-gray-700">Excluded (JSON array)</span>
           <textarea
             name="excluded"
-            defaultValue={JSON.stringify(safari?.excluded || [])}
+            defaultValue={JSON.stringify(excluded)}
             rows={4}
             className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
           />
@@ -344,22 +405,25 @@ function IncludedExcludedSection({ safari }: { safari: any }) {
 }
 
 // FAQs Section
-function FAQsSection({ safari }: { safari: any }) {
-  const faqs = safari?.faq || [];
+function FAQsSection({ safari }: { safari: SafariRecord | null }) {
+  const faqs = asArray<SafariFaq>(safari?.faq);
+  const rows: Array<SafariFaq | null> =
+    faqs.length > 0 ? faqs : [null, null, null];
+
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">FAQs</h3>
-      {faqs.length > 0 ? faqs : [null, null, null].map((_: any, i: number) => (
+      {rows.map((faq, i) => (
         <div key={i} className="mb-4 grid gap-2">
           <input
             name={`faq_${i + 1}_question`}
-            defaultValue={faqs[i]?.question}
+            defaultValue={faq?.question}
             placeholder="Question"
             className="rounded-md border-gray-300 text-sm"
           />
           <textarea
             name={`faq_${i + 1}_answer`}
-            defaultValue={faqs[i]?.answer}
+            defaultValue={faq?.answer}
             placeholder="Answer"
             rows={2}
             className="rounded-md border-gray-300 text-sm"
@@ -371,7 +435,7 @@ function FAQsSection({ safari }: { safari: any }) {
 }
 
 // SEO Fields
-function SEOFields({ safari }: { safari: any }) {
+function SEOFields({ safari }: { safari: SafariRecord | null }) {
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">SEO</h3>
@@ -380,7 +444,7 @@ function SEOFields({ safari }: { safari: any }) {
           <span className="text-sm font-medium text-gray-700">Meta Title</span>
           <input
             name="meta_title"
-            defaultValue={safari?.meta_title}
+            defaultValue={fieldValue(safari?.meta_title)}
             placeholder="SEO page title"
             className="mt-1 block w-full rounded-md border-gray-300"
           />
@@ -389,7 +453,7 @@ function SEOFields({ safari }: { safari: any }) {
           <span className="text-sm font-medium text-gray-700">Meta Description</span>
           <textarea
             name="meta_description"
-            defaultValue={safari?.meta_description}
+            defaultValue={fieldValue(safari?.meta_description)}
             rows={2}
             className="mt-1 block w-full rounded-md border-gray-300"
           />
@@ -398,7 +462,7 @@ function SEOFields({ safari }: { safari: any }) {
           <span className="text-sm font-medium text-gray-700">Permit Rate Warning</span>
           <input
             name="permit_rate_warning"
-            defaultValue={safari?.permit_rate_warning}
+            defaultValue={fieldValue(safari?.permit_rate_warning)}
             placeholder="Optional warning about permit rates"
             className="mt-1 block w-full rounded-md border-gray-300"
           />
