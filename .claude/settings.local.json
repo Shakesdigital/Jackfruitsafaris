@@ -7,7 +7,13 @@
       "Bash(git push *)",
       "Skill(update-config)",
       "WebFetch(domain:github.com)",
-      "Skill(gstack)"
+      "Skill(gstack)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(sed 's/.*public\\\\.//')",
+      "Bash(sed 's/\\(.*//')",
+      "Bash(sed 's/.*from\\(\"//')",
+      "Bash(sed 's/[\"\\\\\\\\\\)].*//')"
     ]
   }
 }

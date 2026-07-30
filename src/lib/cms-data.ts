@@ -124,10 +124,9 @@ export async function getPublishedReviews() {
   return data || [];
 }
 
-// Fetch the latest public-safe site settings. React cache deduplicates the
-// layout/header/footer reads within one server request without persisting stale
-// data between requests.
-export const getSiteSettings = cache(async function getSiteSettings() {
+// Fetch the latest public-safe site settings. No React cache to prevent
+// content reversion issues. Each request gets fresh data from Supabase.
+export async function getSiteSettings() {
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc("get_public_site_settings");
@@ -138,7 +137,7 @@ export const getSiteSettings = cache(async function getSiteSettings() {
   }
 
   return data && typeof data === "object" ? data : null;
-});
+}
 
 // Fetch safari by slug
 export async function getSafariBySlug(slug: string) {
