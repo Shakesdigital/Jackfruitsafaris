@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { upsertSiteSettings } from "@/lib/server/cms-actions";
 import {
+  ColorInputField,
   ImageUploadField,
   KeyValueEditor,
 } from "@/app/admin/_components/cms-form-controls";
@@ -301,43 +302,43 @@ export default async function SettingsPage() {
                 Brand Colors
               </h3>
               <div className="grid gap-4 sm:grid-cols-2">
-                <ColorField
+                <ColorInputField
                   name="brand_primary_color"
                   label="Primary Brand Color"
                   value={settings?.brand_primary_color}
                   fallback="#143c2d"
                 />
-                <ColorField
+                <ColorInputField
                   name="brand_secondary_color"
                   label="Secondary Brand Color"
                   value={settings?.brand_secondary_color}
                   fallback="#2d6f55"
                 />
-                <ColorField
+                <ColorInputField
                   name="brand_accent_color"
                   label="Accent / Highlight Color"
                   value={settings?.brand_accent_color}
                   fallback="#f5bf2f"
                 />
-                <ColorField
+                <ColorInputField
                   name="brand_background_color"
                   label="Website Background"
                   value={settings?.brand_background_color}
                   fallback="#fbfaf5"
                 />
-                <ColorField
+                <ColorInputField
                   name="brand_surface_color"
                   label="Card / Surface Color"
                   value={settings?.brand_surface_color}
                   fallback="#ffffff"
                 />
-                <ColorField
+                <ColorInputField
                   name="brand_text_color"
                   label="Main Text Color"
                   value={settings?.brand_text_color}
                   fallback="#10251b"
                 />
-                <ColorField
+                <ColorInputField
                   name="brand_muted_text_color"
                   label="Muted Text Color"
                   value={settings?.brand_muted_text_color}
@@ -591,40 +592,6 @@ export default async function SettingsPage() {
         </button>
       </form>
     </div>
-  );
-}
-
-function ColorField({
-  name,
-  label,
-  value,
-  fallback,
-}: {
-  name: string;
-  label: string;
-  value?: string | null;
-  fallback: string;
-}) {
-  const color = value || fallback;
-
-  return (
-    <label className="block">
-      <span className="text-sm font-medium text-gray-700">{label}</span>
-      <div className="mt-1 flex gap-2">
-        <input
-          type="color"
-          name={name}
-          defaultValue={color}
-          className="h-10 w-12 rounded-md border border-gray-300 bg-white p-1"
-        />
-        <input
-          name={`${name}_preview`}
-          defaultValue={color}
-          readOnly
-          className="block w-full rounded-md border-gray-300 bg-gray-50 font-mono text-sm"
-        />
-      </div>
-    </label>
   );
 }
 

@@ -27,6 +27,13 @@ type ImageUploadFieldProps = {
   currentUrl?: string | null;
 };
 
+type ColorInputFieldProps = {
+  name: string;
+  label: string;
+  value?: string | null;
+  fallback: string;
+};
+
 function coerceList(values?: string[]) {
   const rows = values?.filter((value) => value?.trim()) ?? [];
   return rows.length ? rows : [""];
@@ -164,6 +171,12 @@ export function ImageUploadField({
   label,
   currentUrl,
 }: ImageUploadFieldProps) {
+  const [manualUrl, setManualUrl] = useState(currentUrl ?? "");
+  const [previewUrl, setPreviewUrl] = useState(currentUrl ?? "");
+  const [fileStatus, setFileStatus] = useState(
+    currentUrl ? "Current image loaded from CMS." : "No image selected yet.",
+  );
+
   return (
     <div className="grid gap-3 rounded-md border border-gray-200 p-4 sm:grid-cols-[1fr_180px]">
       <label className="block">
@@ -171,7 +184,12 @@ export function ImageUploadField({
         <input
           type="url"
           name={name}
-          defaultValue={currentUrl ?? ""}
+          value={manualUrl}
+          onChange={(event) => {
+            setManualUrl(event.target.value);
+            setPreviewUrl(event.target.value);
+            setFileStatus(event.target.value ? "Previewing image URL." : "No image selected yet.");
+          }}
           placeholder="https://..."
           className="mt-1 block w-full rounded-md border-gray-300"
         />
@@ -182,12 +200,27 @@ export function ImageUploadField({
           type="file"
           name={fileName}
           accept="image/*"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (!file) {
+              setPreviewUrl(manualUrl);
+              setFileStatus(manualUrl ? "Previewing image URL." : "No image selected yet.");
+              return;
+            }
+
+            const objectUrl = URL.createObjectURL(file);
+            setPreviewUrl(objectUrl);
+            setFileStatus(`${file.name} selected and ready to upload when you save.`);
+          }}
           className="mt-1 block w-full text-sm text-gray-700"
         />
+        <span className="mt-2 block rounded-md bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">
+          {fileStatus}
+        </span>
       </label>
-      {currentUrl ? (
+      {previewUrl ? (
         <img
-          src={currentUrl}
+          src={previewUrl}
           alt=""
           className="h-32 w-full rounded-md object-cover"
         />
@@ -197,5 +230,43 @@ export function ImageUploadField({
         </div>
       )}
     </div>
+  );
+}
+
+export function ColorInputField({
+  name,
+  label,
+  value,
+  fallback,
+}: ColorInputFieldProps) {
+  const [color, setColor] = useState(value || fallback);
+
+  function updateColor(nextColor: string) {
+    setColor(nextColor);
+  }
+
+  return (
+    <label className="block">
+      <span className="text-sm font-medium text-gray-700">{label}</span>
+      <input type="hidden" name={name} value={color} />
+      <div className="mt-1 flex gap-2">
+        <input
+          type="color"
+          value={/^#([A-Fa-f0-9]{6})$/.test(color) ? color : fallback}
+          onChange={(event) => updateColor(event.target.value)}
+          className="h-10 w-12 rounded-md border border-gray-300 bg-white p-1"
+        />
+        <input
+          value={color}
+          onChange={(event) => updateColor(event.target.value)}
+          pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+          placeholder={fallback}
+          className="block w-full rounded-md border-gray-300 font-mono text-sm"
+        />
+      </div>
+      <span className="mt-1 block text-xs text-gray-500">
+        Pick a color or type a hex code, then save settings.
+      </span>
+    </label>
   );
 }

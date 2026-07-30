@@ -57,7 +57,12 @@ async function uploadImageFromForm(
 
   if (error) {
     console.error("CMS image upload error:", error);
-    return null;
+    const message = error instanceof Error
+      ? error.message
+      : typeof error === "object" && error && "message" in error
+        ? String((error as { message?: unknown }).message)
+        : "The image could not be uploaded to Supabase Storage.";
+    throw new Error(`CMS image upload failed: ${message}`);
   }
 
   const { data } = supabase.storage.from("cms-media").getPublicUrl(path);
@@ -220,10 +225,17 @@ export async function upsertSiteSettings(formData: FormData) {
 
   if (!parsed.success) return;
 
-  await supabase.from("site_settings").upsert({
+  const { error } = await supabase.from("site_settings").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
+    updated_at: new Date().toISOString(),
   });
+
+  if (error) {
+    console.error("Site settings save error:", error);
+    throw new Error(`Site settings could not be saved: ${error.message}`);
+  }
+
   redirect("/admin/settings");
 }
 
