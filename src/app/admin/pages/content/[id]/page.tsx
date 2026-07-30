@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
+import { PageContentEditor } from "@/app/admin/_components/page-content-editor";
 import { getAdminPageContentSectionByIdResult } from "@/lib/cms-data";
 
 type Props = {
@@ -62,7 +63,7 @@ export default async function PageContentSectionEdit({ params, searchParams }: P
   }
 
   const pageSlug = section?.page_slug || page || "/";
-  const contentValue = JSON.stringify(section?.content || {}, null, 2);
+  const contentValue = section?.content || {};
 
   return (
     <div className="max-w-4xl">
@@ -167,20 +168,9 @@ export default async function PageContentSectionEdit({ params, searchParams }: P
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Component Content JSON</span>
-          <textarea
-            name="content"
-            defaultValue={contentValue}
-            rows={16}
-            spellCheck={false}
-            className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
-          />
-          <span className="mt-2 block text-xs text-gray-500">
-            Store component-specific fields here, for example intros, button labels,
-            source table names, fallback cards, and layout hints.
-          </span>
-        </label>
+        <div className="border-t pt-6">
+          <PageContentEditor initialContent={contentValue} />
+        </div>
 
         <div className="flex gap-3 pt-4">
           <Link
