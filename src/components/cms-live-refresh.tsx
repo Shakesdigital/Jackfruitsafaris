@@ -81,7 +81,8 @@ async function clearCmsCacheMultiLayer() {
 }
 
 // Enhanced refresh function with multiple cache clearing strategies
-async function enhancedCmsRefresh(router: { refresh: () => void }) {
+// Uses the router from enclosing scope (CmsLiveRefresh component)
+async function enhancedCmsRefresh(routerInstance: { refresh: () => Promise<void> } | undefined) {
   const refreshId = Math.random().toString(36).substr(2, 9);
   console.log(`[${refreshId}] Starting enhanced CMS refresh`);
 
@@ -90,24 +91,33 @@ async function enhancedCmsRefresh(router: { refresh: () => void }) {
 
   console.log(`[${refreshId}] Cache clearing completed in ${Date.now() - startTime}ms:`, cacheResults);
 
+  // Handle case where router might be undefined (should not happen in normal flow)
+  if (!routerInstance) {
+    console.error(`[${refreshId}] Router is undefined - forcing reload`);
+    window.location.reload();
+    return;
+  }
+
   // Strategy selection based on results
   if (cacheResults.apiSuccess) {
     // API succeeded - use normal router refresh
     console.log(`[${refreshId}] API cache clearing successful - using router refresh`);
-    return router.refresh();
+    await routerInstance.refresh();
   } else if (cacheResults.browserCacheCleared) {
     // Browser cache cleared but API failed - use router refresh
     console.log(`[${refreshId}] Browser cache cleared - using router refresh`);
-    return router.refresh();
+    await routerInstance.refresh();
   } else if (cacheResults.hardReloadTriggered) {
     // Hard reload was triggered (will happen immediately)
     console.log(`[${refreshId}] Hard reload triggered`);
-    return; // The reload will handle the refresh
+    // The reload will handle the refresh
+    return;
   } else {
     // All strategies failed - force immediate reload
     console.log(`[${refreshId}] All cache clearing failed - forcing reload`);
     window.location.reload();
   }
+  console.log(`[${refreshId}] Enhanced refresh completed successfully`);
 }
 
 export function CmsLiveRefresh() {
