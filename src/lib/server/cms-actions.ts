@@ -1194,26 +1194,28 @@ export async function upsertPageHero(formData: FormData) {
     formData.get("background_image") ||
     undefined;
 
+  const detailContent = Object.fromEntries(
+    [
+      "why_jackfruit_title",
+      "why_jackfruit_body",
+      "where_operates_title",
+      "where_operates_body",
+      "guiding_style_title",
+      "guiding_style_body",
+      "services_title",
+      "services_intro",
+    ]
+      .map((key) => [key, formData.get(key)])
+      .filter(([, value]) => typeof value === "string" && value.trim()),
+  );
+
   const parsed = pageHeroSchema.safeParse({
     page_slug: formData.get("page_slug"),
     eyebrow: formData.get("eyebrow") || undefined,
     title: formData.get("title") || undefined,
     intro: formData.get("intro") || undefined,
     background_image: backgroundImage,
-    content: Object.fromEntries(
-      [
-        "why_jackfruit_title",
-        "why_jackfruit_body",
-        "where_operates_title",
-        "where_operates_body",
-        "guiding_style_title",
-        "guiding_style_body",
-        "services_title",
-        "services_intro",
-      ]
-        .map((key) => [key, formData.get(key)])
-        .filter(([, value]) => typeof value === "string" && value.trim()),
-    ),
+    content: Object.keys(detailContent).length ? detailContent : undefined,
     status: formData.get("status") || "published",
   });
 
@@ -1225,9 +1227,11 @@ export async function upsertPageHero(formData: FormData) {
     );
   }
 
+  const { content, ...heroFields } = parsed.data;
   const { error } = await supabase.from("page_heroes").upsert({
     id: formData.get("id") as string || undefined,
-    ...parsed.data,
+    ...heroFields,
+    ...(content ? { content } : {}),
     updated_at: new Date().toISOString(),
   });
   redirectOnMutationError(
