@@ -503,6 +503,29 @@ export default async function SettingsPage() {
 
         <div className="border-b pb-6">
           <h2 className="mb-4 text-lg font-medium">Footer</h2>
+          <div className="mb-4 grid gap-4">
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Footer Tagline</span>
+              <textarea
+                name="footer_tagline"
+                defaultValue={settings?.footer_tagline}
+                rows={2}
+                placeholder="Private Uganda safaris, gorilla trekking, Nile adventures..."
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700">Footer Note</span>
+              <textarea
+                name="footer_note"
+                defaultValue={settings?.footer_note}
+                rows={2}
+                placeholder="Prices are shown as planning guidance..."
+                className="mt-1 block w-full rounded-md border-gray-300"
+              />
+            </label>
+          </div>
           <textarea
             name="footer_copy"
             defaultValue={settings?.footer_copy}
@@ -510,6 +533,29 @@ export default async function SettingsPage() {
             placeholder="© 2024 Jackfruit Safaris Uganda. All rights reserved."
             className="block w-full rounded-md border-gray-300"
           />
+        </div>
+
+        <div className="border-b pb-6">
+          <h2 className="mb-4 text-lg font-medium">Navigation Items</h2>
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">
+              Main Navigation JSON
+            </span>
+            <textarea
+              name="nav_items"
+              defaultValue={JSON.stringify(settings?.nav_items || [], null, 2)}
+              rows={10}
+              spellCheck={false}
+              placeholder={`[
+  { "label": "Home", "href": "/" },
+  { "label": "Safaris", "href": "/safaris" }
+]`}
+              className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
+            />
+          </label>
+          <p className="mt-2 text-xs text-gray-500">
+            Use an array of menu items with label and href. This keeps the CMS aligned with the existing JSON navigation setting.
+          </p>
         </div>
 
         <div className="border-b pb-6">
@@ -521,6 +567,20 @@ export default async function SettingsPage() {
             keyPlaceholder="title"
             valuePlaceholder="Default SEO value"
           />
+        </div>
+
+        <div className="border-b pb-6">
+          <h2 className="mb-4 text-lg font-medium">Integrations & Tracking</h2>
+          <KeyValueEditor
+            name="integrations"
+            label="Integration Settings"
+            value={settings?.integrations}
+            keyPlaceholder="google_analytics_id"
+            valuePlaceholder="G-XXXXXXXXXX"
+          />
+          <p className="mt-2 text-xs text-gray-500">
+            Store safe editable integration metadata here, such as analytics IDs, pixel IDs, or public widget IDs. Keep private API secrets in environment variables.
+          </p>
         </div>
 
         <button
