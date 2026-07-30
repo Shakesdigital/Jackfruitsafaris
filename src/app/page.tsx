@@ -41,10 +41,14 @@ import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export const dynamic = "force-dynamic";
 
-// Helper to safely extract string values from settings
-function getStringValue(settings: PublicSiteSettings | null, key: string, fallback: string): string {
-  const value = (settings as Record<string, unknown>)?.[key];
-  if (typeof value === 'string') return value;
+// Helper to safely extract string values from settings or section objects
+function getStringValue(
+  source: Record<string, unknown> | null | undefined,
+  key: string,
+  fallback: string
+): string {
+  const value = source?.[key];
+  if (typeof value === "string") return value;
   return fallback;
 }
 
@@ -185,9 +189,9 @@ export default async function Home() {
 
       {/* Why Uganda Section */}
       <Section
-        eyebrow={whyUgandaSection?.subtitle || settings?.why_uganda_eyebrow || "Why Uganda"}
-        title={whyUgandaSection?.title || settings?.why_uganda_title || "One compact country, many safari worlds"}
-        intro={<CmsRichText html={getSectionText(whyUgandaSection, "intro", settings?.why_uganda_intro || "Uganda can take you from the River Nile to open savannah, roaring waterfalls, crater lakes, rainforest chimpanzees, and mountain gorillas in one carefully routed journey.")} />}
+        eyebrow={getStringValue(whyUgandaSection, "subtitle", settings?.why_uganda_eyebrow || "Why Uganda")}
+        title={getStringValue(whyUgandaSection, "title", settings?.why_uganda_title || "One compact country, many safari worlds")}
+        intro={<CmsRichText html={getSectionText(whyUgandaSection, "intro", getStringValue(settings, "why_uganda_intro", "Uganda can take you from the River Nile to open savannah, roaring waterfalls, crater lakes, rainforest chimpanzees, and mountain gorillas in one carefully routed journey."))} />}
       >
         <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr]">
           <div className="rounded-[var(--brand-radius)] bg-[var(--brand-primary)] p-8 text-white sm:p-10">
@@ -211,8 +215,8 @@ export default async function Home() {
       {/* Featured Safaris Section */}
       <Section
         className="bg-[#eef3eb]"
-        eyebrow={featuredSafarisSection?.subtitle || "Featured safaris"}
-        title={featuredSafarisSection?.title || "Start with a proven Uganda route"}
+        eyebrow={getStringValue(featuredSafarisSection, "subtitle", "Featured safaris")}
+        title={getStringValue(featuredSafarisSection, "title", "Start with a proven Uganda route")}
         intro={<CmsRichText html={getSectionText(featuredSafarisSection, "intro", "Choose a ready itinerary or ask Jackfruit Safaris to adjust the route, dates, accommodation tier, and pace around your group.")} />}
       >
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -232,8 +236,8 @@ export default async function Home() {
 
       {/* Experiences Section */}
       <Section
-        eyebrow={experiencesSection?.subtitle || "Experiences"}
-        title={experiencesSection?.title || "The right trip for your travel style"}
+        eyebrow={getStringValue(experiencesSection, "subtitle", "Experiences")}
+        title={getStringValue(experiencesSection, "title", "The right trip for your travel style")}
         intro={<CmsRichText html={getSectionText(experiencesSection, "intro", "Jackfruit Safaris can combine wildlife, primates, Nile adventure, culture, and transport into a single smooth plan.")} />}
       >
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -268,8 +272,8 @@ export default async function Home() {
       {/* Reviews Section */}
       <Section
         className="bg-white"
-        eyebrow={reviewsSection?.subtitle || "Reviews and planning proof"}
-        title={reviewsSection?.title || "Confidence before the first road mile"}
+        eyebrow={getStringValue(reviewsSection, "subtitle", "Reviews and planning proof")}
+        title={getStringValue(reviewsSection, "title", "Confidence before the first road mile")}
         intro={<CmsRichText html={getSectionText(reviewsSection, "intro", "The new inquiry flow puts trust, price guidance, route logic, and WhatsApp access close to every major booking decision.")} />}
       >
         <div className="grid gap-5 md:grid-cols-3">
@@ -292,8 +296,8 @@ export default async function Home() {
       {/* Travel Guide Section */}
       <Section
         className="bg-[var(--brand-primary)] text-white"
-        eyebrow={travelGuideSection?.subtitle || "Travel guide"}
-        title={travelGuideSection?.title || "Helpful planning content for safari buyers"}
+        eyebrow={getStringValue(travelGuideSection, "subtitle", "Travel guide")}
+        title={getStringValue(travelGuideSection, "title", "Helpful planning content for safari buyers")}
         intro={<CmsRichText html={getSectionText(travelGuideSection, "intro", "Priority guide topics are ready for CMS publishing, SEO expansion, and AI-search visibility.")} />}
       >
         <div className="grid gap-3 md:grid-cols-2">
@@ -317,19 +321,19 @@ export default async function Home() {
           <div>
             <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-[var(--brand-primary)]">
               <MapPin size={18} />
-              {quoteCtaSection?.subtitle || settings?.cta_eyebrow || "Ready to plan?"}
+              {getStringValue(quoteCtaSection, "subtitle", getStringValue(settings, "cta_eyebrow", "Ready to plan?"))}
             </p>
             <h2 className="mt-4 text-3xl font-black leading-tight text-[var(--foreground)] sm:text-5xl">
-              {quoteCtaSection?.title || settings?.cta_title || "Tell us your dates, group size, budget, and dream experiences."}
+              {getStringValue(quoteCtaSection, "title", getStringValue(settings, "cta_title", "Tell us your dates, group size, budget, and dream experiences."))}
             </h2>
             <CmsRichText
               className="mt-4 max-w-2xl text-lg leading-8 text-[var(--foreground)]"
-              html={getSectionText(quoteCtaSection, "intro", settings?.cta_intro || "Jackfruit Safaris will recommend the best route and quote, with clear inclusions, exclusions, and items that need live checking.")}
+              html={getSectionText(quoteCtaSection, "intro", getStringValue(settings, "cta_intro", "Jackfruit Safaris will recommend the best route and quote, with clear inclusions, exclusions, and items that need live checking."))}
             />
           </div>
           <div className="grid gap-3">
             <Link href={getSectionLink(quoteCtaSection, "primary_href", "/request-quote")} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand-primary)] px-6 text-sm font-black text-white">
-              {getSectionText(quoteCtaSection, "primary_label", settings?.cta_button || "Request a Custom Quote")}
+              {getSectionText(quoteCtaSection, "primary_label", getStringValue(settings, "cta_button", "Request a Custom Quote"))}
             </Link>
             <a href={buildWhatsAppHref(settings)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-black text-[var(--brand-primary)]">
               <MessageCircle size={18} />
