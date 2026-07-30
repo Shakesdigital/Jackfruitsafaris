@@ -872,3 +872,46 @@ export async function upsertPageHero(formData: FormData) {
 
   redirect("/admin/pages");
 }
+
+// Page Content Section Actions
+const pageContentSectionSchema = z.object({
+  page_slug: z.string().min(1),
+  section_key: z.string().min(1),
+  section_type: z.string().min(1),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  content: z.record(z.string(), z.any()).optional(),
+  order_index: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertPageContentSection(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const parsed = pageContentSectionSchema.safeParse({
+    page_slug: formData.get("page_slug"),
+    section_key: formData.get("section_key"),
+    section_type: formData.get("section_type"),
+    title: formData.get("title") || undefined,
+    subtitle: formData.get("subtitle") || undefined,
+    content: parseJsonField(formData.get("content"), {}),
+    order_index: parseInt(formData.get("order_index") as string) || 0,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    console.error("Page content section validation error:", parsed.error);
+    return;
+  }
+
+  const supabase = await getAdminSupabase();
+  await supabase.from("page_content_sections").upsert({
+    id: formData.get("id") as string || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+
+  redirect(`/admin/pages/content?page=${encodeURIComponent(parsed.data.page_slug)}`);
+}

@@ -46,6 +46,12 @@ export default async function PagesPage() {
             Page Heroes
           </Link>
           <Link
+            href="/admin/pages/content"
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          >
+            Page Content
+          </Link>
+          <Link
             href="/admin/pages/new"
             className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
           >
@@ -97,6 +103,12 @@ export default async function PagesPage() {
                     className="text-blue-600 hover:underline"
                   >
                     {hero ? "Edit Hero" : "Create Hero"}
+                  </Link>
+                  <Link
+                    href={`/admin/pages/content?page=${encodeURIComponent(page.slug)}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Edit Content
                   </Link>
                   <Link
                     href={page.publicHref}

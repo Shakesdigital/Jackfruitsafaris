@@ -447,3 +447,36 @@ export async function getAdminPageHeroById(id: string) {
     .single();
   return data;
 }
+
+// Fetch published page content sections
+export async function getPublishedPageContentSections(pageSlug: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("page_content_sections")
+    .select("*")
+    .eq("page_slug", pageSlug)
+    .eq("status", "published")
+    .order("order_index", { ascending: true });
+  return data || [];
+}
+
+// Admin functions for page content sections
+export async function getAdminPageContentSections(pageSlug?: string) {
+  const supabase = await createAdminClient();
+  let query = supabase
+    .from("page_content_sections")
+    .select("*")
+    .order("page_slug", { ascending: true })
+    .order("order_index", { ascending: true });
+
+  if (pageSlug) {
+    query = query.eq("page_slug", pageSlug);
+  }
+
+  const { data } = await query;
+  return data || [];
+}
+
+export async function getAdminPageContentSectionByIdResult(id: string) {
+  return getAdminRecordById("page_content_sections", id);
+}

@@ -78,6 +78,14 @@ export default async function AdminLayout({
             </li>
             <li>
               <Link
+                href="/admin/pages/content"
+                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+              >
+                Page Content
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/admin/destinations"
                 className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
               >
