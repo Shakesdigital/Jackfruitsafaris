@@ -81,9 +81,9 @@ async function clearCmsCacheMultiLayer() {
 }
 
 // Enhanced refresh function with multiple cache clearing strategies
-// Uses the router from enclosing scope (CmsLiveRefresh component)
-async function enhancedCmsRefresh(routerInstance: { refresh: () => Promise<void> } | undefined) {
-  const refreshId = Math.random().toString(36).substr(2, 9);
+// Returns a Promise<void> to support .then() chaining
+async function enhancedCmsRefresh(router: { refresh: () => void } | undefined): Promise<void> {
+  const refreshId = Math.random().toString(36).slice(2, 9);
   console.log(`[${refreshId}] Starting enhanced CMS refresh`);
 
   const startTime = Date.now();
@@ -92,32 +92,42 @@ async function enhancedCmsRefresh(routerInstance: { refresh: () => Promise<void>
   console.log(`[${refreshId}] Cache clearing completed in ${Date.now() - startTime}ms:`, cacheResults);
 
   // Handle case where router might be undefined (should not happen in normal flow)
-  if (!routerInstance) {
+  if (!router) {
     console.error(`[${refreshId}] Router is undefined - forcing reload`);
     window.location.reload();
     return;
   }
 
-  // Strategy selection based on results
-  if (cacheResults.apiSuccess) {
-    // API succeeded - use normal router refresh
-    console.log(`[${refreshId}] API cache clearing successful - using router refresh`);
-    await routerInstance.refresh();
-  } else if (cacheResults.browserCacheCleared) {
-    // Browser cache cleared but API failed - use router refresh
-    console.log(`[${refreshId}] Browser cache cleared - using router refresh`);
-    await routerInstance.refresh();
-  } else if (cacheResults.hardReloadTriggered) {
-    // Hard reload was triggered (will happen immediately)
-    console.log(`[${refreshId}] Hard reload triggered`);
-    // The reload will handle the refresh
-    return;
-  } else {
-    // All strategies failed - force immediate reload
-    console.log(`[${refreshId}] All cache clearing failed - forcing reload`);
-    window.location.reload();
+  try {
+    // Strategy selection based on results
+    if (cacheResults.apiSuccess) {
+      // API succeeded - use normal router refresh
+      console.log(`[${refreshId}] API cache clearing successful - using router refresh`);
+      router.refresh();
+    } else if (cacheResults.browserCacheCleared) {
+      // Browser cache cleared but API failed - use router refresh
+      console.log(`[${refreshId}] Browser cache cleared - using router refresh`);
+      router.refresh();
+    } else if (cacheResults.hardReloadTriggered) {
+      // Hard reload was triggered (will happen immediately)
+      console.log(`[${refreshId}] Hard reload triggered`);
+      // The reload will handle the refresh
+      return;
+    } else {
+      // All strategies failed - force immediate reload
+      console.log(`[${refreshId}] All cache clearing failed - forcing reload`);
+      window.location.reload();
+    }
+    console.log(`[${refreshId}] Enhanced refresh completed successfully`);
+  } catch (error) {
+    console.error(`[${refreshId}] Enhanced refresh error:`, error);
+    // Ultimate fallback: hard reload
+    setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
+    }, 100);
   }
-  console.log(`[${refreshId}] Enhanced refresh completed successfully`);
 }
 
 export function CmsLiveRefresh() {
