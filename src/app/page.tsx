@@ -37,8 +37,16 @@ import {
   getSectionText,
 } from "@/lib/cms-page-content";
 import { buildWhatsAppHref } from "@/lib/site-settings";
+import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export const dynamic = "force-dynamic";
+
+// Helper to safely extract string values from settings
+function getStringValue(settings: PublicSiteSettings | null, key: string, fallback: string): string {
+  const value = (settings as Record<string, unknown>)?.[key];
+  if (typeof value === 'string') return value;
+  return fallback;
+}
 
 export default async function Home() {
   // Fetch CMS data
@@ -99,33 +107,33 @@ export default async function Home() {
       {/* Hero Section */}
       <section
         className="relative min-h-[86vh] bg-cover bg-center text-white"
-        style={{ backgroundImage: `url(${settings?.hero_image || images.hero})` }}
+        style={{ backgroundImage: `url(${getStringValue(settings, "hero_image", images.hero)})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/90 via-[#08170f]/62 to-[#08170f]/20" />
         <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20">
               <BadgeCheck size={17} />
-              {settings?.badge_text || "Local safari experts from Jinja"}
+              {getStringValue(settings, "badge_text", "Local safari experts from Jinja")}
             </p>
             <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.98] sm:text-7xl">
-              {settings?.hero_title || "Explore Uganda With Local Safari Experts"}
+              {getStringValue(settings, "hero_title", "Explore Uganda With Local Safari Experts")}
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/84 sm:text-xl">
-              {settings?.hero_subtitle || "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja."}
+              {getStringValue(settings, "hero_subtitle", "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.")}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/request-quote"
                 className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand-accent)] px-6 text-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17]"
               >
-                {settings?.cta_primary || "Plan My Safari"}
+                {getStringValue(settings, "cta_primary", "Plan My Safari")}
               </Link>
               <Link
                 href="/safaris"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/30 px-6 text-sm font-black text-white transition hover:bg-white/10"
               >
-                {settings?.cta_secondary || "View Safari Packages"}
+                {getStringValue(settings, "cta_secondary", "View Safari Packages")}
                 <ArrowRight size={17} />
               </Link>
             </div>
