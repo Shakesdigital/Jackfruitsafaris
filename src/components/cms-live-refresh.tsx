@@ -81,7 +81,7 @@ async function clearCmsCacheMultiLayer() {
 }
 
 // Enhanced refresh function with multiple cache clearing strategies
-async function enhancedCmsRefresh() {
+async function enhancedCmsRefresh(router: { refresh: () => void }) {
   const refreshId = Math.random().toString(36).substr(2, 9);
   console.log(`[${refreshId}] Starting enhanced CMS refresh`);
 
@@ -153,7 +153,7 @@ export function CmsLiveRefresh() {
       lastRefreshTime = now;
 
       // Use enhanced refresh with comprehensive cache clearing
-      enhancedCmsRefresh()
+      enhancedCmsRefresh(router)
         .then(() => {
           console.log(`[${currentRefreshId}] Enhanced refresh completed successfully`);
         })
@@ -223,7 +223,7 @@ export function CmsLiveRefresh() {
           scheduleRefresh();
         }
       )
-      .subscribe((status) => {
+      .subscribe((status: string) => {
         console.log(`Supabase channel subscription status: ${status}`);
         if (status === 'SUBSCRIBED') {
           console.log(`Subscribed to cms refresh events for pathname: ${pathname}`);
