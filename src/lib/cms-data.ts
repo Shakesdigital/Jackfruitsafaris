@@ -127,16 +127,49 @@ export async function getPublishedReviews() {
 // Fetch the latest public-safe site settings. No React cache to prevent
 // content reversion issues. Each request gets fresh data from Supabase.
 export async function getSiteSettings() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { data, error } = await supabase.rpc("get_public_site_settings");
+    const { data, error } = await supabase.rpc("get_public_site_settings");
 
-  if (error) {
-    console.error("Public site settings fetch error:", error);
+    if (error) {
+      console.error("Public site settings fetch error:", error);
+      return null;
+    }
+
+    // Ensure we return a proper object with all expected fields
+    if (data && typeof data === "object") {
+      // Cast to any to handle the dynamic nature of the RPC response
+      const settings = data as Record<string, unknown>;
+
+      // Ensure nav_items is properly formatted as an array
+      if (settings.nav_items && !Array.isArray(settings.nav_items)) {
+        console.warn("nav_items is not an array, attempting to parse:", settings.nav_items);
+        try {
+          const parsed = typeof settings.nav_items === 'string' ? JSON.parse(settings.nav_items) : settings.nav_items;
+          if (Array.isArray(parsed)) {
+            settings.nav_items = parsed;
+          } else {
+            settings.nav_items = null;
+          }
+        } catch {
+          settings.nav_items = null;
+        }
+      }
+
+      // Ensure hero_image is a string (not null/undefined)
+      if (!settings.hero_image || typeof settings.hero_image !== 'string') {
+        console.warn("hero_image is missing or invalid, will use fallback");
+      }
+
+      return settings;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Unexpected error in getSiteSettings:", error);
     return null;
   }
-
-  return data && typeof data === "object" ? data : null;
 }
 
 // Fetch safari by slug
