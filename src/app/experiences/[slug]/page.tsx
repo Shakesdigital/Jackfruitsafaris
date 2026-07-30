@@ -29,28 +29,8 @@ type Experience = {
   included: string[];
 };
 
-export async function generateStaticParams() {
-  const experiences = await getPublishedExperiences();
-  return experiences.map((e: { slug: string }) => ({ slug: e.slug }));
-}
-
-async function getPublishedExperiences() {
-  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
-  if (!url || !key) {
-    // Return empty array when Supabase is not configured
-    return [];
-  }
-
-  const supabase = supabaseCreateClient(url!, key!);
-  const { data } = await supabase
-    .from("experiences")
-    .select("slug")
-    .eq("status", "published");
-  return data || [];
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -98,7 +78,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
         <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/88 via-[#08170f]/58 to-[#08170f]/18" />
         <div className="relative mx-auto flex min-h-[58vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
           <div className="max-w-4xl">
-            <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
+            <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               Uganda experience
             </p>
             <h1 className="mt-4 text-4xl font-black leading-tight sm:text-6xl">
@@ -118,18 +98,18 @@ export default async function ExperienceDetailPage({ params }: Props) {
               {bullets.map((item: string) => (
                 <p
                   key={item}
-                  className="flex gap-3 rounded-[8px] bg-[#eef7f0] p-4 text-sm font-bold leading-6 text-[#27382b]"
+                  className="flex gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4 text-sm font-bold leading-6 text-[var(--foreground)]"
                 >
-                  <CheckCircle2 className="mt-0.5 shrink-0 text-[#2d6f55]" size={18} />
+                  <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} />
                   {item}
                 </p>
               ))}
             </div>
-            <div className="rounded-[8px] border border-black/10 bg-white p-6">
-              <h2 className="text-3xl font-black text-[#10251b]">
+            <div className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
+              <h2 className="text-3xl font-black text-[var(--foreground)]">
                 How Jackfruit Safaris plans this
               </h2>
-              <p className="mt-4 text-base leading-8 text-[#536154]">
+              <p className="mt-4 text-base leading-8 text-[var(--brand-muted-text)]">
                 The team matches activities to your available time, transfer
                 point, safety needs, and comfort level. Some experiences need
                 live confirmation for weather, provider schedules, age limits,
@@ -137,13 +117,13 @@ export default async function ExperienceDetailPage({ params }: Props) {
               </p>
               <Link
                 href="/request-quote"
-                className="mt-5 inline-flex rounded-full bg-[#143c2d] px-5 py-3 text-sm font-black text-white"
+                className="mt-5 inline-flex rounded-full bg-[var(--brand-primary)] px-5 py-3 text-sm font-black text-white"
               >
                 Add this to my trip
               </Link>
             </div>
             <div>
-              <h2 className="text-3xl font-black text-[#10251b]">
+              <h2 className="text-3xl font-black text-[var(--foreground)]">
                 Recommended safaris
               </h2>
               <div className="mt-6 grid gap-6 md:grid-cols-2">

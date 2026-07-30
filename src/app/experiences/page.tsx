@@ -3,15 +3,22 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Section } from "@/components/section";
 import { experiences as hardcodedExperiences, iconMap } from "@/lib/content";
-import { getPublishedExperiences, getPageHero, getSiteSettings } from "@/lib/cms-data";
+import {
+  getPublishedExperiences,
+  getPageHero,
+  getPublishedPageContentSections,
+} from "@/lib/cms-data";
+import { getPageSection } from "@/lib/cms-page-content";
 
 export const dynamic = "force-dynamic";
 
 export default async function ExperiencesPage() {
-  const [experiences, hero] = await Promise.all([
+  const [experiences, hero, pageSections] = await Promise.all([
     getPublishedExperiences(),
     getPageHero("/experiences"),
+    getPublishedPageContentSections("/experiences"),
   ]);
+  const gridSection = getPageSection(pageSections, "experience_grid");
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const displayedExperiences = experiences.length
@@ -32,9 +39,13 @@ export default async function ExperiencesPage() {
 
   return (
     <>
-      <section className="bg-[#10251b] py-16 text-white sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
+      <section
+        className="relative bg-[var(--foreground)] bg-cover bg-center py-16 text-white sm:py-20"
+        style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+      >
+        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/82" />}
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             {hero?.eyebrow || "Experiences"}
           </p>
           <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
@@ -45,7 +56,10 @@ export default async function ExperiencesPage() {
           </p>
         </div>
       </section>
-      <Section>
+      <Section
+        eyebrow={gridSection?.subtitle || undefined}
+        title={gridSection?.title || undefined}
+      >
         <div className="grid gap-6 md:grid-cols-2">
           {displayedExperiences.map((experience: any) => {
             const Icon = iconMap[experience.icon as keyof typeof iconMap] || ArrowRight;
@@ -53,21 +67,21 @@ export default async function ExperiencesPage() {
               <Link
                 key={experience.slug}
                 href={`/experiences/${experience.slug}`}
-                className="group overflow-hidden rounded-[8px] border border-black/10 bg-white shadow-sm"
+                className="group overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm"
               >
                 <div
                   className="h-64 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                   style={{ backgroundImage: `url(${experience.featured_image_url || experience.image || ""})` }}
                 />
                 <div className="p-6">
-                  <Icon className="text-[#2d6f55]" size={26} />
-                  <h2 className="mt-3 text-2xl font-black text-[#10251b]">
+                  <Icon className="text-[var(--brand-secondary)]" size={26} />
+                  <h2 className="mt-3 text-2xl font-black text-[var(--foreground)]">
                     {experience.title}
                   </h2>
-                  <p className="mt-3 text-sm leading-7 text-[#536154]">
+                  <p className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]">
                     {experience.summary}
                   </p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#143c2d]">
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[var(--brand-primary)]">
                     Explore experience
                     <ArrowRight size={16} />
                   </span>

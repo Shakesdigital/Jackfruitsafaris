@@ -1,5 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { cache } from "react";
 
 type AdminRecord = Record<string, any>;
 
@@ -123,17 +124,21 @@ export async function getPublishedReviews() {
   return data || [];
 }
 
-// Fetch site settings (single row)
-export async function getSiteSettings() {
+// Fetch the latest public-safe site settings. React cache deduplicates the
+// layout/header/footer reads within one server request without persisting stale
+// data between requests.
+export const getSiteSettings = cache(async function getSiteSettings() {
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("site_settings")
-    .select("*")
-    .single();
+  const { data, error } = await supabase.rpc("get_public_site_settings");
 
-  return data;
-}
+  if (error) {
+    console.error("Public site settings fetch error:", error);
+    return null;
+  }
+
+  return data && typeof data === "object" ? data : null;
+});
 
 // Fetch safari by slug
 export async function getSafariBySlug(slug: string) {

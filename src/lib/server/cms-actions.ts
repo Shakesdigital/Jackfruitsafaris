@@ -1,11 +1,32 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient as createAnonClient, createAdminClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
 type StorageClient = {
   storage: {
+    getBucket: (bucket: string) => Promise<{
+      data: { public?: boolean } | null;
+      error: unknown;
+    }>;
+    createBucket: (
+      bucket: string,
+      options: {
+        public: boolean;
+        fileSizeLimit: number;
+        allowedMimeTypes: string[];
+      },
+    ) => Promise<{ error: unknown }>;
+    updateBucket: (
+      bucket: string,
+      options: {
+        public: boolean;
+        fileSizeLimit: number;
+        allowedMimeTypes: string[];
+      },
+    ) => Promise<{ error: unknown }>;
     from: (bucket: string) => {
       upload: (
         path: string,
@@ -36,8 +57,51 @@ function parseJsonField<T>(value: FormDataEntryValue | null, fallback: T): T {
   }
 }
 
-function redirectWithCmsMessage(path: string, type: "error" | "success", message: string) {
+function redirectWithCmsMessage(
+  path: string,
+  type: "error" | "success",
+  message: string,
+): never {
   redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+}
+
+function getCmsErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object" && "message" in error) {
+    return String((error as { message?: unknown }).message);
+  }
+  return "Unknown Supabase error";
+}
+
+function redirectOnMutationError(
+  error: unknown,
+  path: string,
+  operation: string,
+) {
+  if (!error) return;
+  console.error(`${operation} error:`, error);
+  redirectWithCmsMessage(
+    path,
+    "error",
+    `${operation} failed: ${getCmsErrorMessage(error)}`,
+  );
+}
+
+function redirectOnValidationError(
+  error: z.ZodError,
+  path: string,
+  operation: string,
+): never {
+  console.error(`${operation} validation error:`, error);
+  const firstIssue = error.issues[0]?.message || "Please check the required fields.";
+  redirectWithCmsMessage(path, "error", `${operation} failed: ${firstIssue}`);
+}
+
+function revalidateCmsRoutes(...paths: string[]) {
+  revalidatePath("/admin", "layout");
+  for (const path of new Set(paths)) {
+    revalidatePath(path, path.includes("[") ? "page" : undefined);
+  }
 }
 
 async function uploadImageFromForm(
@@ -45,9 +109,52 @@ async function uploadImageFromForm(
   formData: FormData,
   fieldName: string,
   destinationFolder: string,
+  errorPath: string,
 ) {
   const file = formData.get(fieldName) as File | null;
   if (!file || !file.size) return null;
+
+  if (!file.type.startsWith("image/")) {
+    redirectWithCmsMessage(errorPath, "error", "Please choose a valid image file.");
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    redirectWithCmsMessage(errorPath, "error", "The image is larger than the 10 MB upload limit.");
+  }
+
+  const bucketOptions = {
+    public: true,
+    fileSizeLimit: 10 * 1024 * 1024,
+    allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"],
+  };
+  const { data: bucket } = await supabase.storage.getBucket("cms-media");
+
+  if (!bucket) {
+    const { error: bucketError } = await supabase.storage.createBucket(
+      "cms-media",
+      bucketOptions,
+    );
+    if (bucketError && !getCmsErrorMessage(bucketError).toLowerCase().includes("already")) {
+      console.error("CMS media bucket creation error:", bucketError);
+      redirectWithCmsMessage(
+        errorPath,
+        "error",
+        `Image storage is not available: ${getCmsErrorMessage(bucketError)}`,
+      );
+    }
+  } else if (!bucket.public) {
+    const { error: bucketError } = await supabase.storage.updateBucket(
+      "cms-media",
+      bucketOptions,
+    );
+    if (bucketError) {
+      console.error("CMS media bucket update error:", bucketError);
+      redirectWithCmsMessage(
+        errorPath,
+        "error",
+        `Image storage could not be made public: ${getCmsErrorMessage(bucketError)}`,
+      );
+    }
+  }
 
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -61,7 +168,11 @@ async function uploadImageFromForm(
 
   if (error) {
     console.error("CMS image upload error:", error);
-    return null;
+    redirectWithCmsMessage(
+      errorPath,
+      "error",
+      `Image upload failed: ${getCmsErrorMessage(error)}`,
+    );
   }
 
   const { data } = supabase.storage.from("cms-media").getPublicUrl(path);
@@ -132,15 +243,15 @@ export async function upsertSiteSettings(formData: FormData) {
   // Use admin client for writes
   const supabase = await getAdminSupabase();
   const logoUrl =
-    (await uploadImageFromForm(supabase, formData, "logo_file", "branding/logos")) ||
+    (await uploadImageFromForm(supabase, formData, "logo_file", "branding/logos", "/admin/settings")) ||
     formData.get("logo_url") ||
     undefined;
   const faviconUrl =
-    (await uploadImageFromForm(supabase, formData, "favicon_file", "branding/favicons")) ||
+    (await uploadImageFromForm(supabase, formData, "favicon_file", "branding/favicons", "/admin/settings")) ||
     formData.get("favicon_url") ||
     undefined;
   const heroImage =
-    (await uploadImageFromForm(supabase, formData, "hero_image_file", "branding/heroes")) ||
+    (await uploadImageFromForm(supabase, formData, "hero_image_file", "branding/heroes", "/admin/settings")) ||
     formData.get("hero_image") ||
     undefined;
 
@@ -222,7 +333,9 @@ export async function upsertSiteSettings(formData: FormData) {
     },
   });
 
-  if (!parsed.success) return;
+  if (!parsed.success) {
+    redirectOnValidationError(parsed.error, "/admin/settings", "Settings save");
+  }
 
   const { error } = await supabase.from("site_settings").upsert({
     id: formData.get("id") as string || undefined,
@@ -239,6 +352,74 @@ export async function upsertSiteSettings(formData: FormData) {
     );
   }
 
+  const { data: existingHomepageSections, error: sectionReadError } = await supabase
+    .from("page_content_sections")
+    .select("section_key, section_type, content, order_index, status")
+    .eq("page_slug", "/")
+    .in("section_key", ["why_uganda", "quote_cta"]);
+  redirectOnMutationError(
+    sectionReadError,
+    "/admin/settings",
+    "Homepage content sync",
+  );
+
+  const existingSectionMap = new Map(
+    (
+      (existingHomepageSections || []) as Array<{
+        section_key: string;
+        section_type: string;
+        content: Record<string, unknown> | null;
+        order_index: number;
+        status: "draft" | "published" | "archived";
+      }>
+    ).map((section) => [section.section_key, section]),
+  );
+  const existingWhy = existingSectionMap.get("why_uganda");
+  const existingQuote = existingSectionMap.get("quote_cta");
+  const { error: sectionSyncError } = await supabase.from("page_content_sections").upsert(
+    [
+      {
+        page_slug: "/",
+        section_key: "why_uganda",
+        section_type: existingWhy?.section_type || "feature_split_with_quote_form",
+        title: parsed.data.why_uganda_title,
+        subtitle: parsed.data.why_uganda_eyebrow,
+        content: {
+          ...(existingWhy?.content || {}),
+          intro: parsed.data.why_uganda_intro,
+          body: parsed.data.why_uganda_paragraph,
+        },
+        order_index: existingWhy?.order_index ?? 20,
+        status: existingWhy?.status || "published",
+        updated_at: new Date().toISOString(),
+      },
+      {
+        page_slug: "/",
+        section_key: "quote_cta",
+        section_type: existingQuote?.section_type || "cta_panel",
+        title: parsed.data.cta_title,
+        subtitle: parsed.data.cta_eyebrow,
+        content: {
+          ...(existingQuote?.content || {}),
+          intro: parsed.data.cta_intro,
+          primary_label: parsed.data.cta_button,
+          primary_href: "/request-quote",
+          secondary_label: "WhatsApp Jackfruit",
+        },
+        order_index: existingQuote?.order_index ?? 70,
+        status: existingQuote?.status || "published",
+        updated_at: new Date().toISOString(),
+      },
+    ],
+    { onConflict: "page_slug,section_key" },
+  );
+  redirectOnMutationError(
+    sectionSyncError,
+    "/admin/settings",
+    "Homepage content sync",
+  );
+
+  revalidatePath("/", "layout");
   redirectWithCmsMessage("/admin/settings", "success", "Settings saved successfully.");
 }
 
@@ -281,6 +462,7 @@ export async function upsertSafariPackage(formData: FormData) {
       formData,
       "featured_image_file",
       `media/safari_packages/${id || "new"}`,
+      `/admin/safaris/${id || "new"}`,
     )) ||
     formData.get("featured_image_url") ||
     undefined;
@@ -307,8 +489,11 @@ export async function upsertSafariPackage(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Safari validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/safaris/${id || "new"}`,
+      "Safari save",
+    );
   }
 
   const { itinerary, accommodations, faqs } = parseSafariDetails(formData);
@@ -326,7 +511,16 @@ export async function upsertSafariPackage(formData: FormData) {
     data.created_at = new Date().toISOString();
   }
 
-  await supabase.from("safari_packages").upsert(data);
+  const { error } = await supabase.from("safari_packages").upsert(data);
+  redirectOnMutationError(error, `/admin/safaris/${id || "new"}`, "Safari save");
+  revalidateCmsRoutes(
+    "/",
+    "/safaris",
+    "/safaris/[slug]",
+    "/destinations/[slug]",
+    "/experiences/[slug]",
+    "/request-quote",
+  );
   redirect("/admin/safaris");
 }
 
@@ -401,6 +595,7 @@ export async function upsertDestination(formData: FormData) {
       formData,
       "featured_image_file",
       `media/destinations/${id || "new"}`,
+      `/admin/destinations/${id || "new"}`,
     )) ||
     formData.get("featured_image_url") ||
     undefined;
@@ -422,15 +617,20 @@ export async function upsertDestination(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Destination validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/destinations/${id || "new"}`,
+      "Destination save",
+    );
   }
 
-  await supabase.from("destinations").upsert({
+  const { error } = await supabase.from("destinations").upsert({
     id: id || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, `/admin/destinations/${id || "new"}`, "Destination save");
+  revalidateCmsRoutes("/destinations", "/destinations/[slug]");
   redirect("/admin/destinations");
 }
 
@@ -464,6 +664,7 @@ export async function upsertExperience(formData: FormData) {
       formData,
       "featured_image_file",
       `media/experiences/${id || "new"}`,
+      `/admin/experiences/${id || "new"}`,
     )) ||
     formData.get("featured_image_url") ||
     undefined;
@@ -483,18 +684,23 @@ export async function upsertExperience(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Experience validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/experiences/${id || "new"}`,
+      "Experience save",
+    );
   }
 
   const bullets = parseJsonField(formData.get("bullets"), []);
 
-  await supabase.from("experiences").upsert({
+  const { error } = await supabase.from("experiences").upsert({
     id: id || undefined,
     ...parsed.data,
     included: bullets,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, `/admin/experiences/${id || "new"}`, "Experience save");
+  revalidateCmsRoutes("/", "/experiences", "/experiences/[slug]");
   redirect("/admin/experiences");
 }
 
@@ -526,6 +732,7 @@ export async function upsertReview(formData: FormData) {
       formData,
       "image_file",
       `media/reviews/${id || "new"}`,
+      `/admin/reviews/${id || "new"}`,
     )) ||
     formData.get("image_url") ||
     undefined;
@@ -543,15 +750,20 @@ export async function upsertReview(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Review validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/reviews/${id || "new"}`,
+      "Review save",
+    );
   }
 
-  await supabase.from("reviews").upsert({
+  const { error } = await supabase.from("reviews").upsert({
     id: id || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, `/admin/reviews/${id || "new"}`, "Review save");
+  revalidateCmsRoutes("/", "/reviews");
   redirect("/admin/reviews");
 }
 
@@ -565,40 +777,36 @@ export async function uploadMedia(formData: FormData) {
   // Use admin client for writes
   const supabase = await getAdminSupabase();
 
-  const file = formData.get("file") as File;
   const altText = formData.get("alt_text") as string;
   const entityType = formData.get("entity_type") as string;
   const entityId = formData.get("entity_id") as string;
 
-  if (!file || !entityType) return;
-
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-  const path = `${entityType}/${entityId || "general"}/${fileName}`;
-
-  const { error } = await supabase.storage
-    .from("cms-media")
-    .upload(path, buffer, {
-      contentType: file.type,
-      upsert: false,
-    });
-
-  if (error) {
-    console.error("Upload error:", error);
-    return;
+  if (!entityType) {
+    redirectWithCmsMessage("/admin", "error", "Media upload needs an entity type.");
   }
 
-  const { data: urlData } = supabase.storage.from("cms-media").getPublicUrl(path);
+  const publicUrl = await uploadImageFromForm(
+    supabase,
+    formData,
+    "file",
+    `${entityType}/${entityId || "general"}`,
+    "/admin",
+  );
+  if (!publicUrl) {
+    redirectWithCmsMessage("/admin", "error", "Please choose an image to upload.");
+  }
 
   // Store metadata
-  await supabase.from("gallery_media").insert({
-    media_url: urlData.publicUrl,
-    alt_text: altText || file.name,
+  const { error: mediaError } = await supabase.from("gallery_media").insert({
+    media_url: publicUrl,
+    alt_text: altText || "CMS image",
     entity_type: entityType,
     entity_id: entityId || null,
     status: "published",
   });
+  redirectOnMutationError(mediaError, "/admin", "Media save");
+  revalidatePath("/", "layout");
+  redirectWithCmsMessage("/admin", "success", "Image uploaded successfully.");
 }
 
 // Delete entity
@@ -611,7 +819,16 @@ export async function deleteEntity(table: string, id: string) {
   // Use admin client for writes
   const supabase = await getAdminSupabase();
 
-  await supabase.from(table).delete().eq("id", id);
+  const { error } = await supabase.from(table).delete().eq("id", id);
+  redirectOnMutationError(error, "/admin", "Delete");
+  const publicPathsByTable: Record<string, string[]> = {
+    safari_packages: ["/", "/safaris", "/safaris/[slug]", "/request-quote"],
+    destinations: ["/destinations", "/destinations/[slug]"],
+    experiences: ["/", "/experiences", "/experiences/[slug]"],
+    reviews: ["/", "/reviews"],
+    pages: ["/"],
+  };
+  revalidateCmsRoutes(...(publicPathsByTable[table] || ["/"]));
   redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table}`);
 }
 // Page Actions
@@ -638,11 +855,11 @@ export async function upsertPage(formData: FormData) {
   const supabase = await getAdminSupabase();
   const id = formData.get("id") as string;
   const featuredImageUrl =
-    (await uploadImageFromForm(supabase, formData, "featured_image_file", `media/pages/${id || "new"}`)) ||
+    (await uploadImageFromForm(supabase, formData, "featured_image_file", `media/pages/${id || "new"}`, `/admin/pages/${id || "new"}`)) ||
     formData.get("featured_image_url") ||
     undefined;
   const metaImageUrl =
-    (await uploadImageFromForm(supabase, formData, "meta_image_file", `media/pages/${id || "new"}/seo`)) ||
+    (await uploadImageFromForm(supabase, formData, "meta_image_file", `media/pages/${id || "new"}/seo`, `/admin/pages/${id || "new"}`)) ||
     formData.get("meta_image_url") ||
     undefined;
 
@@ -659,14 +876,43 @@ export async function upsertPage(formData: FormData) {
     meta_image_url: metaImageUrl,
   });
 
-  if (!parsed.success) return;
+  if (!parsed.success) {
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/pages/${id || "new"}`,
+      "Page save",
+    );
+  }
 
-  await supabase.from("pages").upsert({
+  const { error } = await supabase.from("pages").upsert({
     id: id || undefined,
     ...parsed.data,
     published_at: parsed.data.status === "published" ? new Date().toISOString() : null,
   });
+  redirectOnMutationError(error, `/admin/pages/${id || "new"}`, "Page save");
 
+  const publicSlug =
+    parsed.data.slug === "home" || parsed.data.slug === "/"
+      ? "/"
+      : `/${parsed.data.slug.replace(/^\/+/, "")}`;
+  const { error: heroSyncError } = await supabase.from("page_heroes").upsert(
+    {
+      page_slug: publicSlug,
+      title: parsed.data.title,
+      intro: parsed.data.summary,
+      background_image: parsed.data.featured_image_url,
+      status: parsed.data.status,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "page_slug" },
+  );
+  redirectOnMutationError(
+    heroSyncError,
+    `/admin/pages/${id || "new"}`,
+    "Page hero sync",
+  );
+
+  revalidateCmsRoutes("/", publicSlug);
   redirect(`/admin/pages`);
 }
 
@@ -691,7 +937,7 @@ export async function upsertHomepageSection(formData: FormData) {
     cta_primary: formData.get("content_cta_primary") || undefined,
     cta_secondary: formData.get("content_cta_secondary") || undefined,
     background_image:
-      (await uploadImageFromForm(supabase, formData, "background_image_file", "media/homepage/hero")) ||
+      (await uploadImageFromForm(supabase, formData, "background_image_file", "media/homepage/hero", "/admin/homepage/hero")) ||
       formData.get("background_image") ||
       undefined,
   };
@@ -711,15 +957,19 @@ export async function upsertHomepageSection(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Homepage section validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      "/admin/homepage/hero",
+      "Homepage section save",
+    );
   }
 
-  await supabase.from("homepage_sections").upsert({
+  const { error } = await supabase.from("homepage_sections").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, "/admin/homepage/hero", "Homepage section save");
 
   if (parsed.data.section_type === "hero") {
     const settingsPatch = {
@@ -738,18 +988,21 @@ export async function upsertHomepageSection(formData: FormData) {
       .maybeSingle();
 
     if (existingSettings?.id) {
-      await supabase
+      const { error: settingsError } = await supabase
         .from("site_settings")
         .update(settingsPatch)
         .eq("id", existingSettings.id);
+      redirectOnMutationError(settingsError, "/admin/homepage/hero", "Homepage settings sync");
     } else {
-      await supabase.from("site_settings").insert({
+      const { error: settingsError } = await supabase.from("site_settings").insert({
         business_name: "Jackfruit Safaris Uganda",
         ...settingsPatch,
       });
+      redirectOnMutationError(settingsError, "/admin/homepage/hero", "Homepage settings sync");
     }
   }
 
+  revalidateCmsRoutes("/");
   redirect("/admin/homepage");
 }
 
@@ -776,16 +1029,21 @@ export async function upsertQuickLink(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Quick link validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      "/admin/homepage/quick-links",
+      "Quick link save",
+    );
   }
 
-  await supabase.from("homepage_quick_links").upsert({
+  const { error } = await supabase.from("homepage_quick_links").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, "/admin/homepage/quick-links", "Quick link save");
 
+  revalidateCmsRoutes("/");
   redirect("/admin/homepage/quick-links");
 }
 
@@ -810,16 +1068,21 @@ export async function upsertTrustItem(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Trust item validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      "/admin/homepage/trust-items",
+      "Trust item save",
+    );
   }
 
-  await supabase.from("homepage_trust_items").upsert({
+  const { error } = await supabase.from("homepage_trust_items").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, "/admin/homepage/trust-items", "Trust item save");
 
+  revalidateCmsRoutes("/");
   redirect("/admin/homepage/trust-items");
 }
 
@@ -846,16 +1109,21 @@ export async function upsertFeature(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Feature validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      "/admin/homepage/features",
+      "Feature save",
+    );
   }
 
-  await supabase.from("homepage_features").upsert({
+  const { error } = await supabase.from("homepage_features").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, "/admin/homepage/features", "Feature save");
 
+  revalidateCmsRoutes("/");
   redirect("/admin/homepage/features");
 }
 
@@ -880,16 +1148,21 @@ export async function upsertGuideArticle(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Guide article validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      "/admin/homepage/guide-articles",
+      "Guide article save",
+    );
   }
 
-  await supabase.from("homepage_guide_articles").upsert({
+  const { error } = await supabase.from("homepage_guide_articles").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(error, "/admin/homepage/guide-articles", "Guide article save");
 
+  revalidateCmsRoutes("/", "/travel-guide");
   redirect("/admin/homepage/guide-articles");
 }
 
@@ -916,6 +1189,7 @@ export async function upsertPageHero(formData: FormData) {
       formData,
       "background_image_file",
       `media/page_heroes/${String(formData.get("page_slug") || "page").replace(/[^a-zA-Z0-9-]/g, "_")}`,
+      `/admin/pages/heroes/${formData.get("id") || "new"}`,
     )) ||
     formData.get("background_image") ||
     undefined;
@@ -944,16 +1218,25 @@ export async function upsertPageHero(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Page hero validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/pages/heroes/${formData.get("id") || "new"}`,
+      "Page hero save",
+    );
   }
 
-  await supabase.from("page_heroes").upsert({
+  const { error } = await supabase.from("page_heroes").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(
+    error,
+    `/admin/pages/heroes/${formData.get("id") || "new"}`,
+    "Page hero save",
+  );
 
+  revalidateCmsRoutes(parsed.data.page_slug);
   redirect("/admin/pages");
 }
 
@@ -986,16 +1269,25 @@ export async function upsertPageContentSection(formData: FormData) {
   });
 
   if (!parsed.success) {
-    console.error("Page content section validation error:", parsed.error);
-    return;
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/pages/content/${formData.get("id") || "new"}`,
+      "Page content save",
+    );
   }
 
   const supabase = await getAdminSupabase();
-  await supabase.from("page_content_sections").upsert({
+  const { error } = await supabase.from("page_content_sections").upsert({
     id: formData.get("id") as string || undefined,
     ...parsed.data,
     updated_at: new Date().toISOString(),
   });
+  redirectOnMutationError(
+    error,
+    `/admin/pages/content/${formData.get("id") || "new"}`,
+    "Page content save",
+  );
 
+  revalidateCmsRoutes(parsed.data.page_slug);
   redirect(`/admin/pages/content?page=${encodeURIComponent(parsed.data.page_slug)}`);
 }

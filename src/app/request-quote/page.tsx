@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 export default function RequestQuotePage() {
   return (
     <>
-      <section className="bg-[#10251b] py-16 text-white sm:py-20">
+      <section className="bg-[var(--foreground)] py-16 text-white sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             Request quote
           </p>
           <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
@@ -50,13 +50,13 @@ export default function RequestQuotePage() {
             ].map((item) => (
               <article
                 key={item.title}
-                className="rounded-[8px] border border-black/10 bg-white p-6"
+                className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6"
               >
-                <item.icon className="text-[#2d6f55]" size={24} />
-                <h2 className="mt-4 text-2xl font-black text-[#10251b]">
+                <item.icon className="text-[var(--brand-secondary)]" size={24} />
+                <h2 className="mt-4 text-2xl font-black text-[var(--foreground)]">
                   {item.title}
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-[#536154]">
+                <p className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]">
                   {item.body}
                 </p>
               </article>

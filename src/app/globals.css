@@ -71,6 +71,11 @@ summary::-webkit-details-marker {
   border-radius: var(--brand-button-radius);
 }
 
+a.rounded-full,
+button.rounded-full {
+  border-radius: var(--brand-button-radius);
+}
+
 .cms-brand-section {
   padding-block: var(--section-spacing);
 }

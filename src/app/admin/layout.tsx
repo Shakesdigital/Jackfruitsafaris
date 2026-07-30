@@ -4,6 +4,7 @@ import { logout } from "@/lib/server/actions";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AdminLoadingIndicator } from "@/app/admin/_components/admin-loading-indicator";
+import { CmsQueryFeedback } from "@/app/admin/_components/cms-query-feedback";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Jackfruit Safaris",
@@ -136,7 +137,10 @@ export default async function AdminLayout({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-8">{children}</main>
+      <main className="flex-1 p-8">
+        <CmsQueryFeedback />
+        {children}
+      </main>
     </div>
   );
 }

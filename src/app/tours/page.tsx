@@ -9,7 +9,7 @@ export default async function ToursPage() {
   // Only fetch at runtime if env vars are available
   if (!supabaseUrl || !supabaseAnonKey) {
     return (
-      <section className="min-h-screen bg-[#fbfaf5] p-8">
+      <section className="min-h-screen bg-[var(--background)] p-8">
         <h1 className="text-3xl font-bold mb-6">Safaris</h1>
         <p className="text-gray-600">Content will be loaded from the database at runtime.</p>
       </section>
@@ -27,7 +27,7 @@ export default async function ToursPage() {
   }
 
   return (
-    <section className="min-h-screen bg-[#fbfaf5] p-8">
+    <section className="min-h-screen bg-[var(--background)] p-8">
       <h1 className="text-3xl font-bold mb-6">Safaris from Supabase</h1>
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {tours?.map((tour: any) => (

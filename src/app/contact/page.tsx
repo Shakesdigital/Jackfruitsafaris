@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <section className="bg-[#10251b] py-16 text-white sm:py-20">
+      <section className="bg-[var(--foreground)] py-16 text-white sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             Contact
           </p>
           <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
@@ -38,13 +38,13 @@ export default function ContactPage() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="rounded-[8px] border border-black/10 bg-white p-5"
+                className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
               >
-                <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[#2d6f55]">
+                <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                   <item.icon size={17} />
                   {item.label}
                 </p>
-                <p className="mt-2 text-lg font-black text-[#10251b]">
+                <p className="mt-2 text-lg font-black text-[var(--foreground)]">
                   {item.value}
                 </p>
               </div>

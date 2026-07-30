@@ -1,21 +1,17 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { navItems } from "@/lib/content";
-import { getSiteSettings } from "@/lib/cms-data";
+import type { PublicSiteSettings } from "@/lib/site-settings";
 
-export async function SiteFooter() {
-  const settings = await getSiteSettings();
-
+export function SiteFooter({ settings }: { settings?: PublicSiteSettings | null }) {
   // Build nav items - prefer CMS if available, fallback to hardcoded
   const navigation = settings?.nav_items || navItems;
 
   return (
-    <footer className="bg-[#10251b] pb-24 pt-14 text-white md:pb-10">
+    <footer className="bg-[var(--foreground)] pb-24 pt-14 text-white md:pb-10">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 md:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.24em] text-[#f5bf2f]">
+          <p className="text-sm font-black uppercase tracking-[0.24em] text-[var(--brand-accent)]">
             {settings?.business_name || "Jackfruit Safaris Uganda"}
           </p>
           <p className="mt-4 max-w-xl text-2xl font-black leading-tight">
@@ -48,7 +44,10 @@ export async function SiteFooter() {
           <div className="mt-4 space-y-3 text-sm text-white/78">
             <p className="flex gap-3">
               <Phone className="mt-0.5 shrink-0" size={17} />
-              <span>{settings?.phone || "+256 772 550 268"}</span>
+              <span>
+                {settings?.phone || "+256 772 550 268"}
+                {settings?.alternate_phone ? ` / ${settings.alternate_phone}` : ""}
+              </span>
             </p>
             <p className="flex gap-3">
               <Mail className="mt-0.5 shrink-0" size={17} />
@@ -58,6 +57,22 @@ export async function SiteFooter() {
               <MapPin className="mt-0.5 shrink-0" size={17} />
               <span>{settings?.address || "Craft Village, Jinja, Uganda"}</span>
             </p>
+            {settings?.operating_hours && <p>{settings.operating_hours}</p>}
+            {settings?.social_links && (
+              <div className="flex flex-wrap gap-3 pt-1">
+                {Object.entries(settings.social_links).map(([label, href]) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold capitalize text-white/78 hover:text-white"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

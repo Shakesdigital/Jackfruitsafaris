@@ -21,38 +21,8 @@ type Safari = {
   image: string;
 };
 
-export async function generateStaticParams() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("destinations")
-    .select("slug")
-    .eq("status", "published");
-
-  return (data || []).map((item: { slug: string }) => ({ slug: item.slug }));
-}
-
-async function createClient() {
-  const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
-  if (!url || !key) {
-    // Return a mock client that supports method chaining
-    const emptyResult = { data: [], error: null };
-    const chainable = {
-      eq: () => ({ ...chainable }),
-      order: () => ({ ...emptyResult }),
-    };
-    return {
-      auth: { getUser: async () => ({ data: { user: null }, error: null }) },
-      from: () => ({
-        select: () => ({ ...chainable }),
-      }),
-    } as any;
-  }
-
-  return supabaseCreateClient(url!, key!);
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -98,7 +68,7 @@ export default async function DestinationDetailPage({ params }: Props) {
         <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/88 via-[#08170f]/58 to-[#08170f]/18" />
         <div className="relative mx-auto flex min-h-[58vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
           <div className="max-w-4xl">
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
+            <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               {destination.region}
             </p>
             <h1 className="mt-4 text-4xl font-black leading-tight sm:text-6xl">
@@ -116,36 +86,36 @@ export default async function DestinationDetailPage({ params }: Props) {
           <article className="space-y-10">
             <div className="grid gap-4 md:grid-cols-3">
               {(destination.why_go || []).map((item: string) => (
-                <div key={item} className="rounded-[8px] bg-[#eef7f0] p-5">
-                  <Sparkles className="text-[#2d6f55]" size={22} />
-                  <p className="mt-3 text-sm font-black text-[#27382b]">
+                <div key={item} className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5">
+                  <Sparkles className="text-[var(--brand-secondary)]" size={22} />
+                  <p className="mt-3 text-sm font-black text-[var(--foreground)]">
                     {item}
                   </p>
                 </div>
               ))}
             </div>
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-[8px] border border-black/10 bg-white p-6">
-                <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[#2d6f55]">
+              <div className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
+                <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                   <CalendarCheck size={17} />
                   Best time
                 </p>
-                <p className="mt-4 text-base leading-8 text-[#536154]">
+                <p className="mt-4 text-base leading-8 text-[var(--brand-muted-text)]">
                   {destination.best_time}
                 </p>
               </div>
-              <div className="rounded-[8px] border border-black/10 bg-white p-6">
-                <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[#2d6f55]">
+              <div className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
+                <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                   <MapPin size={17} />
                   Recommended stay
                 </p>
-                <p className="mt-4 text-base leading-8 text-[#536154]">
+                <p className="mt-4 text-base leading-8 text-[var(--brand-muted-text)]">
                   {destination.recommended_nights}
                 </p>
               </div>
             </div>
             <div>
-              <h2 className="text-3xl font-black text-[#10251b]">
+              <h2 className="text-3xl font-black text-[var(--foreground)]">
                 Related Uganda safaris
               </h2>
               <div className="mt-6 grid gap-6 md:grid-cols-2">
@@ -154,7 +124,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 ))}
               </div>
             </div>
-            <div className="rounded-[8px] bg-[#143c2d] p-6 text-white">
+            <div className="rounded-[var(--brand-radius)] bg-[var(--brand-primary)] p-6 text-white">
               <h2 className="text-2xl font-black">Route note</h2>
               <p className="mt-3 text-sm leading-7 text-white/76">
                 Uganda routing works best when park sectors, lodge locations,
@@ -163,7 +133,7 @@ export default async function DestinationDetailPage({ params }: Props) {
               </p>
               <Link
                 href="/request-quote"
-                className="mt-5 inline-flex rounded-full bg-[#f5bf2f] px-5 py-3 text-sm font-black text-[#10251b]"
+                className="mt-5 inline-flex rounded-full bg-[var(--brand-accent)] px-5 py-3 text-sm font-black text-[var(--foreground)]"
               >
                 Match me with a route
               </Link>

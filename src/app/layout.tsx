@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { MobileCta } from "@/components/mobile-cta";
+import { CmsLiveRefresh } from "@/components/cms-live-refresh";
 import { OrganizationJsonLd } from "@/components/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getSiteSettings } from "@/lib/cms-data";
+import type { PublicSiteSettings } from "@/lib/site-settings";
 import "./globals.css";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,45 +23,34 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://www.jackfruitsafaris.org"),
-  title: {
-    default: "Uganda Safaris, Gorilla Trekking and Jinja Tours | Jackfruit Safaris",
-    template: "%s | Jackfruit Safaris",
-  },
-  description:
-    "Plan private Uganda safaris with Jackfruit Safaris, a Jinja-based tour company offering gorilla trekking, Murchison Falls, 10-day Uganda itineraries, Jinja adventures, cultural tours, and airport transfers.",
-  openGraph: {
-    title: "Jackfruit Safaris Uganda",
-    description:
-      "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and airport transfers planned by local experts.",
-    url: "https://www.jackfruitsafaris.org",
-    siteName: "Jackfruit Safaris Uganda",
-    locale: "en_US",
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = (await getSiteSettings()) as PublicSiteSettings | null;
+  const seo = settings?.seo || {};
+  const title =
+    (typeof seo.title === "string" && seo.title) ||
+    "Uganda Safaris, Gorilla Trekking and Jinja Tours | Jackfruit Safaris";
+  const description =
+    (typeof seo.description === "string" && seo.description) ||
+    "Plan private Uganda safaris with Jackfruit Safaris, a Jinja-based tour company offering gorilla trekking, Murchison Falls, 10-day Uganda itineraries, Jinja adventures, cultural tours, and airport transfers.";
 
-type SiteAestheticsSettings = {
-  brand_primary_color?: string | null;
-  brand_secondary_color?: string | null;
-  brand_accent_color?: string | null;
-  brand_background_color?: string | null;
-  brand_surface_color?: string | null;
-  brand_text_color?: string | null;
-  brand_muted_text_color?: string | null;
-  heading_font_family?: string | null;
-  body_font_family?: string | null;
-  base_font_size?: string | null;
-  heading_weight?: string | null;
-  body_weight?: string | null;
-  line_height?: string | null;
-  letter_spacing?: string | null;
-  border_radius_style?: string | null;
-  button_style?: string | null;
-  section_spacing?: string | null;
-  card_shadow_style?: string | null;
-};
+  return {
+    metadataBase: new URL("https://www.jackfruitsafaris.org"),
+    title: {
+      default: title,
+      template: `%s | ${settings?.business_name || "Jackfruit Safaris"}`,
+    },
+    description,
+    icons: settings?.favicon_url ? { icon: settings.favicon_url } : undefined,
+    openGraph: {
+      title,
+      description,
+      url: "https://www.jackfruitsafaris.org",
+      siteName: settings?.business_name || "Jackfruit Safaris Uganda",
+      locale: "en_US",
+      type: "website",
+    },
+  };
+}
 
 type AestheticStyle = CSSProperties & Record<`--${string}`, string>;
 
@@ -88,7 +82,7 @@ function settingValue(value: string | null | undefined, fallback: string) {
   return value || fallback;
 }
 
-function buildAestheticStyle(settings: SiteAestheticsSettings | null): AestheticStyle {
+function buildAestheticStyle(settings: PublicSiteSettings | null): AestheticStyle {
   const radiusStyle = settingValue(settings?.border_radius_style, "rounded");
   const buttonStyle = settingValue(settings?.button_style, "pill");
   const sectionSpacing = settingValue(settings?.section_spacing, "comfortable");
@@ -121,7 +115,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await getSiteSettings();
+  const settings = (await getSiteSettings()) as PublicSiteSettings | null;
   const aestheticStyle = buildAestheticStyle(settings);
 
   return (
@@ -133,11 +127,12 @@ export default async function RootLayout({
         className="min-h-full bg-[var(--background)] text-[var(--foreground)]"
         style={aestheticStyle}
       >
+        <CmsLiveRefresh />
         <OrganizationJsonLd />
-        <SiteHeader />
+        <SiteHeader settings={settings} />
         <main>{children}</main>
-        <SiteFooter />
-        <MobileCta />
+        <SiteFooter settings={settings} />
+        <MobileCta settings={settings} />
       </body>
     </html>
   );

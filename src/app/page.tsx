@@ -7,6 +7,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
+import { CmsRichText } from "@/components/cms-rich-text";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
 import {
@@ -26,14 +27,22 @@ import {
   getPublishedQuickLinks,
   getPublishedTrustItems,
   getPublishedFeatures,
+  getPublishedPageContentSections,
   getSiteSettings,
 } from "@/lib/cms-data";
+import {
+  getPageSection,
+  getSectionLink,
+  getSectionStringList,
+  getSectionText,
+} from "@/lib/cms-page-content";
+import { buildWhatsAppHref } from "@/lib/site-settings";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   // Fetch CMS data
-  const [cmsSafaris, cmsExperiences, cmsTestimonials, guideArticles, quickLinks, trustItems, features, settings] = await Promise.all([
+  const [cmsSafaris, cmsExperiences, cmsTestimonials, guideArticles, quickLinks, trustItems, features, settings, pageSections] = await Promise.all([
     getPublishedSafaris(),
     getPublishedExperiences(),
     getPublishedReviews(),
@@ -42,7 +51,16 @@ export default async function Home() {
     getPublishedTrustItems(),
     getPublishedFeatures(),
     getSiteSettings(),
+    getPublishedPageContentSections("/"),
   ]);
+
+  const trustBarSection = getPageSection(pageSections, "trust_bar");
+  const whyUgandaSection = getPageSection(pageSections, "why_uganda");
+  const featuredSafarisSection = getPageSection(pageSections, "featured_safaris");
+  const experiencesSection = getPageSection(pageSections, "experiences");
+  const reviewsSection = getPageSection(pageSections, "reviews");
+  const travelGuideSection = getPageSection(pageSections, "travel_guide");
+  const quoteCtaSection = getPageSection(pageSections, "quote_cta");
 
   // Use hardcoded data as fallbacks when CMS returns empty
   const safaris = cmsSafaris.length ? cmsSafaris : hardcodedSafaris.map(s => ({
@@ -60,9 +78,21 @@ export default async function Home() {
     guest_name: t.name, trip_type: t.trip, quote: t.quote,
   }));
 
+  const fallbackFeatures = getSectionStringList(whyUgandaSection, "fallback_features", [
+    "Private, flexible trips",
+    "Clear package inclusions",
+    "Permit and lodge guidance",
+    "Warm care from arrival to departure",
+  ]);
   const featuresList = features.length ? features : hardcodedSafaris.slice(0, 4).map((s, i) => ({
-    id: i.toString(), text: ["Private, flexible trips", "Clear package inclusions", "Permit and lodge guidance", "Warm care from arrival to departure"][i] || "",
+    id: i.toString(), text: fallbackFeatures[i] || "",
   }));
+  const fallbackTrustItems = getSectionStringList(trustBarSection, "fallback_items", [
+    "2024 Tripadvisor Travelers' Choice Award",
+    "Registered tour company based in Jinja, Uganda",
+    "Private and custom safari planning",
+    "WhatsApp support before and during your trip",
+  ]);
 
   return (
     <>
@@ -74,7 +104,7 @@ export default async function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/90 via-[#08170f]/62 to-[#08170f]/20" />
         <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm font-black uppercase tracking-[0.2em] text-[#f5bf2f] ring-1 ring-white/20">
+            <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20">
               <BadgeCheck size={17} />
               {settings?.badge_text || "Local safari experts from Jinja"}
             </p>
@@ -87,7 +117,7 @@ export default async function Home() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/request-quote"
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#f5bf2f] px-6 text-sm font-black text-[#10251b] transition hover:bg-[#e5ad17]"
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand-accent)] px-6 text-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17]"
               >
                 {settings?.cta_primary || "Plan My Safari"}
               </Link>
@@ -131,14 +161,14 @@ export default async function Home() {
         <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:px-6 md:grid-cols-4 lg:px-8">
           {trustItems.length ? trustItems.map((item: any) => (
             <div key={item.id || item.text} className="flex items-start gap-3 text-sm">
-              <ShieldCheck className="mt-0.5 text-[#2d6f55]" size={18} />
-              <span className="font-bold leading-6 text-[#27382b]">{item.text}</span>
+              <ShieldCheck className="mt-0.5 text-[var(--brand-secondary)]" size={18} />
+              <span className="font-bold leading-6 text-[var(--foreground)]">{item.text}</span>
             </div>
           )) : (
-            ["2024 Tripadvisor Travelers' Choice Award", "Registered tour company based in Jinja, Uganda", "Private and custom safari planning", "WhatsApp support before and during your trip"].map(item => (
+            fallbackTrustItems.map(item => (
               <div key={item} className="flex items-start gap-3 text-sm">
-                <ShieldCheck className="mt-0.5 text-[#2d6f55]" size={18} />
-                <span className="font-bold leading-6 text-[#27382b]">{item}</span>
+                <ShieldCheck className="mt-0.5 text-[var(--brand-secondary)]" size={18} />
+                <span className="font-bold leading-6 text-[var(--foreground)]">{item}</span>
               </div>
             ))
           )}
@@ -147,19 +177,20 @@ export default async function Home() {
 
       {/* Why Uganda Section */}
       <Section
-        eyebrow={settings?.why_uganda_eyebrow || "Why Uganda"}
-        title={settings?.why_uganda_title || "One compact country, many safari worlds"}
-        intro={settings?.why_uganda_intro || "Uganda can take you from the River Nile to open savannah, roaring waterfalls, crater lakes, rainforest chimpanzees, and mountain gorillas in one carefully routed journey."}
+        eyebrow={whyUgandaSection?.subtitle || settings?.why_uganda_eyebrow || "Why Uganda"}
+        title={whyUgandaSection?.title || settings?.why_uganda_title || "One compact country, many safari worlds"}
+        intro={<CmsRichText html={getSectionText(whyUgandaSection, "intro", settings?.why_uganda_intro || "Uganda can take you from the River Nile to open savannah, roaring waterfalls, crater lakes, rainforest chimpanzees, and mountain gorillas in one carefully routed journey.")} />}
       >
         <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr]">
-          <div className="rounded-[8px] bg-[#143c2d] p-8 text-white sm:p-10">
-            <p className="text-xl leading-9 text-white/82">
-              {settings?.why_uganda_paragraph || "Jackfruit Safaris helps you experience Uganda smoothly, with local guides who understand the roads, parks, permits, lodges, and small details that make a trip feel effortless."}
-            </p>
+          <div className="rounded-[var(--brand-radius)] bg-[var(--brand-primary)] p-8 text-white sm:p-10">
+            <CmsRichText
+              className="text-xl leading-9 text-white/82"
+              html={getSectionText(whyUgandaSection, "body", settings?.why_uganda_paragraph || "Jackfruit Safaris helps you experience Uganda smoothly, with local guides who understand the roads, parks, permits, lodges, and small details that make a trip feel effortless.")}
+            />
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {featuresList.map((item: any) => (
                 <p key={item.id || item.text} className="flex items-center gap-3 font-bold">
-                  <BadgeCheck className="text-[#f5bf2f]" size={18} />
+                  <BadgeCheck className="text-[var(--brand-accent)]" size={18} />
                   {item.text}
                 </p>
               ))}
@@ -172,9 +203,9 @@ export default async function Home() {
       {/* Featured Safaris Section */}
       <Section
         className="bg-[#eef3eb]"
-        eyebrow="Featured safaris"
-        title="Start with a proven Uganda route"
-        intro="Choose a ready itinerary or ask Jackfruit Safaris to adjust the route, dates, accommodation tier, and pace around your group."
+        eyebrow={featuredSafarisSection?.subtitle || "Featured safaris"}
+        title={featuredSafarisSection?.title || "Start with a proven Uganda route"}
+        intro={<CmsRichText html={getSectionText(featuredSafarisSection, "intro", "Choose a ready itinerary or ask Jackfruit Safaris to adjust the route, dates, accommodation tier, and pace around your group.")} />}
       >
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {safaris.map((safari: any) => (
@@ -193,9 +224,9 @@ export default async function Home() {
 
       {/* Experiences Section */}
       <Section
-        eyebrow="Experiences"
-        title="The right trip for your travel style"
-        intro="Jackfruit Safaris can combine wildlife, primates, Nile adventure, culture, and transport into a single smooth plan."
+        eyebrow={experiencesSection?.subtitle || "Experiences"}
+        title={experiencesSection?.title || "The right trip for your travel style"}
+        intro={<CmsRichText html={getSectionText(experiencesSection, "intro", "Jackfruit Safaris can combine wildlife, primates, Nile adventure, culture, and transport into a single smooth plan.")} />}
       >
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {experiences.map((experience: any) => {
@@ -205,18 +236,18 @@ export default async function Home() {
               <Link
                 key={experience.slug}
                 href={`/experiences/${experience.slug}`}
-                className="group overflow-hidden rounded-[8px] border border-black/10 bg-white shadow-sm"
+                className="group overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm"
               >
                 <div
                   className="h-44 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                   style={{ backgroundImage: `url(${experience.image || experience.featured_image_url})` }}
                 />
                 <div className="p-5">
-                  <IconComponent className="text-[#2d6f55]" size={24} />
-                  <h3 className="mt-3 text-xl font-black text-[#10251b]">
+                  <IconComponent className="text-[var(--brand-secondary)]" size={24} />
+                  <h3 className="mt-3 text-xl font-black text-[var(--foreground)]">
                     {experience.name || experience.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-[#536154]">
+                  <p className="mt-2 text-sm leading-6 text-[var(--brand-muted-text)]">
                     {experience.summary}
                   </p>
                 </div>
@@ -229,20 +260,20 @@ export default async function Home() {
       {/* Reviews Section */}
       <Section
         className="bg-white"
-        eyebrow="Reviews and planning proof"
-        title="Confidence before the first road mile"
-        intro="The new inquiry flow puts trust, price guidance, route logic, and WhatsApp access close to every major booking decision."
+        eyebrow={reviewsSection?.subtitle || "Reviews and planning proof"}
+        title={reviewsSection?.title || "Confidence before the first road mile"}
+        intro={<CmsRichText html={getSectionText(reviewsSection, "intro", "The new inquiry flow puts trust, price guidance, route logic, and WhatsApp access close to every major booking decision.")} />}
       >
         <div className="grid gap-5 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (
-            <article key={review.guest_name || index} className="rounded-[8px] border border-black/10 bg-[#fbfaf5] p-6">
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2d6f55]">
+            <article key={review.guest_name || index} className="rounded-[var(--brand-radius)] border border-black/10 bg-[var(--background)] p-6">
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                 {review.trip_type}
               </p>
-              <p className="mt-4 text-lg font-bold leading-8 text-[#10251b]">
+              <p className="mt-4 text-lg font-bold leading-8 text-[var(--foreground)]">
                 &quot;{review.quote}&quot;
               </p>
-              <p className="mt-4 text-sm font-bold text-[#536154]">
+              <p className="mt-4 text-sm font-bold text-[var(--brand-muted-text)]">
                 {review.guest_name}
               </p>
             </article>
@@ -252,19 +283,19 @@ export default async function Home() {
 
       {/* Travel Guide Section */}
       <Section
-        className="bg-[#143c2d] text-white"
-        eyebrow="Travel guide"
-        title="Helpful planning content for safari buyers"
-        intro="Priority guide topics are ready for CMS publishing, SEO expansion, and AI-search visibility."
+        className="bg-[var(--brand-primary)] text-white"
+        eyebrow={travelGuideSection?.subtitle || "Travel guide"}
+        title={travelGuideSection?.title || "Helpful planning content for safari buyers"}
+        intro={<CmsRichText html={getSectionText(travelGuideSection, "intro", "Priority guide topics are ready for CMS publishing, SEO expansion, and AI-search visibility.")} />}
       >
         <div className="grid gap-3 md:grid-cols-2">
           {guideArticles.length ? guideArticles.map((article: any) => (
-            <Link key={article.id || article.title || article} href="/travel-guide" className="flex items-center justify-between rounded-[8px] bg-white/8 p-4 text-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12">
+            <Link key={article.id || article.title || article} href={getSectionLink(travelGuideSection, "link_href", "/travel-guide")} className="flex items-center justify-between rounded-[var(--brand-radius)] bg-white/8 p-4 text-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12">
               {article.title || article}
               <ArrowRight size={16} />
             </Link>
           )) : hardcodedGuideArticles.map(article => (
-            <Link key={article} href="/travel-guide" className="flex items-center justify-between rounded-[8px] bg-white/8 p-4 text-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12">
+            <Link key={article} href={getSectionLink(travelGuideSection, "link_href", "/travel-guide")} className="flex items-center justify-between rounded-[var(--brand-radius)] bg-white/8 p-4 text-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12">
               {article}
               <ArrowRight size={16} />
             </Link>
@@ -274,26 +305,27 @@ export default async function Home() {
 
       {/* CTA Section */}
       <Section>
-        <div className="grid gap-8 rounded-[8px] bg-[#f5bf2f] p-8 sm:p-10 lg:grid-cols-[1fr_0.6fr] lg:items-center">
+        <div className="grid gap-8 rounded-[var(--brand-radius)] bg-[var(--brand-accent)] p-8 sm:p-10 lg:grid-cols-[1fr_0.6fr] lg:items-center">
           <div>
-            <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-[#143c2d]">
+            <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-[var(--brand-primary)]">
               <MapPin size={18} />
-              {settings?.cta_eyebrow || "Ready to plan?"}
+              {quoteCtaSection?.subtitle || settings?.cta_eyebrow || "Ready to plan?"}
             </p>
-            <h2 className="mt-4 text-3xl font-black leading-tight text-[#10251b] sm:text-5xl">
-              {settings?.cta_title || "Tell us your dates, group size, budget, and dream experiences."}
+            <h2 className="mt-4 text-3xl font-black leading-tight text-[var(--foreground)] sm:text-5xl">
+              {quoteCtaSection?.title || settings?.cta_title || "Tell us your dates, group size, budget, and dream experiences."}
             </h2>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-[#27382b]">
-              {settings?.cta_intro || "Jackfruit Safaris will recommend the best route and quote, with clear inclusions, exclusions, and items that need live checking."}
-            </p>
+            <CmsRichText
+              className="mt-4 max-w-2xl text-lg leading-8 text-[var(--foreground)]"
+              html={getSectionText(quoteCtaSection, "intro", settings?.cta_intro || "Jackfruit Safaris will recommend the best route and quote, with clear inclusions, exclusions, and items that need live checking.")}
+            />
           </div>
           <div className="grid gap-3">
-            <Link href="/request-quote" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#143c2d] px-6 text-sm font-black text-white">
-              {settings?.cta_button || "Request a Custom Quote"}
+            <Link href={getSectionLink(quoteCtaSection, "primary_href", "/request-quote")} className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand-primary)] px-6 text-sm font-black text-white">
+              {getSectionText(quoteCtaSection, "primary_label", settings?.cta_button || "Request a Custom Quote")}
             </Link>
-            <a href={settings?.whatsappHref || "https://wa.me/256772550268?text=Hello%20Jackfruit%20Safaris%2C%20I%20would%20like%20help%20planning%20a%20Uganda%20trip."} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-black text-[#143c2d]">
+            <a href={buildWhatsAppHref(settings)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-black text-[var(--brand-primary)]">
               <MessageCircle size={18} />
-              WhatsApp Jackfruit
+              {getSectionText(quoteCtaSection, "secondary_label", "WhatsApp Jackfruit")}
             </a>
           </div>
         </div>

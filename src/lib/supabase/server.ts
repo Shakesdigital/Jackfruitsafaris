@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createServerClient } from "@supabase/ssr";
 
+const noStoreFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, cache: "no-store" });
+
 export async function createClient() {
   // Try multiple env var names for flexibility
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
@@ -37,6 +40,9 @@ export async function createClient() {
       url,
       key,
       {
+        global: {
+          fetch: noStoreFetch,
+        },
         cookies: {
           getAll() {
             return cookieStore.getAll();
@@ -56,7 +62,9 @@ export async function createClient() {
   } catch {
     // In production builds without proper cookie context, fallback to anon client
     const { createClient: supabaseCreateClient } = await import("@supabase/supabase-js");
-    return supabaseCreateClient(url, key);
+    return supabaseCreateClient(url, key, {
+      global: { fetch: noStoreFetch },
+    });
   }
 }
 

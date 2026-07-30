@@ -3,7 +3,12 @@ import Link from "next/link";
 import { ArrowRight, Map } from "lucide-react";
 import { Section } from "@/components/section";
 import { destinations as hardcodedDestinations, images } from "@/lib/content";
-import { getPublishedDestinations, getPageHero, getSiteSettings } from "@/lib/cms-data";
+import {
+  getPublishedDestinations,
+  getPageHero,
+  getPublishedPageContentSections,
+} from "@/lib/cms-data";
+import { getPageSection } from "@/lib/cms-page-content";
 
 type Destination = {
   slug: string;
@@ -17,10 +22,12 @@ type Destination = {
 export const dynamic = "force-dynamic";
 
 export default async function DestinationsPage() {
-  const [destinations, hero] = await Promise.all([
+  const [destinations, hero, pageSections] = await Promise.all([
     getPublishedDestinations(),
     getPageHero("/destinations"),
+    getPublishedPageContentSections("/destinations"),
   ]);
+  const gridSection = getPageSection(pageSections, "destination_grid");
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const displayedDestinations = destinations.length
@@ -41,9 +48,13 @@ export default async function DestinationsPage() {
 
   return (
     <>
-      <section className="bg-[#10251b] py-16 text-white sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
+      <section
+        className="relative bg-[var(--foreground)] bg-cover bg-center py-16 text-white sm:py-20"
+        style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+      >
+        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/82" />}
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             {hero?.eyebrow || "Destinations"}
           </p>
           <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
@@ -55,30 +66,33 @@ export default async function DestinationsPage() {
         </div>
       </section>
 
-      <Section>
+      <Section
+        eyebrow={gridSection?.subtitle || undefined}
+        title={gridSection?.title || undefined}
+      >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {displayedDestinations.map((destination: any) => (
             <Link
               key={destination.slug}
               href={`/destinations/${destination.slug}`}
-              className="group overflow-hidden rounded-[8px] border border-black/10 bg-white shadow-sm"
+              className="group overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm"
             >
               <div
                 className="h-56 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                 style={{ backgroundImage: `url(${destination.featured_image_url || ""})` }}
               />
               <div className="p-6">
-                <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#2d6f55]">
+                <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                   <Map size={15} />
                   {destination.region}
                 </p>
-                <h2 className="mt-3 text-2xl font-black text-[#10251b]">
+                <h2 className="mt-3 text-2xl font-black text-[var(--foreground)]">
                   {destination.name}
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-[#536154]">
+                <p className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]">
                   {destination.overview}
                 </p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#143c2d]">
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[var(--brand-primary)]">
                   View destination
                   <ArrowRight size={16} />
                 </span>

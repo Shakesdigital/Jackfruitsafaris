@@ -3,15 +3,26 @@ import Link from "next/link";
 import { Award, Star } from "lucide-react";
 import { Section } from "@/components/section";
 import { testimonials as hardcodedTestimonials } from "@/lib/content";
-import { getPublishedReviews, getPageHero, getSiteSettings } from "@/lib/cms-data";
+import {
+  getPublishedReviews,
+  getPageHero,
+  getPublishedPageContentSections,
+} from "@/lib/cms-data";
+import {
+  getPageSection,
+  getSectionLink,
+} from "@/lib/cms-page-content";
 
 export const dynamic = "force-dynamic";
 
 export default async function ReviewsPage() {
-  const [reviews, hero] = await Promise.all([
+  const [reviews, hero, pageSections] = await Promise.all([
     getPublishedReviews(),
     getPageHero("/reviews"),
+    getPublishedPageContentSections("/reviews"),
   ]);
+  const gridSection = getPageSection(pageSections, "review_grid");
+  const quoteCtaSection = getPageSection(pageSections, "quote_cta");
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const testimonials = reviews.length
@@ -29,9 +40,13 @@ export default async function ReviewsPage() {
 
   return (
     <>
-      <section className="bg-[#10251b] py-16 text-white sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[#f5bf2f]">
+      <section
+        className="relative bg-[var(--foreground)] bg-cover bg-center py-16 text-white sm:py-20"
+        style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+      >
+        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/82" />}
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             <Award size={18} />
             {hero?.eyebrow || "Guest reviews"}
           </p>
@@ -43,29 +58,32 @@ export default async function ReviewsPage() {
           </p>
         </div>
       </section>
-      <Section>
+      <Section
+        eyebrow={gridSection?.subtitle || undefined}
+        title={gridSection?.title || undefined}
+      >
         <div className="grid gap-5 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (
-            <article key={review.guest_name + index} className="rounded-[8px] border border-black/10 bg-white p-6">
-              <div className="flex gap-1 text-[#f5bf2f]">
+            <article key={review.guest_name + index} className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
+              <div className="flex gap-1 text-[var(--brand-accent)]">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={18} fill="currentColor" />
                 ))}
               </div>
-              <p className="mt-5 text-lg font-bold leading-8 text-[#10251b]">
+              <p className="mt-5 text-lg font-bold leading-8 text-[var(--foreground)]">
                 &quot;{review.quote}&quot;
               </p>
-              <p className="mt-5 text-sm font-black uppercase tracking-[0.16em] text-[#2d6f55]">
+              <p className="mt-5 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                 {review.trip_type}
               </p>
-              <p className="mt-1 text-sm font-bold text-[#536154]">
+              <p className="mt-1 text-sm font-bold text-[var(--brand-muted-text)]">
                 {review.guest_name}
               </p>
             </article>
           ))}
         </div>
-        <Link href="/request-quote" className="mt-8 inline-flex rounded-full bg-[#143c2d] px-6 py-3 text-sm font-black text-white">
-          Plan your trip
+        <Link href={getSectionLink(quoteCtaSection, "href", "/request-quote")} className="mt-8 inline-flex rounded-full bg-[var(--brand-primary)] px-6 py-3 text-sm font-black text-white">
+          {quoteCtaSection?.title || "Plan your trip"}
         </Link>
       </Section>
     </>
