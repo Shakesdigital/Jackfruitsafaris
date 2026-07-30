@@ -36,6 +36,10 @@ function parseJsonField<T>(value: FormDataEntryValue | null, fallback: T): T {
   }
 }
 
+function redirectWithCmsMessage(path: string, type: "error" | "success", message: string) {
+  redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+}
+
 async function uploadImageFromForm(
   supabase: StorageClient,
   formData: FormData,
@@ -57,12 +61,7 @@ async function uploadImageFromForm(
 
   if (error) {
     console.error("CMS image upload error:", error);
-    const message = error instanceof Error
-      ? error.message
-      : typeof error === "object" && error && "message" in error
-        ? String((error as { message?: unknown }).message)
-        : "The image could not be uploaded to Supabase Storage.";
-    throw new Error(`CMS image upload failed: ${message}`);
+    return null;
   }
 
   const { data } = supabase.storage.from("cms-media").getPublicUrl(path);
@@ -233,10 +232,14 @@ export async function upsertSiteSettings(formData: FormData) {
 
   if (error) {
     console.error("Site settings save error:", error);
-    throw new Error(`Site settings could not be saved: ${error.message}`);
+    redirectWithCmsMessage(
+      "/admin/settings",
+      "error",
+      `Settings could not be saved: ${error.message}`,
+    );
   }
 
-  redirect("/admin/settings");
+  redirectWithCmsMessage("/admin/settings", "success", "Settings saved successfully.");
 }
 
 // Safari Package Actions

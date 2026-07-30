@@ -13,17 +13,40 @@ export const metadata: Metadata = {
   title: "Site Settings",
 };
 
-export default async function SettingsPage() {
+type SettingsPageProps = {
+  searchParams: Promise<{ error?: string; success?: string }>;
+};
+
+export default async function SettingsPage({ searchParams }: SettingsPageProps) {
+  const { error, success } = await searchParams;
   const supabase = await createClient();
 
-  const { data: settings } = await supabase
+  const { data: settings, error: settingsError } = await supabase
     .from("site_settings")
     .select("*")
-    .single();
+    .maybeSingle();
 
   return (
     <div className="max-w-4xl">
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Site Settings</h1>
+
+      {error && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+          {success}
+        </div>
+      )}
+
+      {settingsError && (
+        <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          Settings could not be loaded from Supabase: {settingsError.message}
+        </div>
+      )}
 
       <form
         action={upsertSiteSettings}
