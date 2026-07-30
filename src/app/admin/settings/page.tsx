@@ -290,6 +290,207 @@ export default async function SettingsPage() {
         </div>
 
         <div className="border-b pb-6">
+          <h2 className="mb-2 text-lg font-medium">Site Aesthetics</h2>
+          <p className="mb-4 text-sm text-gray-500">
+            Control the global website palette, typography, shape, spacing, and visual feel.
+          </p>
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Brand Colors
+              </h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <ColorField
+                  name="brand_primary_color"
+                  label="Primary Brand Color"
+                  value={settings?.brand_primary_color}
+                  fallback="#143c2d"
+                />
+                <ColorField
+                  name="brand_secondary_color"
+                  label="Secondary Brand Color"
+                  value={settings?.brand_secondary_color}
+                  fallback="#2d6f55"
+                />
+                <ColorField
+                  name="brand_accent_color"
+                  label="Accent / Highlight Color"
+                  value={settings?.brand_accent_color}
+                  fallback="#f5bf2f"
+                />
+                <ColorField
+                  name="brand_background_color"
+                  label="Website Background"
+                  value={settings?.brand_background_color}
+                  fallback="#fbfaf5"
+                />
+                <ColorField
+                  name="brand_surface_color"
+                  label="Card / Surface Color"
+                  value={settings?.brand_surface_color}
+                  fallback="#ffffff"
+                />
+                <ColorField
+                  name="brand_text_color"
+                  label="Main Text Color"
+                  value={settings?.brand_text_color}
+                  fallback="#10251b"
+                />
+                <ColorField
+                  name="brand_muted_text_color"
+                  label="Muted Text Color"
+                  value={settings?.brand_muted_text_color}
+                  fallback="#536154"
+                />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Text Format
+              </h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <SelectField
+                  name="heading_font_family"
+                  label="Heading Font"
+                  value={settings?.heading_font_family}
+                  fallback="Geist"
+                  options={[
+                    ["Geist", "Geist"],
+                    ["Arial", "Arial"],
+                    ["Georgia", "Georgia"],
+                    ["Inter", "Inter"],
+                    ["system-ui", "System UI"],
+                  ]}
+                />
+                <SelectField
+                  name="body_font_family"
+                  label="Body Font"
+                  value={settings?.body_font_family}
+                  fallback="Geist"
+                  options={[
+                    ["Geist", "Geist"],
+                    ["Arial", "Arial"],
+                    ["Georgia", "Georgia"],
+                    ["Inter", "Inter"],
+                    ["system-ui", "System UI"],
+                  ]}
+                />
+                <SelectField
+                  name="base_font_size"
+                  label="Base Text Size"
+                  value={settings?.base_font_size}
+                  fallback="16px"
+                  options={[
+                    ["15px", "Compact"],
+                    ["16px", "Comfortable"],
+                    ["17px", "Large"],
+                    ["18px", "Extra Large"],
+                  ]}
+                />
+                <SelectField
+                  name="heading_weight"
+                  label="Heading Weight"
+                  value={settings?.heading_weight}
+                  fallback="900"
+                  options={[
+                    ["700", "Bold"],
+                    ["800", "Extra Bold"],
+                    ["900", "Black"],
+                  ]}
+                />
+                <SelectField
+                  name="body_weight"
+                  label="Body Weight"
+                  value={settings?.body_weight}
+                  fallback="400"
+                  options={[
+                    ["400", "Regular"],
+                    ["500", "Medium"],
+                    ["600", "Semi Bold"],
+                  ]}
+                />
+                <SelectField
+                  name="line_height"
+                  label="Body Line Height"
+                  value={settings?.line_height}
+                  fallback="1.6"
+                  options={[
+                    ["1.45", "Tight"],
+                    ["1.6", "Comfortable"],
+                    ["1.75", "Airy"],
+                  ]}
+                />
+                <SelectField
+                  name="letter_spacing"
+                  label="Letter Spacing"
+                  value={settings?.letter_spacing}
+                  fallback="normal"
+                  options={[
+                    ["normal", "Normal"],
+                    ["0.01em", "Slightly Open"],
+                    ["0.02em", "Open"],
+                  ]}
+                />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Layout Feel
+              </h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <SelectField
+                  name="border_radius_style"
+                  label="Corner Radius"
+                  value={settings?.border_radius_style}
+                  fallback="rounded"
+                  options={[
+                    ["sharp", "Sharp"],
+                    ["rounded", "Rounded"],
+                    ["soft", "Soft"],
+                  ]}
+                />
+                <SelectField
+                  name="button_style"
+                  label="Button Style"
+                  value={settings?.button_style}
+                  fallback="pill"
+                  options={[
+                    ["square", "Square"],
+                    ["rounded", "Rounded"],
+                    ["pill", "Pill"],
+                  ]}
+                />
+                <SelectField
+                  name="section_spacing"
+                  label="Section Spacing"
+                  value={settings?.section_spacing}
+                  fallback="comfortable"
+                  options={[
+                    ["compact", "Compact"],
+                    ["comfortable", "Comfortable"],
+                    ["spacious", "Spacious"],
+                  ]}
+                />
+                <SelectField
+                  name="card_shadow_style"
+                  label="Card Shadow"
+                  value={settings?.card_shadow_style}
+                  fallback="soft"
+                  options={[
+                    ["none", "None"],
+                    ["soft", "Soft"],
+                    ["strong", "Strong"],
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b pb-6">
           <h2 className="mb-4 text-lg font-medium">Social Links</h2>
           <KeyValueEditor
             name="social_links"
@@ -330,5 +531,70 @@ export default async function SettingsPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+function ColorField({
+  name,
+  label,
+  value,
+  fallback,
+}: {
+  name: string;
+  label: string;
+  value?: string | null;
+  fallback: string;
+}) {
+  const color = value || fallback;
+
+  return (
+    <label className="block">
+      <span className="text-sm font-medium text-gray-700">{label}</span>
+      <div className="mt-1 flex gap-2">
+        <input
+          type="color"
+          name={name}
+          defaultValue={color}
+          className="h-10 w-12 rounded-md border border-gray-300 bg-white p-1"
+        />
+        <input
+          name={`${name}_preview`}
+          defaultValue={color}
+          readOnly
+          className="block w-full rounded-md border-gray-300 bg-gray-50 font-mono text-sm"
+        />
+      </div>
+    </label>
+  );
+}
+
+function SelectField({
+  name,
+  label,
+  value,
+  fallback,
+  options,
+}: {
+  name: string;
+  label: string;
+  value?: string | null;
+  fallback: string;
+  options: Array<[string, string]>;
+}) {
+  return (
+    <label className="block">
+      <span className="text-sm font-medium text-gray-700">{label}</span>
+      <select
+        name={name}
+        defaultValue={value || fallback}
+        className="mt-1 block w-full rounded-md border-gray-300"
+      >
+        {options.map(([optionValue, optionLabel]) => (
+          <option key={optionValue} value={optionValue}>
+            {optionLabel}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

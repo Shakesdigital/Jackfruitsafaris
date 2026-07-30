@@ -3,6 +3,22 @@
 :root {
   --background: #fbfaf5;
   --foreground: #10251b;
+  --brand-primary: #143c2d;
+  --brand-secondary: #2d6f55;
+  --brand-accent: #f5bf2f;
+  --brand-surface: #ffffff;
+  --brand-muted-text: #536154;
+  --font-heading: var(--font-geist-sans);
+  --font-body: var(--font-geist-sans);
+  --base-font-size: 16px;
+  --heading-weight: 900;
+  --body-weight: 400;
+  --body-line-height: 1.6;
+  --body-letter-spacing: normal;
+  --brand-radius: 8px;
+  --brand-button-radius: 999px;
+  --section-spacing: 5rem;
+  --card-shadow: 0 12px 30px rgb(16 37 27 / 0.08);
 }
 
 @theme inline {
@@ -15,7 +31,21 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: var(--base-font-size);
+  font-weight: var(--body-weight);
+  letter-spacing: var(--body-letter-spacing);
+  line-height: var(--body-line-height);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-weight: var(--heading-weight);
 }
 
 html {
@@ -23,10 +53,24 @@ html {
 }
 
 ::selection {
-  background: #f5bf2f;
-  color: #10251b;
+  background: var(--brand-accent);
+  color: var(--foreground);
 }
 
 summary::-webkit-details-marker {
   display: none;
+}
+
+.cms-brand-surface {
+  background: var(--brand-surface);
+  border-radius: var(--brand-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.cms-brand-button {
+  border-radius: var(--brand-button-radius);
+}
+
+.cms-brand-section {
+  padding-block: var(--section-spacing);
 }
