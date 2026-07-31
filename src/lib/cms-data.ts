@@ -1,5 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { unstable_noStore } from "next/cache";
 
 type AdminRecord = Record<string, any>;
 
@@ -72,6 +73,7 @@ function createAnonClient() {
 
 // Fetch published safari packages
 export async function getPublishedSafaris() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -85,6 +87,7 @@ export async function getPublishedSafaris() {
 
 // Fetch published destinations
 export async function getPublishedDestinations() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -98,6 +101,7 @@ export async function getPublishedDestinations() {
 
 // Fetch published experiences
 export async function getPublishedExperiences() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -111,6 +115,7 @@ export async function getPublishedExperiences() {
 
 // Fetch approved reviews
 export async function getPublishedReviews() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -126,6 +131,7 @@ export async function getPublishedReviews() {
 // Fetch the latest public-safe site settings. No React cache to prevent
 // content reversion issues. Each request gets fresh data from Supabase.
 export async function getSiteSettings() {
+  unstable_noStore();
   try {
     const supabase = await createClient();
 
@@ -173,6 +179,7 @@ export async function getSiteSettings() {
 
 // Fetch safari by slug
 export async function getSafariBySlug(slug: string) {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -187,6 +194,7 @@ export async function getSafariBySlug(slug: string) {
 
 // Fetch destination by slug
 export async function getDestinationBySlug(slug: string) {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -201,6 +209,7 @@ export async function getDestinationBySlug(slug: string) {
 
 // Fetch experience by slug
 export async function getExperienceBySlug(slug: string) {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -215,6 +224,7 @@ export async function getExperienceBySlug(slug: string) {
 
 // Fetch all gallery media
 export async function getGalleryMedia() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -328,6 +338,7 @@ export async function getAdminLeads() {
 
 // Fetch all published homepage sections
 export async function getPublishedHomepageSections() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -341,6 +352,7 @@ export async function getPublishedHomepageSections() {
 
 // Fetch all published quick links
 export async function getPublishedQuickLinks() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -354,6 +366,7 @@ export async function getPublishedQuickLinks() {
 
 // Fetch all published trust items
 export async function getPublishedTrustItems() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -367,6 +380,7 @@ export async function getPublishedTrustItems() {
 
 // Fetch all published features
 export async function getPublishedFeatures() {
+  unstable_noStore();
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -380,6 +394,7 @@ export async function getPublishedFeatures() {
 
 // Fetch homepage guide articles
 export async function getHomepageGuideArticles(limit?: number) {
+  unstable_noStore();
   const supabase = await createClient();
 
   let query = supabase
@@ -454,6 +469,7 @@ export async function getAdminGuideArticles() {
 
 // Fetch page hero content
 export async function getPageHero(pageSlug: string) {
+  unstable_noStore();
   const supabase = await createClient();
   const { data } = await supabase
     .from("page_heroes")
@@ -486,6 +502,7 @@ export async function getAdminPageHeroById(id: string) {
 
 // Fetch published page content sections
 export async function getPublishedPageContentSections(pageSlug: string) {
+  unstable_noStore();
   const supabase = await createClient();
   const { data } = await supabase
     .from("page_content_sections")
