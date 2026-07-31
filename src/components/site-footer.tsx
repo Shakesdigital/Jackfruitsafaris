@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { navItems } from "@/lib/content";
+import { resolveNavItems } from "@/lib/content";
 import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export function SiteFooter({ settings }: { settings?: PublicSiteSettings | null }) {
-  // Build nav items - prefer CMS if available, fallback to hardcoded
-  const navigation = settings?.nav_items || navItems;
+  const navigation = resolveNavItems(settings?.nav_items);
 
   return (
     <footer className="bg-[var(--foreground)] pb-24 pt-14 text-white md:pb-10">
@@ -26,7 +25,7 @@ export function SiteFooter({ settings }: { settings?: PublicSiteSettings | null 
             Explore
           </h2>
           <div className="mt-4 grid gap-2">
-            {navigation?.map((item: any) => (
+            {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

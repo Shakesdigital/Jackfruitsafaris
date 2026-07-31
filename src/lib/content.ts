@@ -73,6 +73,25 @@ export const navItems = [
   { label: "Travel Guide", href: "/travel-guide" },
 ];
 
+export type NavItem = (typeof navItems)[number];
+
+function isNavItem(item: unknown): item is NavItem {
+  if (!item || typeof item !== "object") return false;
+
+  const candidate = item as Record<string, unknown>;
+  return (
+    typeof candidate.label === "string" &&
+    candidate.label.trim().length > 0 &&
+    typeof candidate.href === "string" &&
+    candidate.href.trim().length > 0
+  );
+}
+
+export function resolveNavItems(items: unknown): NavItem[] {
+  const cmsItems = Array.isArray(items) ? items.filter(isNavItem) : [];
+  return cmsItems.length > 0 ? cmsItems : navItems;
+}
+
 export const images = {
   hero:
     "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82",

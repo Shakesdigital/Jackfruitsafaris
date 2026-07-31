@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { Menu, MessageCircle } from "lucide-react";
-import { navItems } from "@/lib/content";
+import { resolveNavItems } from "@/lib/content";
 import {
   buildWhatsAppHref,
   type PublicSiteSettings,
 } from "@/lib/site-settings";
 
 export function SiteHeader({ settings }: { settings?: PublicSiteSettings | null }) {
-  // Build nav items - prefer CMS if available, fallback to hardcoded
-  const navigation = settings?.nav_items || navItems;
+  const navigation = resolveNavItems(settings?.nav_items);
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-white/92 backdrop-blur-xl">
@@ -36,7 +35,7 @@ export function SiteHeader({ settings }: { settings?: PublicSiteSettings | null 
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {navigation?.map((item: any) => (
+          {navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -68,7 +67,7 @@ export function SiteHeader({ settings }: { settings?: PublicSiteSettings | null 
             <Menu size={20} />
           </summary>
           <div className="absolute right-0 mt-3 w-72 rounded-2xl border border-black/10 bg-white p-3 shadow-2xl">
-            {navigation?.map((item: any) => (
+            {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
