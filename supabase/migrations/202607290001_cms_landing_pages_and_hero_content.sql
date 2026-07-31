@@ -20,11 +20,11 @@ insert into public.pages (
   ('about', 'About', 'About page covering Jackfruit Safaris local roots, operating areas, guiding style, and service scope.', 'published', 'About Jackfruit Safaris Uganda', 'Learn about Jackfruit Safaris Uganda, a locally rooted tour company based in Jinja and planning safaris across Uganda.'),
   ('travel-guide', 'Travel Guide', 'Travel guide landing page listing practical safari planning article topics.', 'published', 'Uganda Safari Travel Guide | Jackfruit Safaris', 'Read practical Uganda safari planning guides about seasons, permits, packing, routes, costs, and Jinja travel.')
 on conflict (slug) do update
-set title = excluded.title,
-    summary = excluded.summary,
-    status = excluded.status,
-    meta_title = excluded.meta_title,
-    meta_description = excluded.meta_description,
+set title = coalesce(public.pages.title, excluded.title),
+    summary = coalesce(public.pages.summary, excluded.summary),
+    status = coalesce(public.pages.status, excluded.status),
+    meta_title = coalesce(public.pages.meta_title, excluded.meta_title),
+    meta_description = coalesce(public.pages.meta_description, excluded.meta_description),
     updated_at = now();
 
 insert into public.page_heroes (
@@ -48,10 +48,10 @@ insert into public.page_heroes (
     'services_intro', 'The website is structured so staff can manage every front-end content area from the Supabase CMS.'
   ), 'published')
 on conflict (page_slug) do update
-set eyebrow = excluded.eyebrow,
-    title = excluded.title,
-    intro = excluded.intro,
+set eyebrow = coalesce(public.page_heroes.eyebrow, excluded.eyebrow),
+    title = coalesce(public.page_heroes.title, excluded.title),
+    intro = coalesce(public.page_heroes.intro, excluded.intro),
     background_image = coalesce(public.page_heroes.background_image, excluded.background_image),
-    content = public.page_heroes.content || excluded.content,
-    status = excluded.status,
+    content = excluded.content || public.page_heroes.content,
+    status = coalesce(public.page_heroes.status, excluded.status),
     updated_at = now();

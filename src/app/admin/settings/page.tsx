@@ -24,6 +24,9 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
   const { data: settings, error: settingsError } = await supabase
     .from("site_settings")
     .select("*")
+    .order("updated_at", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(1)
     .maybeSingle();
 
   return (

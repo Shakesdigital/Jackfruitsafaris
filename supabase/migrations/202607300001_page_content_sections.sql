@@ -383,12 +383,12 @@ insert into public.page_content_sections (
     'published'::public.content_status
   )
 on conflict (page_slug, section_key) do update
-set section_type = excluded.section_type,
-    title = excluded.title,
-    subtitle = excluded.subtitle,
-    content = excluded.content,
-    order_index = excluded.order_index,
-    status = excluded.status,
+set section_type = coalesce(public.page_content_sections.section_type, excluded.section_type),
+    title = coalesce(public.page_content_sections.title, excluded.title),
+    subtitle = coalesce(public.page_content_sections.subtitle, excluded.subtitle),
+    content = excluded.content || public.page_content_sections.content,
+    order_index = coalesce(public.page_content_sections.order_index, excluded.order_index),
+    status = coalesce(public.page_content_sections.status, excluded.status),
     updated_at = now();
 
 update public.pages as p

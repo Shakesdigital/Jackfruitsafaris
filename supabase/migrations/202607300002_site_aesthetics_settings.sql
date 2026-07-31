@@ -40,7 +40,7 @@ set brand_primary_color = coalesce(brand_primary_color, '#143c2d'),
     button_style = coalesce(button_style, 'pill'),
     section_spacing = coalesce(section_spacing, 'comfortable'),
     card_shadow_style = coalesce(card_shadow_style, 'soft'),
-    aesthetics = coalesce(aesthetics, '{}'::jsonb) || jsonb_build_object(
+    aesthetics = jsonb_build_object(
       'palette', jsonb_build_object(
         'primary', coalesce(brand_primary_color, '#143c2d'),
         'secondary', coalesce(brand_secondary_color, '#2d6f55'),
@@ -65,5 +65,5 @@ set brand_primary_color = coalesce(brand_primary_color, '#143c2d'),
         'section_spacing', coalesce(section_spacing, 'comfortable'),
         'card_shadow_style', coalesce(card_shadow_style, 'soft')
       )
-    )
+    ) || coalesce(aesthetics, '{}'::jsonb)
 where true;

@@ -1,6 +1,5 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { cache } from "react";
 
 type AdminRecord = Record<string, any>;
 

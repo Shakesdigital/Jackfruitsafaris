@@ -41,11 +41,11 @@ insert into public.page_heroes (page_slug, eyebrow, title, intro, background_ima
  'These are ready as CMS article topics for SEO, buyer education, and AI-search visibility.',
  NULL, 'published')
 on conflict (page_slug) do update
-set eyebrow = excluded.eyebrow,
-    title = excluded.title,
-    intro = excluded.intro,
-    background_image = excluded.background_image,
-    status = excluded.status,
+set eyebrow = coalesce(public.page_heroes.eyebrow, excluded.eyebrow),
+    title = coalesce(public.page_heroes.title, excluded.title),
+    intro = coalesce(public.page_heroes.intro, excluded.intro),
+    background_image = coalesce(public.page_heroes.background_image, excluded.background_image),
+    status = coalesce(public.page_heroes.status, excluded.status),
     updated_at = now();
 
 -- Enable RLS

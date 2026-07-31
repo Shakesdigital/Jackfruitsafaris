@@ -97,11 +97,54 @@ function redirectOnValidationError(
   redirectWithCmsMessage(path, "error", `${operation} failed: ${firstIssue}`);
 }
 
+const sitewideCmsPaths = [
+  "/",
+  "/safaris",
+  "/safaris/[slug]",
+  "/destinations",
+  "/destinations/[slug]",
+  "/experiences",
+  "/experiences/[slug]",
+  "/reviews",
+  "/travel-guide",
+  "/request-quote",
+];
+
+function normalizePublicPath(path: string) {
+  if (path === "home" || path === "/") return "/";
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
+function revalidateCmsPath(path: string) {
+  if (path.includes("[")) {
+    revalidatePath(path, "page");
+    return;
+  }
+
+  revalidatePath(path);
+}
+
 function revalidateCmsRoutes(...paths: string[]) {
   revalidatePath("/admin", "layout");
   for (const path of new Set(paths)) {
-    revalidatePath(path, path.includes("[") ? "page" : undefined);
+    revalidateCmsPath(normalizePublicPath(path));
   }
+}
+
+async function getLatestSiteSettingsId(supabase: Awaited<ReturnType<typeof getAdminSupabase>>) {
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("id")
+    .order("updated_at", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Site settings lookup error:", error);
+  }
+
+  return typeof data?.id === "string" ? data.id : null;
 }
 
 async function uploadImageFromForm(
@@ -337,11 +380,18 @@ export async function upsertSiteSettings(formData: FormData) {
     redirectOnValidationError(parsed.error, "/admin/settings", "Settings save");
   }
 
-  const { error } = await supabase.from("site_settings").upsert({
-    id: formData.get("id") as string || undefined,
+  const submittedId = String(formData.get("id") || "");
+  const settingsId = submittedId || (await getLatestSiteSettingsId(supabase));
+  const settingsPayload = {
     ...parsed.data,
     updated_at: new Date().toISOString(),
-  });
+  };
+  const { error } = settingsId
+    ? await supabase
+        .from("site_settings")
+        .update(settingsPayload)
+        .eq("id", settingsId)
+    : await supabase.from("site_settings").insert(settingsPayload);
 
   if (error) {
     console.error("Site settings save error:", error);
@@ -419,7 +469,7 @@ export async function upsertSiteSettings(formData: FormData) {
     "Homepage content sync",
   );
 
-  revalidatePath("/", "layout");
+  revalidateCmsRoutes(...sitewideCmsPaths);
   redirectWithCmsMessage("/admin/settings", "success", "Settings saved successfully.");
 }
 
@@ -984,6 +1034,8 @@ export async function upsertHomepageSection(formData: FormData) {
     const { data: existingSettings } = await supabase
       .from("site_settings")
       .select("id")
+      .order("updated_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 

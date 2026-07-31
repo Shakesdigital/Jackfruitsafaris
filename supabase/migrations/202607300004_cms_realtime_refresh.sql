@@ -51,7 +51,7 @@ $$;
 create or replace function public.get_public_site_settings()
 returns jsonb
 language sql
-stable
+volatile
 security definer
 set search_path = public
 as $$
