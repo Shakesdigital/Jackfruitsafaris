@@ -33,6 +33,20 @@ export type PublicSiteSettings = Record<string, unknown> & {
   button_style?: string | null;
   section_spacing?: string | null;
   card_shadow_style?: string | null;
+  badge_text?: string | null;
+  hero_title?: string | null;
+  hero_subtitle?: string | null;
+  hero_image?: string | null;
+  cta_primary?: string | null;
+  cta_secondary?: string | null;
+  why_uganda_eyebrow?: string | null;
+  why_uganda_title?: string | null;
+  why_uganda_intro?: string | null;
+  why_uganda_paragraph?: string | null;
+  cta_eyebrow?: string | null;
+  cta_title?: string | null;
+  cta_intro?: string | null;
+  cta_button?: string | null;
 };
 
 export function buildWhatsAppHref(settings?: PublicSiteSettings | null) {

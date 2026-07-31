@@ -189,15 +189,15 @@ export default async function Home() {
 
       {/* Why Uganda Section */}
       <Section
-        eyebrow={getStringValue(whyUgandaSection, "subtitle", settings?.why_uganda_eyebrow || "Why Uganda")}
-        title={getStringValue(whyUgandaSection, "title", settings?.why_uganda_title || "One compact country, many safari worlds")}
+        eyebrow={getStringValue(whyUgandaSection, "subtitle", getStringValue(settings, "why_uganda_eyebrow", "Why Uganda"))}
+        title={getStringValue(whyUgandaSection, "title", getStringValue(settings, "why_uganda_title", "One compact country, many safari worlds"))}
         intro={<CmsRichText html={getSectionText(whyUgandaSection, "intro", getStringValue(settings, "why_uganda_intro", "Uganda can take you from the River Nile to open savannah, roaring waterfalls, crater lakes, rainforest chimpanzees, and mountain gorillas in one carefully routed journey."))} />}
       >
         <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr]">
           <div className="rounded-[var(--brand-radius)] bg-[var(--brand-primary)] p-8 text-white sm:p-10">
             <CmsRichText
               className="text-xl leading-9 text-white/82"
-              html={getSectionText(whyUgandaSection, "body", settings?.why_uganda_paragraph || "Jackfruit Safaris helps you experience Uganda smoothly, with local guides who understand the roads, parks, permits, lodges, and small details that make a trip feel effortless.")}
+              html={getSectionText(whyUgandaSection, "body", getStringValue(settings, "why_uganda_paragraph", "Jackfruit Safaris helps you experience Uganda smoothly, with local guides who understand the roads, parks, permits, lodges, and small details that make a trip feel effortless."))}
             />
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {featuresList.map((item: any) => (
