@@ -50,7 +50,7 @@ export default async function TravelGuidePage() {
         className="relative bg-[var(--foreground)] bg-cover bg-center py-16 text-white sm:py-20"
         style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
       >
-        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/82" />}
+        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/65" />}
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             <BookOpen size={18} />

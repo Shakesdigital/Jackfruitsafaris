@@ -27,7 +27,7 @@ export default function AirportTransfersPage() {
         className="relative min-h-[58vh] bg-cover bg-center text-white"
         style={{ backgroundImage: `url(${images.vehicle})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/90 via-[#08170f]/58 to-[#08170f]/18" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/70 via-[#08170f]/45 to-[#08170f]/15" />
         <div className="relative mx-auto flex min-h-[58vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
           <div className="max-w-4xl">
             <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
