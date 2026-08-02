@@ -7,6 +7,7 @@ import { site } from "@/lib/content";
 import {
   getPageHero,
   getPublishedPageContentSections,
+  getSiteSettings,
 } from "@/lib/cms-data";
 import {
   getPageSection,
@@ -23,9 +24,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ContactPage() {
-  const [hero, pageSections] = await Promise.all([
+  const [hero, pageSections, settings] = await Promise.all([
     getPageHero("/contact"),
     getPublishedPageContentSections("/contact"),
+    getSiteSettings(),
   ]);
   const contactInfoSection = getPageSection(pageSections, "contact_info");
   const quoteFormSection = getPageSection(pageSections, "quote_form");
@@ -38,6 +40,19 @@ export default async function ContactPage() {
   ]);
 
   const iconMap = { Mail, Phone, MapPin };
+
+  // Resolve values from site_settings where available, fallback to hardcoded site
+  const resolvedItems = contactItems.map((item) => {
+    const itemData = item as any;
+    let value = itemData.value || "";
+    if (itemData.value_source && settings) {
+      const sourceKey = itemData.value_source.replace("site_settings.", "");
+      if (settings[sourceKey]) {
+        value = settings[sourceKey] as string;
+      }
+    }
+    return { ...item, value };
+  });
 
   return (
     <>
@@ -63,11 +78,8 @@ export default async function ContactPage() {
       <Section>
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="space-y-4">
-            {contactItems.map((item) => {
+            {resolvedItems.map((item) => {
               const Icon = iconMap[item.icon as keyof typeof iconMap] || Mail;
-              const value = (item as any).value_source
-                ? "placeholder" // Will be resolved from site_settings at runtime
-                : item.value;
               return (
                 <div key={item.label} className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5">
                   <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
@@ -75,7 +87,7 @@ export default async function ContactPage() {
                     {item.label}
                   </p>
                   <p className="mt-2 text-lg font-black text-[var(--foreground)]">
-                    {value}
+                    {item.value}
                   </p>
                 </div>
               );
