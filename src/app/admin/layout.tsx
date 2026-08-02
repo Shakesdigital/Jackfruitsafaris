@@ -41,7 +41,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="admin-shell flex min-h-screen bg-gray-50">
       <AdminLoadingIndicator />
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">

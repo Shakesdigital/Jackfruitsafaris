@@ -1,28 +1,28 @@
 import Link from "next/link";
-import { Menu, MessageCircle, X } from "lucide-react";
-import { getMenuItemsByLocation } from "@/lib/navigation";
+import { Menu, MessageCircle } from "lucide-react";
+import {
+  DEFAULT_MAIN_NAVIGATION,
+  getMenuItemsByLocation,
+  type NavItem,
+} from "@/lib/navigation";
 import {
   buildWhatsAppHref,
   type PublicSiteSettings,
 } from "@/lib/site-settings";
 
 export async function SiteHeader({ settings }: { settings?: PublicSiteSettings | null }) {
-  let navigation: Array<{ label: string; href: string }> = [];
+  let navigation: NavItem[] = [];
 
   try {
     navigation = await getMenuItemsByLocation("main");
   } catch (err) {
     console.error("SiteHeader navigation error:", err);
-    // Fallback navigation
-    navigation = [
-      { label: "Home", href: "/" },
-      { label: "Safaris", href: "/safaris" },
-      { label: "Destinations", href: "/destinations" },
-      { label: "Experiences", href: "/experiences/gorilla-trekking" },
-      { label: "About", href: "/about" },
-      { label: "Reviews", href: "/reviews" },
-      { label: "Travel Guide", href: "/travel-guide" },
-    ];
+  }
+
+  if (!navigation.length) {
+    navigation = settings?.nav_items?.length
+      ? settings.nav_items
+      : DEFAULT_MAIN_NAVIGATION;
   }
 
   return (
@@ -55,19 +55,19 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-2 sm:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
           {navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full px-4 py-2 text-fluid-sm font-semibold text-[var(--foreground)] transition hover:bg-[#eef3eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+              className="rounded-full px-3 py-2 text-fluid-sm font-semibold text-[var(--foreground)] transition hover:bg-[#eef3eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] xl:px-4"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <a
             href={buildWhatsAppHref(settings)}
             className="inline-flex items-center gap-2 rounded-full border border-[#1f5b44]/20 px-4 py-2 text-fluid-sm font-bold text-[#174331] transition hover:bg-[#eef7f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"

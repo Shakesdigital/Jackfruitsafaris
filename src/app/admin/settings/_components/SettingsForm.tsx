@@ -12,10 +12,30 @@ interface SettingsFormProps {
   children: React.ReactNode;
 }
 
+function serializeDraft(data: Record<string, unknown>) {
+  const seen = new WeakSet<object>();
+
+  return JSON.stringify(data, (_key, value: unknown) => {
+    if (!value || typeof value !== "object") return value;
+
+    if (
+      (typeof File !== "undefined" && value instanceof File) ||
+      (typeof Blob !== "undefined" && value instanceof Blob) ||
+      (typeof Element !== "undefined" && value instanceof Element)
+    ) {
+      return undefined;
+    }
+
+    if (seen.has(value)) return undefined;
+    seen.add(value);
+    return value;
+  });
+}
+
 export function SettingsForm({ initialSettings, action, children }: SettingsFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [formData, setFormData] = useState<Record<string, unknown>>({});
+  const [formData, setFormData] = useState<Record<string, unknown>>(initialSettings);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(searchParams?.get("success") || null);
@@ -44,7 +64,7 @@ export function SettingsForm({ initialSettings, action, children }: SettingsForm
   useEffect(() => {
     if (!initializedRef.current) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+      localStorage.setItem(STORAGE_KEY, serializeDraft(formData));
     } catch {
       // Ignore storage errors
     }
@@ -90,7 +110,12 @@ export function SettingsForm({ initialSettings, action, children }: SettingsForm
   const getValue = (name: string) => {
     const val = formData[name];
     if (val === null || val === undefined) return "";
-    if (typeof val === "object") return JSON.stringify(val, null, 2);
+    if (typeof val === "object") {
+      const serialized = serializeDraft({ value: val });
+      if (!serialized) return "";
+      const safeValue = (JSON.parse(serialized) as { value?: unknown }).value;
+      return safeValue === undefined ? "" : JSON.stringify(safeValue, null, 2);
+    }
     return String(val);
   };
 
@@ -159,20 +184,31 @@ export function useFormField(name: string) {
   return {
     value: getValue(name),
     onChange: (eventOrValue: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | unknown) => {
-      // Handle both event objects and direct values (like File for uploads)
+      // React change events are SyntheticEvents, not native Event instances.
+      // Read their form control immediately so React internals never enter state.
       let parsedValue: unknown;
 
-      if (eventOrValue instanceof Event && eventOrValue.target instanceof HTMLInputElement) {
-        const { type } = eventOrValue.target;
-        parsedValue = eventOrValue.target.value;
+      const eventCandidate =
+        eventOrValue && typeof eventOrValue === "object"
+          ? eventOrValue as { currentTarget?: unknown; target?: unknown }
+          : null;
+      const controlCandidate = eventCandidate?.currentTarget || eventCandidate?.target;
+      const isFormControl =
+        controlCandidate instanceof HTMLInputElement ||
+        controlCandidate instanceof HTMLTextAreaElement ||
+        controlCandidate instanceof HTMLSelectElement;
+
+      if (isFormControl) {
+        const { type, value } = controlCandidate;
+        parsedValue = value;
 
         if (type === "checkbox") {
-          parsedValue = eventOrValue.target.checked;
+          parsedValue = (controlCandidate as HTMLInputElement).checked;
         } else if (name === "nav_items" || name === "social_links" || name === "seo" || name === "integrations") {
           try {
-            parsedValue = JSON.parse(eventOrValue.target.value);
+            parsedValue = JSON.parse(value);
           } catch {
-            parsedValue = eventOrValue.target.value;
+            parsedValue = value;
           }
         }
       } else {

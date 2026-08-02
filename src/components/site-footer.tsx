@@ -1,26 +1,24 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { getMenuItemsByLocation } from "@/lib/navigation";
+import {
+  DEFAULT_FOOTER_NAVIGATION,
+  getMenuItemsByLocation,
+  type NavItem,
+} from "@/lib/navigation";
 import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export async function SiteFooter({ settings }: { settings?: PublicSiteSettings | null }) {
-  let navigation: Array<{ label: string; href: string }> = [];
+  let navigation: NavItem[] = [];
   const footerBg = settings?.footer_background_color || "#10251b";
 
   try {
     navigation = await getMenuItemsByLocation("footer");
   } catch (err) {
     console.error("SiteFooter navigation error:", err);
-    // Fallback navigation
-    navigation = [
-      { label: "Home", href: "/" },
-      { label: "Safaris", href: "/safaris" },
-      { label: "Destinations", href: "/destinations" },
-      { label: "Experiences", href: "/experiences/gorilla-trekking" },
-      { label: "About", href: "/about" },
-      { label: "Reviews", href: "/reviews" },
-      { label: "Travel Guide", href: "/travel-guide" },
-    ];
+  }
+
+  if (!navigation.length) {
+    navigation = DEFAULT_FOOTER_NAVIGATION;
   }
 
   return (

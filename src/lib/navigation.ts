@@ -6,6 +6,21 @@ export type NavItem = {
   href: string;
 };
 
+export const DEFAULT_MAIN_NAVIGATION: NavItem[] = [
+  { label: "Home", href: "/" },
+  { label: "Safaris", href: "/safaris" },
+  { label: "Destinations", href: "/destinations" },
+  { label: "Experiences", href: "/experiences" },
+  { label: "About", href: "/about" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "Travel Guide", href: "/travel-guide" },
+];
+
+export const DEFAULT_FOOTER_NAVIGATION: NavItem[] = [
+  ...DEFAULT_MAIN_NAVIGATION,
+  { label: "Contact", href: "/contact" },
+];
+
 export type MenuWithItems = {
   id: string;
   name: string;
@@ -76,6 +91,8 @@ export async function getMenuItemsByLocation(location: string): Promise<NavItem[
       `)
       .eq("location", location)
       .eq("status", "published")
+      .order("updated_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     if (error) {
@@ -125,6 +142,8 @@ export async function getFullMenuByLocation(location: string): Promise<MenuWithI
       `)
       .eq("location", location)
       .eq("status", "published")
+      .order("updated_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     if (error) {

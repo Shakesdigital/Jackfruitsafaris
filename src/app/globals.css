@@ -36,9 +36,9 @@
    ========================================================================== */
 
 /* Fluid typography scale using clamp() for smooth scaling across breakpoints */
-/* Base: 16px mobile -> 18px desktop */
+/* Base: 16px mobile -> 17px desktop */
 html {
-  font-size: clamp(16px, 1.125vw + 14.5px, 18px);
+  font-size: clamp(16px, 0.75vw + 14.5px, 17px);
 }
 
 /* Responsive spacing scale */
@@ -109,10 +109,10 @@ body {
 }
 
 /* Responsive heading scale */
-h1 { font-size: clamp(1.875rem, 3.5vw + 1rem, 3rem); font-weight: var(--heading-weight); }
-h2 { font-size: clamp(1.5rem, 2.5vw + 0.875rem, 2.25rem); font-weight: var(--heading-weight); }
-h3 { font-size: clamp(1.25rem, 1.75vw + 0.75rem, 1.875rem); font-weight: var(--heading-weight); }
-h4 { font-size: clamp(1.125rem, 1.25vw + 0.625rem, 1.5rem); font-weight: var(--heading-weight); }
+h1 { font-size: clamp(1.75rem, 3vw + 0.875rem, 2.75rem); font-weight: var(--heading-weight); }
+h2 { font-size: clamp(1.375rem, 2vw + 0.75rem, 2rem); font-weight: var(--heading-weight); }
+h3 { font-size: clamp(1.2rem, 1.5vw + 0.675rem, 1.625rem); font-weight: var(--heading-weight); }
+h4 { font-size: clamp(1.075rem, 1vw + 0.625rem, 1.375rem); font-weight: var(--heading-weight); }
 
 /* Fluid text sizes */
 .text-fluid-xs { font-size: clamp(0.75rem, 0.25vw + 0.625rem, 0.875rem); }
@@ -121,11 +121,21 @@ h4 { font-size: clamp(1.125rem, 1.25vw + 0.625rem, 1.5rem); font-weight: var(--h
 .text-fluid-lg { font-size: clamp(1.125rem, 0.75vw + 0.75rem, 1.25rem); }
 .text-fluid-xl { font-size: clamp(1.25rem, 1vw + 0.75rem, 1.5rem); }
 .text-fluid-2xl { font-size: clamp(1.375rem, 1.25vw + 0.875rem, 1.75rem); }
-.text-fluid-3xl { font-size: clamp(1.625rem, 1.75vw + 1rem, 2.25rem); }
-.text-fluid-4xl { font-size: clamp(1.875rem, 2.5vw + 1rem, 2.75rem); }
-.text-fluid-5xl { font-size: clamp(2.25rem, 3.5vw + 1rem, 3.5rem); }
-.text-fluid-6xl { font-size: clamp(2.75rem, 4.5vw + 1.5rem, 4.5rem); }
-.text-fluid-7xl { font-size: clamp(3.5rem, 5.5vw + 2rem, 5.5rem); }
+.text-fluid-3xl { font-size: clamp(1.55rem, 1.5vw + 0.9rem, 2.1rem); }
+.text-fluid-4xl { font-size: clamp(1.75rem, 2.1vw + 0.9rem, 2.5rem); }
+.text-fluid-5xl { font-size: clamp(2rem, 3vw + 0.9rem, 3rem); }
+.text-fluid-6xl { font-size: clamp(2.4rem, 3.75vw + 1.25rem, 3.75rem); }
+.text-fluid-7xl { font-size: clamp(3rem, 4.5vw + 1.5rem, 4.5rem); }
+
+/* Keep CMS information-dense even when public typography is customized. */
+.admin-shell {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.admin-shell h1 { font-size: clamp(1.5rem, 2vw, 1.875rem); }
+.admin-shell h2 { font-size: clamp(1.125rem, 1.5vw, 1.375rem); }
+.admin-shell h3 { font-size: clamp(1rem, 1.25vw, 1.125rem); }
 
 /* Responsive leading */
 .leading-fluid-tight { line-height: clamp(1.1, 0.5vw + 1, 1.2); }
