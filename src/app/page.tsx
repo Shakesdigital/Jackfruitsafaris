@@ -113,7 +113,7 @@ export default async function Home() {
         className="relative min-h-[86vh] bg-cover bg-center text-white"
         style={{ backgroundImage: `url(${getStringValue(settings, "hero_image", images.hero)})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/70 via-[#08170f]/45 to-[#08170f]/15" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" />
         <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20">

@@ -69,11 +69,11 @@ export default async function SafariDetailPage({ params }: Props) {
   return (
     <>
       <section
-        className="relative min-h-[64vh] bg-cover bg-center text-white"
+        className="relative min-h-[86vh] bg-cover bg-center text-white"
         style={{ backgroundImage: `url(${displayData.image})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/70 via-[#08170f]/45 to-[#08170f]/15" />
-        <div className="relative mx-auto flex min-h-[64vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" />
+        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
           <div className="max-w-4xl">
             <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               {displayData.duration} private safari

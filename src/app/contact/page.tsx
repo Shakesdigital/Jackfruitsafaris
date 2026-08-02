@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { Section } from "@/components/section";
-import { site } from "@/lib/content";
+import { site, images } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Contact Jackfruit Safaris",
@@ -13,8 +13,13 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <section className="bg-[var(--foreground)] py-16 text-white sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section
+        className="relative min-h-[86vh] bg-cover bg-center text-white"
+        style={{ backgroundImage: `url(${images.hero})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" />
+        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             Contact
           </p>
@@ -26,6 +31,7 @@ export default function ContactPage() {
             the right safari, activity, transfer, or custom itinerary.
           </p>
         </div>
+      </div>
       </section>
       <Section>
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
