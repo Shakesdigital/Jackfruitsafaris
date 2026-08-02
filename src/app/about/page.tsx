@@ -52,19 +52,20 @@ export default async function AboutPage() {
   return (
     <>
       <section
-        className="relative min-h-[86vh] bg-[var(--foreground)] bg-cover bg-center text-white"
+        className="relative hero-h-responsive bg-[var(--foreground)] bg-cover bg-center text-white"
         style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+        aria-label="About Jackfruit Safaris Uganda"
       >
-        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" />}
-        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" aria-hidden="true" />}
+        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+            <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               {hero?.eyebrow || "About Jackfruit Safaris Uganda"}
             </p>
-            <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
+            <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
               {hero?.title || "Local roots, practical planning, and warm guest care"}
             </h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76">
+            <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
               {hero?.intro || "Jackfruit Safaris Uganda is a registered tour company based in Jinja, one of Uganda's most exciting travel hubs and the adventure capital of East Africa."}
             </p>
           </div>
@@ -81,12 +82,12 @@ export default async function AboutPage() {
               key={item.title}
               className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6"
             >
-              <BadgeCheck className="text-[var(--brand-secondary)]" size={26} />
-              <h2 className="mt-4 text-2xl font-black text-[var(--foreground)]">
+              <BadgeCheck className="text-[var(--brand-secondary)]" size={26} aria-hidden="true" />
+              <h2 className="mt-4 text-fluid-xl font-black text-[var(--foreground)]">
                 {item.title}
               </h2>
               <CmsRichText
-                className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]"
+                className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]"
                 html={item.body}
               />
             </article>
@@ -104,16 +105,16 @@ export default async function AboutPage() {
           {cmsModels.map((model) => (
             <p
               key={model}
-              className="flex items-center gap-3 rounded-[var(--brand-radius)] bg-white p-4 text-sm font-black text-[var(--foreground)]"
+              className="flex items-center gap-3 rounded-[var(--brand-radius)] bg-white p-4 text-fluid-sm font-black text-[var(--foreground)]"
             >
-              <BadgeCheck className="shrink-0 text-[var(--brand-secondary)]" size={18} />
+              <BadgeCheck className="shrink-0 text-[var(--brand-secondary)]" size={18} aria-hidden="true" />
               {model}
             </p>
           ))}
         </div>
         <Link
           href={getSectionLink(servicesSection, "cta_href", "/request-quote")}
-          className="mt-8 inline-flex rounded-full bg-[var(--brand-primary)] px-6 py-3 text-sm font-black text-white"
+          className="mt-8 btn-h-responsive inline-flex rounded-full bg-[var(--brand-primary)] px-6 py-3 text-fluid-sm font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           {getSectionText(servicesSection, "cta_label", "Plan your safari")}
         </Link>

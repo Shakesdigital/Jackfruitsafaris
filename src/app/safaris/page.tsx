@@ -82,18 +82,19 @@ export default async function SafarisPage() {
   return (
     <>
       <section
-        className="relative min-h-[86vh] bg-[var(--foreground)] bg-cover bg-center text-white"
+        className="relative hero-h-responsive bg-[var(--foreground)] bg-cover bg-center text-white"
         style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+        aria-label="Safari packages"
       >
-        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" />}
-        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" aria-hidden="true" />}
+        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
+          <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             {hero?.eyebrow || "Uganda safari packages"}
           </p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
+          <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
             {hero?.title || "Choose a proven route, then make it yours"}
           </h1>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76">
+          <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
             {hero?.intro || "Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda's landscapes and wildlife as budget, mid-range, or luxury private trips."}
           </p>
         </div>
@@ -106,9 +107,9 @@ export default async function SafarisPage() {
               {filters.map((filter) => (
                 <span
                   key={filter}
-                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-bold text-[var(--foreground)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-fluid-sm font-bold text-[var(--foreground)]"
                 >
-                  <Filter size={15} />
+                  <Filter size={15} aria-hidden="true" />
                   {filter}
                 </span>
               ))}
@@ -122,21 +123,21 @@ export default async function SafarisPage() {
             ) : null}
           </div>
           <aside className="space-y-4">
-            <div className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-6">
-              <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
-                <SlidersHorizontal size={17} />
+            <div className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5 sm:p-6">
+              <p className="flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
+                <SlidersHorizontal size={17} aria-hidden="true" />
                 {customPlanningSection?.subtitle || "Custom planning"}
               </p>
-              <h2 className="mt-3 text-2xl font-black text-[var(--foreground)]">
+              <h2 className="mt-3 text-fluid-2xl font-black text-[var(--foreground)]">
                 {customPlanningSection?.title || "Need a different route?"}
               </h2>
               <CmsRichText
-                className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]"
+                className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]"
                 html={getSectionText(customPlanningSection, "body", "Share your dates, pace, budget, lodge style, and must-do activities. Jackfruit Safaris will match the route to your time and comfort level.")}
               />
               <Link
                 href={getSectionLink(customPlanningSection, "button_href", "/safaris/custom-uganda-safari")}
-                className="mt-5 inline-flex rounded-full bg-[var(--brand-primary)] px-5 py-3 text-sm font-black text-white"
+                className="mt-5 btn-h-responsive inline-flex rounded-full bg-[var(--brand-primary)] px-5 py-3 text-fluid-sm font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 {getSectionText(customPlanningSection, "button_label", "Build a custom safari")}
               </Link>

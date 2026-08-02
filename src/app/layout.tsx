@@ -97,6 +97,9 @@ function buildAestheticStyle(settings: PublicSiteSettings | null): AestheticStyl
     "--brand-accent": settingValue(settings?.brand_accent_color, "#f5bf2f"),
     "--brand-surface": settingValue(settings?.brand_surface_color, "#ffffff"),
     "--brand-muted-text": settingValue(settings?.brand_muted_text_color, "#536154"),
+    "--footer-background": settingValue(settings?.footer_background_color, "#10251b"),
+    "--footer-text": settingValue(settings?.brand_text_color, "#ffffff"),
+    "--footer-muted-text": settingValue(settings?.brand_muted_text_color, "#ffffff"),
     "--font-heading": settingValue(settings?.heading_font_family, "var(--font-geist-sans)"),
     "--font-body": settingValue(settings?.body_font_family, "var(--font-geist-sans)"),
     "--base-font-size": settingValue(settings?.base_font_size, "16px"),
@@ -130,9 +133,9 @@ export default async function RootLayout({
       >
         <CmsLiveRefresh />
         <OrganizationJsonLd />
-        <SiteHeader settings={settings} />
+        <await SiteHeader settings={settings} />
         <main>{children}</main>
-        <SiteFooter settings={settings} />
+        <await SiteFooter settings={settings} />
         <MobileCta settings={settings} />
       </body>
     </html>

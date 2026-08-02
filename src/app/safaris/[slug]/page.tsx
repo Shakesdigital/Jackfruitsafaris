@@ -69,38 +69,39 @@ export default async function SafariDetailPage({ params }: Props) {
   return (
     <>
       <section
-        className="relative min-h-[86vh] bg-cover bg-center text-white"
+        className="relative hero-h-responsive bg-cover bg-center text-white"
         style={{ backgroundImage: `url(${displayData.image})` }}
+        aria-label={`${displayData.title} - Safari details`}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" />
-        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />
+        <div className="relative container-responsive flex min-h-[inherit] items-end py-10 sm:py-14">
           <div className="max-w-4xl">
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+            <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               {displayData.duration} private safari
             </p>
-            <h1 className="mt-4 text-4xl font-black leading-tight sm:text-6xl">
+            <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
               {displayData.title}
             </h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/82">
+            <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/82">
               {displayData.summary}
             </p>
           </div>
         </div>
       </section>
 
-      <section className="border-y border-black/10 bg-white py-5">
-        <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:px-6 md:grid-cols-4 lg:px-8">
+      <section className="border-y border-black/10 bg-white py-5 sm:py-6">
+        <div className="container-responsive grid gap-3 sm:grid-cols-2 md:grid-cols-4">
           {[
             ["Duration", displayData.duration],
             ["Route", displayData.route],
             ["Comfort", displayData.comfort],
             ["Price", displayData.price],
           ].map(([label, value]) => (
-            <div key={label} className="rounded-[var(--brand-radius)] bg-[var(--background)] p-4">
-              <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--brand-secondary)]">
+            <div key={label} className="rounded-[var(--brand-radius)] bg-[var(--background)] p-4 sm:p-5">
+              <p className="text-fluid-xs font-black uppercase tracking-[0.14em] text-[var(--brand-secondary)]">
                 {label}
               </p>
-              <p className="mt-2 text-sm font-bold leading-6 text-[var(--foreground)]">
+              <p className="mt-2 text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
                 {value}
               </p>
             </div>
@@ -112,29 +113,29 @@ export default async function SafariDetailPage({ params }: Props) {
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
           <article className="space-y-12">
             <div>
-              <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
-                <MapPin size={17} />
+              <p className="flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
+                <MapPin size={17} aria-hidden="true" />
                 Route logic
               </p>
-              <h2 className="mt-3 text-3xl font-black text-[var(--foreground)]">
+              <h2 className="mt-3 text-fluid-3xl font-black text-[var(--foreground)]">
                 {displayData.startEnd}
               </h2>
-              <p className="mt-4 text-lg leading-8 text-[var(--brand-muted-text)]">
+              <p className="mt-4 text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]">
                 {displayData.summary}
               </p>
             </div>
 
             <div>
-              <h2 className="text-3xl font-black text-[var(--foreground)]">
+              <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">
                 Highlights
               </h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {displayData.highlights.map((highlight: string) => (
                   <p
                     key={highlight}
-                    className="flex gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4 text-sm font-bold leading-6 text-[var(--foreground)]"
+                    className="flex gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4 text-fluid-sm font-bold leading-6 text-[var(--foreground)]"
                   >
-                    <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} />
+                    <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} aria-hidden="true" />
                     {highlight}
                   </p>
                 ))}
@@ -142,8 +143,8 @@ export default async function SafariDetailPage({ params }: Props) {
             </div>
 
             <div>
-              <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
-                <CalendarDays size={17} />
+              <p className="flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
+                <CalendarDays size={17} aria-hidden="true" />
                 Day by day
               </p>
               <div className="mt-6 grid gap-5">
@@ -152,16 +153,16 @@ export default async function SafariDetailPage({ params }: Props) {
                     key={`${day.day}-${day.title}`}
                     className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
                   >
-                    <p className="text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
+                    <p className="text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                       {day.day}
                     </p>
-                    <h3 className="mt-2 text-2xl font-black text-[var(--foreground)]">
+                    <h3 className="mt-2 text-fluid-xl font-black text-[var(--foreground)]">
                       {day.title}
                     </h3>
-                    <p className="mt-3 text-base leading-8 text-[var(--brand-muted-text)]">
+                    <p className="mt-3 text-fluid-base leading-8 text-[var(--brand-muted-text)]">
                       {day.body}
                     </p>
-                    <p className="mt-3 text-sm font-bold text-[var(--foreground)]">
+                    <p className="mt-3 text-fluid-sm font-bold text-[var(--foreground)]">
                       Meal plan: {day.meals}
                     </p>
                   </div>
@@ -170,20 +171,20 @@ export default async function SafariDetailPage({ params }: Props) {
             </div>
 
             <div>
-              <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
-                <BadgeDollarSign size={17} />
+              <p className="flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
+                <BadgeDollarSign size={17} aria-hidden="true" />
                 Price guidance
               </p>
-              <h2 className="mt-3 text-3xl font-black text-[var(--foreground)]">
+              <h2 className="mt-3 text-fluid-3xl font-black text-[var(--foreground)]">
                 {displayData.price}
               </h2>
-              <p className="mt-3 text-base leading-8 text-[var(--brand-muted-text)]">
-                Prices are quoted as &quot;from&quot; guidance because permits, lodge
+              <p className="mt-3 text-fluid-base leading-8 text-[var(--brand-muted-text)]">
+                Prices are quoted as "from" guidance because permits, lodge
                 category, season, group size, and vehicle logistics affect the
                 final cost.
               </p>
               {displayData.note && (
-                <p className="mt-4 rounded-[var(--brand-radius)] bg-[#fff7d7] p-4 text-sm font-bold leading-6 text-[#5c4a11]">
+                <p className="mt-4 rounded-[var(--brand-radius)] bg-[#fff7d7] p-4 text-fluid-sm font-bold leading-6 text-[#5c4a11]">
                   {displayData.note}
                 </p>
               )}
@@ -191,26 +192,26 @@ export default async function SafariDetailPage({ params }: Props) {
 
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <h2 className="text-2xl font-black text-[var(--foreground)]">
+                <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
                   Included
                 </h2>
                 <div className="mt-4 grid gap-3">
                   {displayData.included.map((item: string) => (
-                    <p key={item} className="flex gap-3 text-sm font-bold leading-6 text-[var(--foreground)]">
-                      <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} />
+                    <p key={item} className="flex gap-3 text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
+                      <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} aria-hidden="true" />
                       {item}
                     </p>
                   ))}
                 </div>
               </div>
               <div>
-                <h2 className="text-2xl font-black text-[var(--foreground)]">
+                <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
                   Excluded
                 </h2>
                 <div className="mt-4 grid gap-3">
                   {displayData.excluded.map((item: string) => (
-                    <p key={item} className="flex gap-3 text-sm font-bold leading-6 text-[var(--foreground)]">
-                      <XCircle className="mt-0.5 shrink-0 text-[#a04b36]" size={18} />
+                    <p key={item} className="flex gap-3 text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
+                      <XCircle className="mt-0.5 shrink-0 text-[#a04b36]" size={18} aria-hidden="true" />
                       {item}
                     </p>
                   ))}
@@ -219,7 +220,7 @@ export default async function SafariDetailPage({ params }: Props) {
             </div>
 
             <div>
-              <h2 className="text-3xl font-black text-[var(--foreground)]">
+              <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">
                 Accommodation options
               </h2>
               <div className="mt-5 grid gap-4 md:grid-cols-3">
@@ -228,10 +229,10 @@ export default async function SafariDetailPage({ params }: Props) {
                     key={item.tier}
                     className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
                   >
-                    <p className="text-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
+                    <p className="text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                       {item.tier}
                     </p>
-                    <p className="mt-3 text-sm font-bold leading-6 text-[var(--foreground)]">
+                    <p className="mt-3 text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
                       {item.options}
                     </p>
                   </div>
@@ -240,8 +241,8 @@ export default async function SafariDetailPage({ params }: Props) {
             </div>
 
             <div>
-              <h2 className="flex items-center gap-2 text-3xl font-black text-[var(--foreground)]">
-                <HelpCircle size={24} />
+              <h2 className="flex items-center gap-2 text-fluid-3xl font-black text-[var(--foreground)]">
+                <HelpCircle size={24} aria-hidden="true" />
                 FAQs
               </h2>
               <div className="mt-5 grid gap-3">
@@ -250,10 +251,10 @@ export default async function SafariDetailPage({ params }: Props) {
                     key={faq.question}
                     className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
                   >
-                    <summary className="cursor-pointer text-lg font-black text-[var(--foreground)]">
+                    <summary className="cursor-pointer text-fluid-lg font-black text-[var(--foreground)]">
                       {faq.question}
                     </summary>
-                    <p className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]">
+                    <p className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]">
                       {faq.answer}
                     </p>
                   </details>
@@ -262,15 +263,15 @@ export default async function SafariDetailPage({ params }: Props) {
             </div>
 
             <div className="rounded-[var(--brand-radius)] bg-[var(--brand-primary)] p-6 text-white">
-              <h2 className="text-2xl font-black">Want this adjusted?</h2>
-              <p className="mt-3 text-sm leading-7 text-white/76">
+              <h2 className="text-fluid-2xl font-black">Want this adjusted?</h2>
+              <p className="mt-3 text-fluid-sm leading-7 text-white/76">
                 Jackfruit Safaris can change the start point, lodge tier,
                 pacing, activity mix, and final night based on flight timing or
                 traveler energy.
               </p>
               <Link
                 href="/request-quote"
-                className="mt-5 inline-flex rounded-full bg-[var(--brand-accent)] px-5 py-3 text-sm font-black text-[var(--foreground)]"
+                className="mt-5 btn-h-responsive inline-flex rounded-full bg-[var(--brand-accent)] px-5 py-3 text-fluid-sm font-black text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 Customize this itinerary
               </Link>

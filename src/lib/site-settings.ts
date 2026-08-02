@@ -47,6 +47,7 @@ export type PublicSiteSettings = Record<string, unknown> & {
   cta_title?: string | null;
   cta_intro?: string | null;
   cta_button?: string | null;
+  footer_background_color?: string | null;
 };
 
 export function buildWhatsAppHref(settings?: PublicSiteSettings | null) {

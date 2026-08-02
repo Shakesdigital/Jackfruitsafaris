@@ -47,20 +47,21 @@ export default async function AirportTransfersPage() {
   return (
     <>
       <section
-        className="relative min-h-[86vh] bg-cover bg-center text-white"
+        className="relative hero-h-responsive bg-cover bg-center text-white"
         style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+        aria-label="Airport transfers and transport services"
       >
-        {hero?.background_image && <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" />}
-        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-end px-4 py-14 sm:px-6 lg:px-8">
+        {hero?.background_image && <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />}
+        <div className="relative container-responsive flex min-h-[inherit] items-end py-10 sm:py-14">
           <div className="max-w-4xl">
-            <p className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-              <Car size={18} />
+            <p className="inline-flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+              <Car size={18} aria-hidden="true" />
               {hero?.eyebrow || "Transport"}
             </p>
-            <h1 className="mt-4 text-4xl font-black leading-tight sm:text-6xl">
+            <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
               {hero?.title || "Airport Pickups and Transport Services"}
             </h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/82">
+            <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/82">
               {hero?.intro || "Reliable airport pickups, hotel transfers, Jinja transfers, and safari transport with professional drivers."}
             </p>
           </div>
@@ -71,16 +72,16 @@ export default async function AirportTransfersPage() {
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
           <div>
             <CmsRichText
-              className="text-3xl font-black text-[var(--foreground)]"
+              className="text-fluid-2xl font-black text-[var(--foreground)]"
               html={getSectionText(introSection, "intro", "Jackfruit Safaris provides airport pickup from Entebbe International Airport and safe transfers to hotels, Jinja, Kampala, or your next safari destination.")}
             />
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {services.map((service: any) => (
                 <p
                   key={service}
-                  className="flex gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4 text-sm font-bold leading-6 text-[var(--foreground)]"
+                  className="flex gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4 text-fluid-sm font-bold leading-6 text-[var(--foreground)]"
                 >
-                  <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} />
+                  <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} aria-hidden="true" />
                   {service}
                 </p>
               ))}

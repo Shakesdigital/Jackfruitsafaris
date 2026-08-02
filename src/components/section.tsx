@@ -16,22 +16,22 @@ export function Section({
   className = "",
 }: SectionProps) {
   return (
-    <section className={`py-[var(--section-spacing)] ${className}`}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className={`section-responsive ${className}`}>
+      <div className="container-responsive">
         {(eyebrow || title || intro) && (
           <div className="mb-10 max-w-3xl">
             {eyebrow && (
-              <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-secondary)]">
+              <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-secondary)]">
                 {eyebrow}
               </p>
             )}
             {title && (
-              <h2 className="mt-3 text-3xl font-black leading-tight text-[var(--foreground)] sm:text-4xl">
+              <h2 className="mt-3 text-fluid-3xl font-black leading-fluid-tight text-[var(--foreground)]">
                 {title}
               </h2>
             )}
             {intro && (
-              <div className="mt-4 text-lg leading-8 text-[var(--brand-muted-text)]">{intro}</div>
+              <div className="mt-4 text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]">{intro}</div>
             )}
           </div>
         )}

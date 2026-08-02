@@ -30,28 +30,29 @@ export default async function ExperiencesPage() {
         summary: e.summary,
       }))
     : hardcodedExperiences.map((e) => ({
-        slug: e.slug,
-        title: e.title,
-        icon: e.icon,
-        image: e.image,
-        summary: e.summary,
-      }));
+      slug: e.slug,
+      title: e.title,
+      icon: e.icon,
+      image: e.image,
+      summary: e.summary,
+    }));
 
   return (
     <>
       <section
-        className="relative min-h-[86vh] bg-[var(--foreground)] bg-cover bg-center text-white"
+        className="relative hero-h-responsive bg-[var(--foreground)] bg-cover bg-center text-white"
         style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+        aria-label="Uganda safari experiences"
       >
-        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" />}
-        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" aria-hidden="true" />}
+        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
+          <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
             {hero?.eyebrow || "Experiences"}
           </p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
+          <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
             {hero?.title || "Build your Uganda trip around the moments that matter"}
           </h1>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76">
+          <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
             {hero?.intro || "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary."}
           </p>
         </div>
@@ -67,23 +68,24 @@ export default async function ExperiencesPage() {
               <Link
                 key={experience.slug}
                 href={`/experiences/${experience.slug}`}
-                className="group overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm"
+                className="group overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 <div
-                  className="h-64 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
+                  className="img-h-lg bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
                   style={{ backgroundImage: `url(${experience.featured_image_url || experience.image || ""})` }}
+                  aria-hidden="true"
                 />
-                <div className="p-6">
-                  <Icon className="text-[var(--brand-secondary)]" size={26} />
-                  <h2 className="mt-3 text-2xl font-black text-[var(--foreground)]">
+                <div className="p-5 sm:p-6">
+                  <Icon className="text-[var(--brand-secondary)]" size={26} aria-hidden="true" />
+                  <h2 className="mt-3 text-fluid-xl font-black text-[var(--foreground)]">
                     {experience.title}
                   </h2>
-                  <p className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]">
+                  <p className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]">
                     {experience.summary}
                   </p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[var(--brand-primary)]">
+                  <span className="mt-5 inline-flex items-center gap-2 text-fluid-sm font-black text-[var(--brand-primary)]">
                     Explore experience
-                    <ArrowRight size={16} />
+                    <ArrowRight size={16} aria-hidden="true" />
                   </span>
                 </div>
               </Link>

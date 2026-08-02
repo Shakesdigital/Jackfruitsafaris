@@ -28,6 +28,73 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ==========================================================================
+   RESPONSIVE DESIGN SYSTEM
+   ========================================================================== */
+
+/* Fluid typography scale using clamp() for smooth scaling across breakpoints */
+/* Base: 16px mobile -> 18px desktop */
+html {
+  font-size: clamp(16px, 1.125vw + 14.5px, 18px);
+}
+
+/* Responsive spacing scale */
+:root {
+  /* Section spacing - mobile: 3rem, tablet: 4rem, desktop: 5rem, large: 6rem */
+  --section-spacing-mobile: 3rem;
+  --section-spacing-tablet: 4rem;
+  --section-spacing-desktop: 5rem;
+  --section-spacing-large: 6rem;
+
+  /* Container padding - mobile: 1rem, tablet: 1.5rem, desktop: 2rem */
+  --container-padding-mobile: 1rem;
+  --container-padding-tablet: 1.5rem;
+  --container-padding-desktop: 2rem;
+
+  /* Component spacing */
+  --gap-sm: clamp(0.75rem, 0.5vw + 0.5rem, 1rem);
+  --gap-md: clamp(1rem, 0.75vw + 0.75rem, 1.5rem);
+  --gap-lg: clamp(1.5rem, 1vw + 1rem, 2.5rem);
+  --gap-xl: clamp(2rem, 1.5vw + 1.25rem, 4rem);
+
+  /* Card/image heights */
+  --card-image-h-sm: clamp(180px, 25vw, 224px); /* h-44 to h-56 */
+  --card-image-h-md: clamp(200px, 30vw, 256px); /* h-56 to h-64 */
+  --card-image-h-lg: clamp(224px, 35vw, 300px);
+
+  /* Hero heights */
+  --hero-h-mobile: clamp(60vh, 80vw, 70vh);
+  --hero-h-tablet: clamp(70vh, 70vw, 80vh);
+  --hero-h-desktop: 86vh;
+
+  /* Button sizing */
+  --btn-h-sm: clamp(44px, 5vw + 38px, 48px); /* min 44px for touch */
+  --btn-h-md: clamp(48px, 5vw + 42px, 56px);
+  --btn-h-lg: clamp(52px, 5vw + 46px, 60px);
+
+  /* Input sizing */
+  --input-h-sm: clamp(44px, 5vw + 38px, 48px);
+  --input-h-md: clamp(48px, 5vw + 42px, 56px);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --section-spacing: var(--section-spacing-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --section-spacing: var(--section-spacing-desktop);
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --section-spacing: var(--section-spacing-large);
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -37,6 +104,31 @@ body {
   letter-spacing: var(--body-letter-spacing);
   line-height: var(--body-line-height);
 }
+
+/* Responsive heading scale */
+h1 { font-size: clamp(2.25rem, 5vw + 1rem, 4.5rem); font-weight: var(--heading-weight); }
+h2 { font-size: clamp(1.875rem, 3.5vw + 1rem, 3rem); font-weight: var(--heading-weight); }
+h3 { font-size: clamp(1.5rem, 2.5vw + 0.875rem, 2.25rem); font-weight: var(--heading-weight); }
+h4 { font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.5rem); font-weight: var(--heading-weight); }
+
+/* Fluid text sizes */
+.text-fluid-xs { font-size: clamp(0.75rem, 0.25vw + 0.625rem, 0.875rem); }
+.text-fluid-sm { font-size: clamp(0.875rem, 0.5vw + 0.625rem, 1rem); }
+.text-fluid-base { font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem); }
+.text-fluid-lg { font-size: clamp(1.125rem, 0.75vw + 0.75rem, 1.25rem); }
+.text-fluid-xl { font-size: clamp(1.25rem, 1vw + 0.75rem, 1.5rem); }
+.text-fluid-2xl { font-size: clamp(1.5rem, 1.5vw + 0.75rem, 2rem); }
+.text-fluid-3xl { font-size: clamp(1.875rem, 2vw + 1rem, 2.5rem); }
+.text-fluid-4xl { font-size: clamp(2.25rem, 3vw + 1rem, 3.5rem); }
+.text-fluid-5xl { font-size: clamp(3rem, 4vw + 1rem, 4.5rem); }
+.text-fluid-6xl { font-size: clamp(3.75rem, 5vw + 1.5rem, 6rem); }
+.text-fluid-7xl { font-size: clamp(4.5rem, 6vw + 2rem, 7rem); }
+
+/* Responsive leading */
+.leading-fluid-tight { line-height: clamp(1.1, 0.5vw + 1, 1.2); }
+.leading-fluid-snug { line-height: clamp(1.3, 0.5vw + 1.15, 1.4); }
+.leading-fluid-normal { line-height: clamp(1.5, 0.5vw + 1.3, 1.6); }
+.leading-fluid-relaxed { line-height: clamp(1.6, 0.5vw + 1.4, 1.75); }
 
 h1,
 h2,
@@ -78,4 +170,165 @@ button.rounded-full {
 
 .cms-brand-section {
   padding-block: var(--section-spacing);
+}
+
+/* ==========================================================================
+   RESPONSIVE UTILITIES
+   ========================================================================== */
+
+/* Container widths with responsive padding */
+.container-responsive {
+  width: 100%;
+  max-width: 80rem; /* 1280px / max-w-7xl */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding-mobile);
+  padding-right: var(--container-padding-mobile);
+}
+
+@media (min-width: 640px) {
+  .container-responsive {
+    padding-left: var(--container-padding-tablet);
+    padding-right: var(--container-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    padding-left: var(--container-padding-desktop);
+    padding-right: var(--container-padding-desktop);
+  }
+}
+
+/* Responsive grid utilities */
+.grid-responsive-1 { display: grid; gap: var(--gap-md); grid-template-columns: 1fr; }
+.grid-responsive-2 { display: grid; gap: var(--gap-md); grid-template-columns: 1fr; }
+.grid-responsive-3 { display: grid; gap: var(--gap-md); grid-template-columns: 1fr; }
+.grid-responsive-4 { display: grid; gap: var(--gap-md); grid-template-columns: 1fr; }
+
+@media (min-width: 640px) {
+  .grid-responsive-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-responsive-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-responsive-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 768px) {
+  .grid-responsive-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-responsive-4 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Fluid gap utilities */
+.gap-fluid-sm { gap: var(--gap-sm); }
+.gap-fluid-md { gap: var(--gap-md); }
+.gap-fluid-lg { gap: var(--gap-lg); }
+.gap-fluid-xl { gap: var(--gap-xl); }
+
+/* Touch-friendly minimum sizes */
+@media (pointer: coarse) {
+  button, a[role="button"], input, select, textarea {
+    min-height: 44px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 3px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+
+/* Responsive image heights */
+.img-h-sm { height: var(--card-image-h-sm); }
+.img-h-md { height: var(--card-image-h-md); }
+.img-h-lg { height: var(--card-image-h-lg); }
+
+@media (min-width: 640px) {
+  .img-h-sm { height: var(--card-image-h-md); }
+  .img-h-md { height: var(--card-image-h-lg); }
+}
+
+/* Hero height responsive */
+.hero-h-responsive {
+  min-height: var(--hero-h-mobile);
+}
+
+@media (min-width: 640px) {
+  .hero-h-responsive { min-height: var(--hero-h-tablet); }
+}
+
+@media (min-width: 1024px) {
+  .hero-h-responsive { min-height: var(--hero-h-desktop); }
+}
+
+/* Section spacing responsive */
+.section-responsive {
+  padding-block: var(--section-spacing);
+}
+
+@media (max-width: 639px) {
+  .section-responsive { padding-block: var(--section-spacing-mobile); }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .section-responsive { padding-block: var(--section-spacing-tablet); }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .section-responsive { padding-block: var(--section-spacing-desktop); }
+}
+
+@media (min-width: 1440px) {
+  .section-responsive { padding-block: var(--section-spacing-large); }
+}
+
+/* Button responsive heights */
+.btn-h-responsive { min-height: var(--btn-h-sm); }
+@media (min-width: 640px) { .btn-h-responsive { min-height: var(--btn-h-md); } }
+@media (min-width: 1024px) { .btn-h-responsive { min-height: var(--btn-h-lg); } }
+
+/* Input responsive heights */
+.input-h-responsive { min-height: var(--input-h-sm); }
+@media (min-width: 640px) { .input-h-responsive { min-height: var(--input-h-md); } }
+
+/* Responsive text alignment */
+.text-center-mobile { text-align: center; }
+@media (min-width: 768px) { .text-center-mobile { text-align: left; } }
+
+/* Hide on specific breakpoints */
+.hidden-mobile { display: none; }
+@media (min-width: 640px) { .hidden-mobile { display: block; } }
+.hidden-tablet { display: block; }
+@media (min-width: 640px) and (max-width: 1023px) { .hidden-tablet { display: none; } }
+.hidden-desktop { display: block; }
+@media (min-width: 1024px) { .hidden-desktop { display: none; } }
+
+/* Logo sizing - professional standards */
+.logo-responsive {
+  width: clamp(32px, 5vw + 20px, 48px);
+  height: clamp(32px, 5vw + 20px, 48px);
+}
+
+/* Safe area for notched devices */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Print styles */
+@media print {
+  .no-print { display: none !important; }
 }

@@ -53,19 +53,20 @@ export default async function RequestQuotePage() {
   return (
     <>
       <section
-        className="relative min-h-[86vh] bg-cover bg-center text-white"
+        className="relative hero-h-responsive bg-cover bg-center text-white"
         style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
+        aria-label="Request a safari quote"
       >
-        {hero?.background_image && <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" />}
-        <div className="relative mx-auto flex min-h-[86vh] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+        {hero?.background_image && <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />}
+        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
           <div className="max-w-3xl">
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+            <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               {hero?.eyebrow || "Request quote"}
             </p>
-            <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight sm:text-6xl">
+            <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
               {hero?.title || "Tell Jackfruit Safaris what you want from Uganda"}
             </h1>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-white/76">
+            <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
               {hero?.intro || "Dates, group size, budget, activity interests, and comfort level are enough to start a practical route recommendation."}
             </p>
           </div>
@@ -78,12 +79,12 @@ export default async function RequestQuotePage() {
             {infoCards.map((item) => {
               const Icon = iconMap[item.icon as keyof typeof iconMap] || Clock;
               return (
-                <article key={item.title} className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
-                  <Icon className="text-[var(--brand-secondary)]" size={24} />
-                  <h2 className="mt-4 text-2xl font-black text-[var(--foreground)]">
+                <article key={item.title} className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 sm:p-6">
+                  <Icon className="text-[var(--brand-secondary)]" size={24} aria-hidden="true" />
+                  <h2 className="mt-4 text-fluid-xl font-black text-[var(--foreground)]">
                     {item.title}
                   </h2>
-                  <p className="mt-3 text-sm leading-7 text-[var(--brand-muted-text)]">
+                  <p className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]">
                     {item.body}
                   </p>
                 </article>

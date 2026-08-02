@@ -276,6 +276,7 @@ const siteSettingsSchema = z.object({
   button_style: z.string().optional(),
   section_spacing: z.string().optional(),
   card_shadow_style: z.string().optional(),
+  footer_background_color: z.string().optional(),
   aesthetics: z.record(z.string(), z.any()).optional(),
 });
 
@@ -350,6 +351,7 @@ export async function upsertSiteSettings(formData: FormData) {
     button_style: formData.get("button_style") || undefined,
     section_spacing: formData.get("section_spacing") || undefined,
     card_shadow_style: formData.get("card_shadow_style") || undefined,
+    footer_background_color: formData.get("footer_background_color") || undefined,
     aesthetics: {
       palette: {
         primary: formData.get("brand_primary_color") || "#143c2d",

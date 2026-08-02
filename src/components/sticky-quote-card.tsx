@@ -20,26 +20,26 @@ export async function StickyQuoteCard({
         defaultService={defaultService}
         compact
       />
-      <div className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5">
-        <p className="flex items-center gap-2 text-sm font-black text-[var(--brand-primary)]">
-          <ShieldCheck size={18} />
+      <div className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5 sm:p-6">
+        <p className="flex items-center gap-2 text-fluid-sm font-black text-[var(--brand-primary)]">
+          <ShieldCheck size={18} aria-hidden="true" />
           Before you pay
         </p>
-        <p className="mt-2 text-sm leading-6 text-[var(--brand-muted-text)]">
+        <p className="mt-2 text-fluid-sm leading-6 text-[var(--brand-muted-text)]">
           Gorilla permits, park fees, and lodge availability are checked before
           the final quotation is confirmed.
         </p>
         <div className="mt-4 grid gap-2">
           <a
             href={buildWhatsAppHref(settings)}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--brand-primary)]/20 px-4 py-2 text-sm font-black text-[var(--brand-primary)]"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--brand-primary)]/20 px-4 py-2 text-fluid-sm font-black text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
-            <MessageCircle size={16} />
+            <MessageCircle size={16} aria-hidden="true" />
             WhatsApp now
           </a>
           <Link
             href="/request-quote"
-            className="inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-4 py-2 text-sm font-black text-[var(--foreground)]"
+            className="inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-4 py-2 text-fluid-sm font-black text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Full quote form
           </Link>

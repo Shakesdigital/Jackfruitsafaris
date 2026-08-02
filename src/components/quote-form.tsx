@@ -15,46 +15,46 @@ export function QuoteForm({
   return (
     <form
       action={createInquiry}
-      className="grid gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 shadow-sm"
+      className="grid gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 sm:p-6 shadow-sm"
     >
       <input type="hidden" name="source_page" value={sourcePage} />
       <div>
-        <h2 className="text-xl font-black text-[var(--foreground)]">Plan your trip</h2>
-        <p className="mt-2 text-sm leading-6 text-[var(--brand-muted-text)]">
+        <h2 className="text-fluid-xl font-black text-[var(--foreground)]">Plan your trip</h2>
+        <p className="mt-2 text-fluid-sm leading-6 text-[var(--brand-muted-text)]">
           Share the basics and Jackfruit Safaris will recommend a route, permit
           timing, lodge level, and quote.
         </p>
       </div>
-      <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+      <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
         First name
         <input
           required
           name="first_name"
-          className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+          className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
         />
       </label>
-      <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+      <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
         Email
         <input
           required
           type="email"
           name="email"
-          className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+          className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
         />
       </label>
-      <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+      <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
         WhatsApp or phone
         <input
           name="phone"
-          className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+          className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
         />
       </label>
-      <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+      <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
         Service type
         <select
           name="service_type"
           defaultValue={defaultService}
-          className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+          className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
         >
           <option value="custom safari">Custom Uganda safari</option>
           {safaris.map((safari) => (
@@ -69,53 +69,53 @@ export function QuoteForm({
       </label>
       {!compact && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+          <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
             Travel dates
             <input
               name="travel_dates"
               placeholder="Month or exact dates"
-              className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+              className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
             />
           </label>
-          <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+          <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
             Group size
             <input
               name="group_size"
               placeholder="2 adults"
-              className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+              className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
             />
           </label>
         </div>
       )}
-      <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+      <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
         Budget range
         <input
           name="budget_range"
           placeholder="Budget, mid-range, luxury, or USD range"
-          className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+          className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
         />
       </label>
-      <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+      <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
         Interests
         <input
           name="interests"
           placeholder="Gorillas, wildlife, culture, Jinja, transfers..."
-          className="min-h-11 rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+          className="input-h-responsive rounded-xl border border-black/10 px-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
         />
       </label>
-      <label className="grid gap-1 text-sm font-bold text-[var(--foreground)]">
+      <label className="grid gap-1 text-fluid-sm font-bold text-[var(--foreground)]">
         Message
         <textarea
           required
           name="message"
           rows={compact ? 4 : 5}
-          className="rounded-xl border border-black/10 px-3 py-3 font-medium outline-none focus:border-[var(--brand-secondary)]"
+          className="input-h-responsive rounded-xl border border-black/10 px-3 py-3 font-medium outline-none focus:border-[var(--brand-secondary)] resize-y min-h-[100px]"
         />
       </label>
-      <button className="min-h-12 rounded-full bg-[var(--brand-primary)] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0f2d22]">
+      <button className="btn-h-responsive rounded-full bg-[var(--brand-primary)] px-5 py-3 text-fluid-sm font-black text-white transition hover:bg-[#0f2d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
         Submit safari inquiry
       </button>
-      <p className="text-xs leading-5 text-[#6d786e]">
+      <p className="text-fluid-xs leading-5 text-[#6d786e]">
         After you submit, the team checks route logic, permit or lodge needs,
         and sends the next best planning step.
       </p>
