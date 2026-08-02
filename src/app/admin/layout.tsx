@@ -30,6 +30,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   let session = null;
+  let authError = null;
 
   try {
     const supabase = await createClient();
@@ -37,11 +38,15 @@ export default async function AdminLayout({
     // Verify session with Supabase (uses cookies internally via createClient)
     const result = await supabase.auth.getSession();
     session = result?.data?.session;
-  } catch {
-    // If Supabase client fails, session remains null
+    authError = result?.error;
+  } catch (err) {
+    console.error("Admin layout auth error:", err);
+    authError = err instanceof Error ? err : new Error("Unknown auth error");
   }
 
   if (!session) {
+    // Log for debugging
+    console.warn("No session found, redirecting to login", { authError: authError?.message });
     redirect("/auth/login");
   }
 
