@@ -135,11 +135,25 @@ export async function getSiteSettings() {
   try {
     const supabase = await createClient();
 
-    const { data, error } = await supabase.rpc("get_public_site_settings");
+    // First try the RPC function
+    let { data, error } = await supabase.rpc("get_public_site_settings");
 
+    // If RPC fails (e.g., function doesn't exist), fall back to direct query
     if (error) {
-      console.error("Public site settings fetch error:", error);
-      return null;
+      console.warn("RPC get_public_site_settings failed, falling back to direct query:", error.message);
+      const { data: settingsData, error: queryError } = await supabase
+        .from("site_settings")
+        .select("*")
+        .order("updated_at", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (queryError) {
+        console.error("Public site settings fetch error:", queryError);
+        return null;
+      }
+      data = settingsData;
     }
 
     // Ensure we return a proper object with all expected fields

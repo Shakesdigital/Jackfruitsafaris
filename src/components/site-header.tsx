@@ -7,7 +7,23 @@ import {
 } from "@/lib/site-settings";
 
 export async function SiteHeader({ settings }: { settings?: PublicSiteSettings | null }) {
-  const navigation = await getMenuItemsByLocation("main");
+  let navigation: Array<{ label: string; href: string }> = [];
+
+  try {
+    navigation = await getMenuItemsByLocation("main");
+  } catch (err) {
+    console.error("SiteHeader navigation error:", err);
+    // Fallback navigation
+    navigation = [
+      { label: "Home", href: "/" },
+      { label: "Safaris", href: "/safaris" },
+      { label: "Destinations", href: "/destinations" },
+      { label: "Experiences", href: "/experiences/gorilla-trekking" },
+      { label: "About", href: "/about" },
+      { label: "Reviews", href: "/reviews" },
+      { label: "Travel Guide", href: "/travel-guide" },
+    ];
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-white/92 backdrop-blur-xl">

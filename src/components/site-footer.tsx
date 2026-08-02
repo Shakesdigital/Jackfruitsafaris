@@ -4,8 +4,24 @@ import { getMenuItemsByLocation } from "@/lib/navigation";
 import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export async function SiteFooter({ settings }: { settings?: PublicSiteSettings | null }) {
-  const navigation = await getMenuItemsByLocation("footer");
+  let navigation: Array<{ label: string; href: string }> = [];
   const footerBg = settings?.footer_background_color || "#10251b";
+
+  try {
+    navigation = await getMenuItemsByLocation("footer");
+  } catch (err) {
+    console.error("SiteFooter navigation error:", err);
+    // Fallback navigation
+    navigation = [
+      { label: "Home", href: "/" },
+      { label: "Safaris", href: "/safaris" },
+      { label: "Destinations", href: "/destinations" },
+      { label: "Experiences", href: "/experiences/gorilla-trekking" },
+      { label: "About", href: "/about" },
+      { label: "Reviews", href: "/reviews" },
+      { label: "Travel Guide", href: "/travel-guide" },
+    ];
+  }
 
   return (
     <footer className="pb-16 pt-10 md:pb-12" style={{ backgroundColor: footerBg, color: "var(--footer-text)" }}>

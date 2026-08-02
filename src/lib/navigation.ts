@@ -61,34 +61,45 @@ export async function getMenuItemsByLocation(location: string): Promise<NavItem[
   unstable_noStore();
   const supabase = await createClient();
 
-  const { data: menu, error } = await supabase
-    .from("menus")
-    .select(`
-      id,
-      menu_items (
+  try {
+    const { data: menu, error } = await supabase
+      .from("menus")
+      .select(`
         id,
-        parent_id,
-        label,
-        href,
-        order_column
-      )
-    `)
-    .eq("location", location)
-    .eq("status", "published")
-    .single();
+        menu_items (
+          id,
+          parent_id,
+          label,
+          href,
+          order_column
+        )
+      `)
+      .eq("location", location)
+      .eq("status", "published")
+      .maybeSingle();
 
-  if (error || !menu) {
+    if (error) {
+      console.error(`getMenuItemsByLocation error for ${location}:`, error);
+      return [];
+    }
+
+    if (!menu) {
+      console.warn(`No menu found for location: ${location}`);
+      return [];
+    }
+
+    // Return only top-level items, sorted by order
+    return (menu.menu_items || [])
+      .filter((item: { parent_id: string | null }) => item.parent_id === null)
+      .sort((a: { order_column: number }, b: { order_column: number }) => a.order_column - b.order_column)
+      .map((item: { label: string; href: string }) => ({
+        label: item.label,
+        href: item.href,
+      }));
+  } catch (err) {
+    console.error(`getMenuItemsByLocation exception for ${location}:`, err);
     return [];
   }
-
-  // Return only top-level items, sorted by order
-  return (menu.menu_items || [])
-    .filter((item: { parent_id: string | null }) => item.parent_id === null)
-    .sort((a: { order_column: number }, b: { order_column: number }) => a.order_column - b.order_column)
-    .map((item: { label: string; href: string }) => ({
-      label: item.label,
-      href: item.href,
-    }));
 }
 
 // Get all menu items including nested for a location
@@ -96,31 +107,42 @@ export async function getFullMenuByLocation(location: string): Promise<MenuWithI
   unstable_noStore();
   const supabase = await createClient();
 
-  const { data: menu, error } = await supabase
-    .from("menus")
-    .select(`
-      id,
-      name,
-      location,
-      status,
-      menu_items (
+  try {
+    const { data: menu, error } = await supabase
+      .from("menus")
+      .select(`
         id,
-        parent_id,
-        label,
-        href,
-        order_column
-      )
-    `)
-    .eq("location", location)
-    .eq("status", "published")
-    .single();
+        name,
+        location,
+        status,
+        menu_items (
+          id,
+          parent_id,
+          label,
+          href,
+          order_column
+        )
+      `)
+      .eq("location", location)
+      .eq("status", "published")
+      .maybeSingle();
 
-  if (error || !menu) {
+    if (error) {
+      console.error(`getFullMenuByLocation error for ${location}:`, error);
+      return null;
+    }
+
+    if (!menu) {
+      console.warn(`No menu found for location: ${location}`);
+      return null;
+    }
+
+    return {
+      ...menu,
+      menu_items: (menu.menu_items || []).sort((a: { order_column: number }, b: { order_column: number }) => a.order_column - b.order_column),
+    };
+  } catch (err) {
+    console.error(`getFullMenuByLocation exception for ${location}:`, err);
     return null;
   }
-
-  return {
-    ...menu,
-    menu_items: (menu.menu_items || []).sort((a: { order_column: number }, b: { order_column: number }) => a.order_column - b.order_column),
-  };
 }
