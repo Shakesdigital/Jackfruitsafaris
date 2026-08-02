@@ -15,6 +15,9 @@ const CORE_LANDING_PAGES = [
   { slug: "/reviews", label: "Reviews" },
   { slug: "/about", label: "About" },
   { slug: "/travel-guide", label: "Travel Guide" },
+  { slug: "/contact", label: "Contact" },
+  { slug: "/request-quote", label: "Request Quote" },
+  { slug: "/transport/airport-transfers", label: "Airport Transfers" },
 ];
 
 type PageContentSection = {

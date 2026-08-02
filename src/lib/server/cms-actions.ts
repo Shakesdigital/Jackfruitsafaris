@@ -108,6 +108,8 @@ const sitewideCmsPaths = [
   "/reviews",
   "/travel-guide",
   "/request-quote",
+  "/contact",
+  "/transport/airport-transfers",
 ];
 
 function normalizePublicPath(path: string) {
@@ -876,7 +878,7 @@ export async function deleteEntity(table: string, id: string) {
     destinations: ["/destinations", "/destinations/[slug]"],
     experiences: ["/", "/experiences", "/experiences/[slug]"],
     reviews: ["/", "/reviews"],
-    pages: ["/"],
+    pages: ["/", "/contact", "/request-quote", "/transport/airport-transfers"],
   };
   revalidateCmsRoutes(...(publicPathsByTable[table] || ["/"]));
   redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table}`);

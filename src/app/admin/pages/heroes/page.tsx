@@ -15,6 +15,9 @@ const PAGES = [
   { slug: "/about", label: "About" },
   { slug: "/reviews", label: "Reviews" },
   { slug: "/travel-guide", label: "Travel Guide" },
+  { slug: "/contact", label: "Contact" },
+  { slug: "/request-quote", label: "Request Quote" },
+  { slug: "/transport/airport-transfers", label: "Airport Transfers" },
 ];
 
 export default async function PageHeroesList() {
