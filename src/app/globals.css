@@ -109,10 +109,10 @@ body {
 }
 
 /* Responsive heading scale */
-h1 { font-size: clamp(2.25rem, 5vw + 1rem, 4.5rem); font-weight: var(--heading-weight); }
-h2 { font-size: clamp(1.875rem, 3.5vw + 1rem, 3rem); font-weight: var(--heading-weight); }
-h3 { font-size: clamp(1.5rem, 2.5vw + 0.875rem, 2.25rem); font-weight: var(--heading-weight); }
-h4 { font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.5rem); font-weight: var(--heading-weight); }
+h1 { font-size: clamp(1.875rem, 3.5vw + 1rem, 3rem); font-weight: var(--heading-weight); }
+h2 { font-size: clamp(1.5rem, 2.5vw + 0.875rem, 2.25rem); font-weight: var(--heading-weight); }
+h3 { font-size: clamp(1.25rem, 1.75vw + 0.75rem, 1.875rem); font-weight: var(--heading-weight); }
+h4 { font-size: clamp(1.125rem, 1.25vw + 0.625rem, 1.5rem); font-weight: var(--heading-weight); }
 
 /* Fluid text sizes */
 .text-fluid-xs { font-size: clamp(0.75rem, 0.25vw + 0.625rem, 0.875rem); }
@@ -120,12 +120,12 @@ h4 { font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.5rem); font-weight: var(--head
 .text-fluid-base { font-size: clamp(1rem, 0.5vw + 0.75rem, 1.125rem); }
 .text-fluid-lg { font-size: clamp(1.125rem, 0.75vw + 0.75rem, 1.25rem); }
 .text-fluid-xl { font-size: clamp(1.25rem, 1vw + 0.75rem, 1.5rem); }
-.text-fluid-2xl { font-size: clamp(1.5rem, 1.5vw + 0.75rem, 2rem); }
-.text-fluid-3xl { font-size: clamp(1.875rem, 2vw + 1rem, 2.5rem); }
-.text-fluid-4xl { font-size: clamp(2.25rem, 3vw + 1rem, 3.5rem); }
-.text-fluid-5xl { font-size: clamp(3rem, 4vw + 1rem, 4.5rem); }
-.text-fluid-6xl { font-size: clamp(3.75rem, 5vw + 1.5rem, 6rem); }
-.text-fluid-7xl { font-size: clamp(4.5rem, 6vw + 2rem, 7rem); }
+.text-fluid-2xl { font-size: clamp(1.375rem, 1.25vw + 0.875rem, 1.75rem); }
+.text-fluid-3xl { font-size: clamp(1.625rem, 1.75vw + 1rem, 2.25rem); }
+.text-fluid-4xl { font-size: clamp(1.875rem, 2.5vw + 1rem, 2.75rem); }
+.text-fluid-5xl { font-size: clamp(2.25rem, 3.5vw + 1rem, 3.5rem); }
+.text-fluid-6xl { font-size: clamp(2.75rem, 4.5vw + 1.5rem, 4.5rem); }
+.text-fluid-7xl { font-size: clamp(3.5rem, 5.5vw + 2rem, 5.5rem); }
 
 /* Responsive leading */
 .leading-fluid-tight { line-height: clamp(1.1, 0.5vw + 1, 1.2); }

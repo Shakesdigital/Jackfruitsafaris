@@ -10,7 +10,7 @@ export default function AdminError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Admin CMS render error", error);
+    console.error("Admin CMS render error:", error, error.digest);
   }, [error]);
 
   return (
@@ -19,15 +19,17 @@ export default function AdminError({
         This CMS tab could not be loaded
       </h1>
       <p className="mt-3 text-sm leading-6 text-red-900">
-        The admin page hit a server render error. I have added safer Supabase
-        record loading for the main CMS edit tabs, but this boundary keeps the
-        dashboard usable if another tab still has a hidden production-only
-        error.
+        The admin page hit a server render error. Check the browser console for details.
       </p>
       {error.digest && (
         <p className="mt-3 font-mono text-xs text-red-800">
           Digest: {error.digest}
         </p>
+      )}
+      {error.message && (
+        <pre className="mt-3 text-xs text-red-700 bg-red-100 p-3 rounded overflow-auto whitespace-pre-wrap max-h-64">
+          {error.message}
+        </pre>
       )}
       <button
         type="button"
