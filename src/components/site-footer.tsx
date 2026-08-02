@@ -25,12 +25,12 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
           <h2 className="text-fluid-sm font-black uppercase tracking-[0.18em]" style={{ color: "var(--footer-muted-text)" }}>
             Explore
           </h2>
-          <div className="mt-4 grid gap-2">
+          <div className="mt-4 grid gap-3">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-fluid-sm font-semibold hover:underline" style={{ color: "var(--footer-text)" }}
+                className="text-fluid-base font-medium hover:underline transition-colors" style={{ color: "var(--footer-text)" }}
               >
                 {item.label}
               </Link>

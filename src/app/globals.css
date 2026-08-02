@@ -322,8 +322,8 @@ button.rounded-full {
 
 /* Logo sizing - professional standards */
 .logo-responsive {
-  width: clamp(32px, 5vw + 20px, 48px);
-  height: clamp(32px, 5vw + 20px, 48px);
+  width: clamp(48px, 6vw + 30px, 72px);
+  height: clamp(48px, 6vw + 30px, 72px);
 }
 
 /* Safe area for notched devices */

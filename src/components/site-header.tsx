@@ -18,11 +18,11 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
               src={settings.logo_url}
               alt={`${settings.business_name || "Jackfruit Safaris"} logo`}
               className="logo-responsive rounded-full object-contain"
-              width="48"
-              height="48"
+              width="72"
+              height="72"
             />
           ) : (
-            <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-base font-black text-[var(--foreground)]">
+            <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-xl font-black text-[var(--foreground)]">
               J
             </span>
           )}
@@ -39,12 +39,12 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 sm:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-2 sm:flex" aria-label="Main navigation">
           {navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full px-3 py-2 text-fluid-sm font-semibold text-[var(--foreground)] transition hover:bg-[#eef3eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+              className="rounded-full px-4 py-2 text-fluid-sm font-semibold text-[var(--foreground)] transition hover:bg-[#eef3eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             >
               {item.label}
             </Link>
@@ -69,22 +69,22 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
         </div>
 
         <details className="relative lg:hidden">
-          <summary className="flex size-11 cursor-pointer list-none items-center justify-center rounded-full border border-black/10 text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]" aria-label="Open menu">
-            <Menu size={22} aria-hidden="true" />
+          <summary className="flex size-12 cursor-pointer list-none items-center justify-center rounded-full border border-black/10 text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]" aria-label="Open menu">
+            <Menu size={24} aria-hidden="true" />
           </summary>
-          <div className="absolute right-0 mt-3 w-full max-w-[320px] rounded-2xl border border-black/10 bg-white p-3 shadow-2xl">
+          <div className="absolute right-0 mt-3 w-full max-w-[320px] rounded-2xl border border-black/10 bg-white p-4 shadow-2xl">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="block rounded-xl px-4 py-3 text-fluid-sm font-bold text-[var(--foreground)] hover:bg-[#eef3eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+                className="block rounded-xl px-4 py-3 text-fluid-base font-bold text-[var(--foreground)] hover:bg-[#eef3eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 {item.label}
               </Link>
             ))}
             <Link
               href="/request-quote"
-              className="mt-2 block rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-center text-fluid-sm font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+              className="mt-3 block rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-center text-fluid-base font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             >
               Request Quote
             </Link>
