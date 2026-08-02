@@ -117,7 +117,21 @@ export function ColorInputField({ name, label, fallback, className }: ColorInput
           type="text"
           name={`${name}_text`}
           value={effectiveValue}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const newValue = e.target.value;
+            // Create a synthetic event that matches the expected type
+            const syntheticEvent = {
+              target: {
+                ...e.target,
+                value: newValue,
+              },
+              currentTarget: {
+                ...e.currentTarget,
+                value: newValue,
+              },
+            } as React.ChangeEvent<HTMLInputElement>;
+            onChange(syntheticEvent);
+          }}
           className="flex-1 rounded-md border-gray-300 font-mono text-sm"
           placeholder="#rrggbb"
         />
@@ -201,7 +215,7 @@ interface KeyValueEditorProps {
 }
 
 export function KeyValueEditor({ name, label, value, keyPlaceholder, valuePlaceholder, className }: KeyValueEditorProps) {
-  const { value: formValue, handleChange } = useFormField(name);
+  const { value: formValue, onChange: handleChange } = useFormField(name);
   const [pairs, setPairs] = useState<Array<{ key: string; value: string }>>([]);
 
   useEffect(() => {

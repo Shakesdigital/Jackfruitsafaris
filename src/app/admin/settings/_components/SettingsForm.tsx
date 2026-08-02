@@ -18,7 +18,7 @@ export function SettingsForm({ initialSettings, action, children }: SettingsForm
   const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(searchParams.get("success") || null);
+  const [success, setSuccess] = useState<string | null>(searchParams?.get("success") || null);
   const initializedRef = useRef(false);
 
   // Load draft from localStorage on mount
@@ -158,18 +158,26 @@ export function useFormField(name: string) {
   const { getValue, handleChange } = context;
   return {
     value: getValue(name),
-    onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-      const { type } = event.target;
-      let parsedValue: unknown = event.target.value;
+    onChange: (eventOrValue: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | unknown) => {
+      // Handle both event objects and direct values (like File for uploads)
+      let parsedValue: unknown;
 
-      if (type === "checkbox") {
-        parsedValue = (event.target as HTMLInputElement).checked;
-      } else if (name === "nav_items" || name === "social_links" || name === "seo" || name === "integrations") {
-        try {
-          parsedValue = JSON.parse(event.target.value);
-        } catch {
-          parsedValue = event.target.value;
+      if (eventOrValue instanceof Event && eventOrValue.target instanceof HTMLInputElement) {
+        const { type } = eventOrValue.target;
+        parsedValue = eventOrValue.target.value;
+
+        if (type === "checkbox") {
+          parsedValue = eventOrValue.target.checked;
+        } else if (name === "nav_items" || name === "social_links" || name === "seo" || name === "integrations") {
+          try {
+            parsedValue = JSON.parse(eventOrValue.target.value);
+          } catch {
+            parsedValue = eventOrValue.target.value;
+          }
         }
+      } else {
+        // Direct value (File, string, etc.)
+        parsedValue = eventOrValue;
       }
 
       handleChange(name, parsedValue);

@@ -28,6 +28,7 @@ import {
   getPublishedTrustItems,
   getPublishedFeatures,
   getSiteSettings,
+  getPublishedPageContentSections,
 } from "@/lib/cms-data";
 import {
   getPageSection,

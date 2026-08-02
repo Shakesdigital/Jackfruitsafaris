@@ -49,14 +49,14 @@ export default async function NavigationPage({ searchParams }: { searchParams: P
     console.error("Menus fetch error:", menusError);
   }
 
-  const sortedMenus = (menus || []).map((menu) => ({
+  const sortedMenus = (menus || []).map((menu: MenuWithItems) => ({
     ...menu,
     menu_items: (menu.menu_items || []).sort((a, b) => a.order_column - b.order_column),
   }));
 
   // Get main menu and footer menu
-  const mainMenu = sortedMenus.find((m) => m.location === "main") || null;
-  const footerMenu = sortedMenus.find((m) => m.location === "footer") || null;
+  const mainMenu = sortedMenus.find((m: MenuWithItems) => m.location === "main") || null;
+  const footerMenu = sortedMenus.find((m: MenuWithItems) => m.location === "footer") || null;
 
   return (
     <div className="max-w-4xl space-y-8">
@@ -125,13 +125,13 @@ export default async function NavigationPage({ searchParams }: { searchParams: P
       </section>
 
       {/* Other Menus */}
-      {sortedMenus.filter((m) => m.location !== "main" && m.location !== "footer").length > 0 && (
+      {sortedMenus.filter((m: MenuWithItems) => m.location !== "main" && m.location !== "footer").length > 0 && (
         <section className="rounded-lg border border-gray-200 bg-white p-6">
           <h2 className="mb-4 text-lg font-medium text-gray-900">Other Menus</h2>
           <div className="space-y-4">
             {sortedMenus
-              .filter((m) => m.location !== "main" && m.location !== "footer")
-              .map((menu) => (
+              .filter((m: MenuWithItems) => m.location !== "main" && m.location !== "footer")
+              .map((menu: MenuWithItems) => (
                 <MenuEditor key={menu.id} menu={menu} />
               ))}
           </div>

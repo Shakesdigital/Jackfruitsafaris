@@ -48,7 +48,7 @@ export async function getPublishedMenus(): Promise<MenuWithItems[]> {
     return [];
   }
 
-  return (menus || []).map((menu) => ({
+  return (menus || []).map((menu: MenuWithItems) => ({
     ...menu,
     menu_items: (menu.menu_items || [])
       .filter((item) => item.parent_id === null) // Only top-level items for now
@@ -83,9 +83,9 @@ export async function getMenuItemsByLocation(location: string): Promise<NavItem[
 
   // Return only top-level items, sorted by order
   return (menu.menu_items || [])
-    .filter((item) => item.parent_id === null)
-    .sort((a, b) => a.order_column - b.order_column)
-    .map((item) => ({
+    .filter((item: { parent_id: string | null }) => item.parent_id === null)
+    .sort((a: { order_column: number }, b: { order_column: number }) => a.order_column - b.order_column)
+    .map((item: { label: string; href: string }) => ({
       label: item.label,
       href: item.href,
     }));
@@ -121,6 +121,6 @@ export async function getFullMenuByLocation(location: string): Promise<MenuWithI
 
   return {
     ...menu,
-    menu_items: (menu.menu_items || []).sort((a, b) => a.order_column - b.order_column),
+    menu_items: (menu.menu_items || []).sort((a: { order_column: number }, b: { order_column: number }) => a.order_column - b.order_column),
   };
 }

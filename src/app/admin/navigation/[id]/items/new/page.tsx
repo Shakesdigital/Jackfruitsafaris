@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -33,7 +34,10 @@ export default async function NewMenuItemPage({ params, searchParams }: NewMenuI
     .order("order_column", { ascending: true });
 
   // Get next order
-  const maxOrder = existingItems?.reduce((max, item) => Math.max(max, item.order_column), 0) || 0;
+  const maxOrder = existingItems?.reduce(
+    (max: number, item: { order_column: number }) => Math.max(max, item.order_column),
+    0
+  ) || 0;
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -84,7 +88,7 @@ export default async function NewMenuItemPage({ params, searchParams }: NewMenuI
             <span className="text-sm font-medium text-gray-700">Parent Item (for dropdowns)</span>
             <select name="parent_id" defaultValue="" className="mt-1 block w-full rounded-md border-gray-300">
               <option value="">— Top Level —</option>
-              {existingItems?.map((item) => (
+              {existingItems?.map((item: { id: string; label: string }) => (
                 <option key={item.id} value={item.id}>
                   {item.label}
                 </option>

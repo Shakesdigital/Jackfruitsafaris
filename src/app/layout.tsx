@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getSiteSettings } from "@/lib/cms-data";
 import type { PublicSiteSettings } from "@/lib/site-settings";
+import { Suspense } from "react";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -133,9 +134,13 @@ export default async function RootLayout({
       >
         <CmsLiveRefresh />
         <OrganizationJsonLd />
-        <await SiteHeader settings={settings} />
+        <Suspense fallback={<header className="sticky top-0 z-50 border-b border-black/10 bg-white/92 backdrop-blur-xl"><div className="container-responsive flex items-center justify-between py-3 sm:py-4"><div className="animate-pulse h-10 w-10 rounded-full bg-gray-200" /><div className="hidden sm:block ml-4"><div className="h-4 w-32 bg-gray-200 rounded" /><div className="h-3 w-24 bg-gray-200 rounded mt-1" /></div></div></header>}>
+          <SiteHeader settings={settings} />
+        </Suspense>
         <main>{children}</main>
-        <await SiteFooter settings={settings} />
+        <Suspense fallback={<footer className="pb-16 pt-10 md:pb-12" style={{ backgroundColor: "#10251b", color: "white" }}><div className="container-responsive"><div className="animate-pulse space-y-4"><div className="h-8 w-48 bg-gray-700 rounded" /><div className="h-4 w-64 bg-gray-700 rounded" /><div className="grid gap-4 md:grid-cols-3 mt-8"><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /></div><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-24 bg-gray-700 rounded" /></div><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /></div></div></div></div></footer>}>
+          <SiteFooter settings={settings} />
+        </Suspense>
         <MobileCta settings={settings} />
       </body>
     </html>
