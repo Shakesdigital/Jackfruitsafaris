@@ -201,7 +201,7 @@ export async function getSafariBySlug(slug: string) {
     .select("*")
     .eq("slug", slug)
     .eq("status", "published")
-    .single();
+    .maybeSingle();
 
   return data;
 }
@@ -216,7 +216,7 @@ export async function getDestinationBySlug(slug: string) {
     .select("*")
     .eq("slug", slug)
     .eq("status", "published")
-    .single();
+    .maybeSingle();
 
   return data;
 }
@@ -231,7 +231,7 @@ export async function getExperienceBySlug(slug: string) {
     .select("*")
     .eq("slug", slug)
     .eq("status", "published")
-    .single();
+    .maybeSingle();
 
   return data;
 }

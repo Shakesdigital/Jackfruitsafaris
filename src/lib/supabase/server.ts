@@ -18,6 +18,8 @@ export async function createClient() {
       order: () => ({ ...emptyResult }),
       single: () => ({ ...nullResult }),
       all: () => ({ ...emptyResult }),
+      maybeSingle: () => ({ ...nullResult }),
+      select: () => ({ ...chainable }),
     };
     return {
       auth: {
@@ -28,7 +30,12 @@ export async function createClient() {
       },
       from: () => ({
         select: () => ({ ...chainable }),
+        insert: () => ({ ...chainable }),
+        update: () => ({ ...chainable }),
+        delete: () => ({ ...chainable }),
+        upsert: () => ({ ...chainable }),
       }),
+      rpc: async () => ({ data: null, error: { message: "RPC not available: missing Supabase env vars" } }),
     } as any;
   }
 
