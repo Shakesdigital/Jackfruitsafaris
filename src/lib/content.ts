@@ -69,7 +69,6 @@ export const navItems = [
   { label: "Destinations", href: "/destinations" },
   { label: "Experiences", href: "/experiences/gorilla-trekking" },
   { label: "About", href: "/about" },
-  { label: "Reviews", href: "/reviews" },
   { label: "Travel Guide", href: "/travel-guide" },
 ];
 

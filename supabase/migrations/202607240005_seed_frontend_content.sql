@@ -48,7 +48,6 @@ UPDATE public.site_settings SET
     jsonb_build_object('label', 'Destinations', 'href', '/destinations'),
     jsonb_build_object('label', 'Experiences', 'href', '/experiences/gorilla-trekking'),
     jsonb_build_object('label', 'About', 'href', '/about'),
-    jsonb_build_object('label', 'Reviews', 'href', '/reviews'),
     jsonb_build_object('label', 'Travel Guide', 'href', '/travel-guide')
   )),
   hero_image = coalesce(hero_image, 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82')

@@ -52,6 +52,13 @@ function getStringValue(
   return fallback;
 }
 
+// Truncate a review quote into a brief preview
+function truncateBrief(text: string | undefined, maxLen: number = 120): string {
+  if (!text) return "";
+  if (text.length <= maxLen) return text;
+  return text.slice(0, maxLen).trimEnd() + "…";
+}
+
 export default async function Home() {
   // Fetch CMS data
   const [cmsSafaris, cmsExperiences, cmsTestimonials, guideArticles, quickLinks, trustItems, features, settings, pageSections] = await Promise.all([
@@ -280,16 +287,23 @@ export default async function Home() {
       >
         <div className="grid gap-5 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (
-            <article key={review.guest_name || index} className="rounded-[var(--brand-radius)] border border-black/10 bg-[var(--background)] p-6">
+            <article key={review.guest_name || index} className="flex flex-col rounded-[var(--brand-radius)] border border-black/10 bg-[var(--background)] p-6">
               <p className="text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                 {review.trip_type}
               </p>
               <p className="mt-4 text-fluid-lg font-bold leading-8 text-[var(--foreground)]">
-                "{review.quote}"
+                "{truncateBrief(review.quote)}"
               </p>
               <p className="mt-4 text-fluid-sm font-bold text-[var(--brand-muted-text)]">
                 {review.guest_name}
               </p>
+              <Link
+                href="/reviews"
+                className="mt-auto inline-flex items-center gap-1 self-start text-fluid-sm font-bold text-[var(--brand-secondary)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+              >
+                Read more
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
             </article>
           ))}
         </div>

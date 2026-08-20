@@ -12,7 +12,6 @@ export const DEFAULT_MAIN_NAVIGATION: NavItem[] = [
   { label: "Destinations", href: "/destinations" },
   { label: "Experiences", href: "/experiences" },
   { label: "About", href: "/about" },
-  { label: "Reviews", href: "/reviews" },
   { label: "Travel Guide", href: "/travel-guide" },
 ];
 

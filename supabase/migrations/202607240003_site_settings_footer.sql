@@ -13,7 +13,6 @@ update public.site_settings set
     jsonb_build_object('label', 'Destinations', 'href', '/destinations'),
     jsonb_build_object('label', 'Experiences', 'href', '/experiences/gorilla-trekking'),
     jsonb_build_object('label', 'About', 'href', '/about'),
-    jsonb_build_object('label', 'Reviews', 'href', '/reviews'),
     jsonb_build_object('label', 'Travel Guide', 'href', '/travel-guide')
   ))
 where business_name = 'Jackfruit Safaris Uganda';
