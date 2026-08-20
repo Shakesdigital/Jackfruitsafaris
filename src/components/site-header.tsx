@@ -1,14 +1,11 @@
 import Link from "next/link";
-import { Menu, MessageCircle } from "lucide-react";
+import { Menu } from "lucide-react";
 import {
   DEFAULT_MAIN_NAVIGATION,
   getMenuItemsByLocation,
   type NavItem,
 } from "@/lib/navigation";
-import {
-  buildWhatsAppHref,
-  type PublicSiteSettings,
-} from "@/lib/site-settings";
+import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export async function SiteHeader({ settings }: { settings?: PublicSiteSettings | null }) {
   let navigation: NavItem[] = [];
@@ -68,14 +65,6 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <a
-            href={buildWhatsAppHref(settings)}
-            className="inline-flex items-center gap-2 rounded-full border border-[#1f5b44]/20 px-4 py-2 text-fluid-sm font-bold text-[#174331] transition hover:bg-[#eef7f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-            aria-label="Contact us on WhatsApp"
-          >
-            <MessageCircle size={17} aria-hidden="true" />
-            <span className="hidden sm:inline">WhatsApp</span>
-          </a>
           <Link
             href="/request-quote"
             className="btn-h-responsive rounded-full bg-[var(--brand-primary)] px-5 py-2 text-fluid-sm font-black text-white shadow-sm transition hover:bg-[#0f2d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
