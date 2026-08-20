@@ -119,7 +119,7 @@ export default async function Home() {
       <section
         className="relative hero-h-responsive bg-cover bg-center text-white"
         style={{ backgroundImage: `url(${getStringValue(settings, "hero_image", images.hero)})` }}
-        aria-label="Jackfruit Safaris Uganda - Hero"
+        aria-label="Jackfruit Safaris - Hero"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />
         <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
@@ -132,7 +132,7 @@ export default async function Home() {
               {getStringValue(settings, "hero_title", "Explore Uganda With Local Safari Experts")}
             </h1>
             <p className="mt-6 max-w-2xl text-fluid-lg leading-fluid-relaxed text-white/84">
-              {getStringValue(settings, "hero_subtitle", "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.")}
+              {getStringValue(settings, "hero_subtitle", "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.")}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link

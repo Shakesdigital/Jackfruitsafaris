@@ -15,4 +15,4 @@ update public.site_settings set
     jsonb_build_object('label', 'About', 'href', '/about'),
     jsonb_build_object('label', 'Travel Guide', 'href', '/travel-guide')
   ))
-where business_name = 'Jackfruit Safaris Uganda';
+where business_name = 'Jackfruit Safaris';

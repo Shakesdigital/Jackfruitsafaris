@@ -66,7 +66,7 @@ export default async function HeroEditPage() {
             rows={3}
             defaultValue={
               content.subtitle ||
-              "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja."
+              "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja."
             }
             className="mt-1 block w-full rounded-md border-gray-300"
           />

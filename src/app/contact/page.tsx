@@ -18,7 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "Contact Jackfruit Safaris",
   description:
-    "Contact Jackfruit Safaris Uganda by email, phone, WhatsApp, or inquiry form for safaris, Jinja activities, and airport transfers.",
+    "Contact Jackfruit Safaris by email, phone, WhatsApp, or inquiry form for safaris, Jinja activities, and airport transfers.",
 };
 
 export const dynamic = "force-dynamic";

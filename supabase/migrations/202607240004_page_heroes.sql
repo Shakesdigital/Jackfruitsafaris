@@ -14,7 +14,7 @@ create table if not exists public.page_heroes (
 -- Seed page hero content
 insert into public.page_heroes (page_slug, eyebrow, title, intro, background_image, status) values
 ('/', 'Local safari experts from Jinja', 'Explore Uganda With Local Safari Experts',
- 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.',
+ 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.',
  'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82', 'published'),
 
 ('/safaris', 'Uganda safari packages', 'Choose a proven route, then make it yours',
@@ -29,8 +29,8 @@ insert into public.page_heroes (page_slug, eyebrow, title, intro, background_ima
  'Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary.',
  NULL, 'published'),
 
-('/about', 'About Jackfruit Safaris Uganda', 'Local roots, practical planning, and warm guest care',
- 'Jackfruit Safaris Uganda is a registered tour company based in Jinja, one of Uganda''s most exciting travel hubs and the adventure capital of East Africa.',
+('/about', 'About Jackfruit Safaris', 'Local roots, practical planning, and warm guest care',
+ 'Jackfruit Safaris is a registered tour company based in Jinja, one of Uganda''s most exciting travel hubs and the adventure capital of East Africa.',
  NULL, 'published'),
 
 ('/reviews', 'Guest reviews', 'Hear from travelers who explored Uganda with Jackfruit Safaris',

@@ -26,7 +26,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
       <div className="container-responsive grid gap-8 md:gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
         <div>
           <p className="text-fluid-sm font-black uppercase tracking-[0.24em] text-[var(--brand-accent)]">
-            {settings?.business_name || "Jackfruit Safaris Uganda"}
+            {settings?.business_name || "Jackfruit Safaris"}
           </p>
           <p className="mt-4 text-fluid-2xl font-black leading-fluid-tight max-w-xl">
             {settings?.footer_tagline || "Private Uganda safaris, gorilla trekking, Nile adventures, culture, and reliable transport planned from Jinja."}
@@ -91,7 +91,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
         </div>
       </div>
       <div className="container-responsive mt-10 border-t pt-6 text-fluid-xs" style={{ borderColor: "var(--footer-muted-text)", opacity: 0.3 }}>
-        {settings?.footer_copy || `© ${new Date().getFullYear()} Jackfruit Safaris Uganda Ltd. Built for CMS-managed safari planning.`}
+        {settings?.footer_copy || `© ${new Date().getFullYear()} Jackfruit Safaris Ltd. Built for CMS-managed safari planning.`}
       </div>
     </footer>
   );

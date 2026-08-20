@@ -1051,7 +1051,7 @@ export async function upsertHomepageSection(formData: FormData) {
       redirectOnMutationError(settingsError, "/admin/homepage/hero", "Homepage settings sync");
     } else {
       const { error: settingsError } = await supabase.from("site_settings").insert({
-        business_name: "Jackfruit Safaris Uganda",
+        business_name: "Jackfruit Safaris",
         ...settingsPatch,
       });
       redirectOnMutationError(settingsError, "/admin/homepage/hero", "Homepage settings sync");

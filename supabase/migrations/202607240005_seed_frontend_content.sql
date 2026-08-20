@@ -28,7 +28,7 @@ ALTER TABLE public.destinations ADD COLUMN IF NOT EXISTS featured_image_url text
 -- Update site_settings with homepage fields (already exists, updating)
 UPDATE public.site_settings SET
   hero_title = coalesce(hero_title, 'Explore Uganda With Local Safari Experts'),
-  hero_subtitle = coalesce(hero_subtitle, 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.'),
+  hero_subtitle = coalesce(hero_subtitle, 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.'),
   badge_text = coalesce(badge_text, 'Local safari experts from Jinja'),
   cta_primary = coalesce(cta_primary, 'Plan My Safari'),
   cta_secondary = coalesce(cta_secondary, 'View Safari Packages'),
@@ -51,14 +51,14 @@ UPDATE public.site_settings SET
     jsonb_build_object('label', 'Travel Guide', 'href', '/travel-guide')
   )),
   hero_image = coalesce(hero_image, 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82')
-WHERE business_name = 'Jackfruit Safaris Uganda';
+WHERE business_name = 'Jackfruit Safaris';
 
 -- Seed page heroes for all secondary pages
 INSERT INTO public.page_heroes (page_slug, eyebrow, title, intro, status) VALUES
   ('/safaris', 'Uganda safari packages', 'Choose a proven route, then make it yours', 'Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda''s landscapes and wildlife as budget, mid-range, or luxury private trips.', 'published'),
   ('/destinations', 'Destinations', 'Uganda safari places, routed with care', 'Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote.', 'published'),
   ('/experiences', 'Experiences', 'Build your Uganda trip around the moments that matter', 'Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary.', 'published'),
-  ('/about', 'About Jackfruit Safaris Uganda', 'Local roots, practical planning, and warm guest care', 'Jackfruit Safaris Uganda is a registered tour company based in Jinja, one of Uganda''s most exciting travel hubs and the adventure capital of East Africa.', 'published'),
+  ('/about', 'About Jackfruit Safaris', 'Local roots, practical planning, and warm guest care', 'Jackfruit Safaris is a registered tour company based in Jinja, one of Uganda''s most exciting travel hubs and the adventure capital of East Africa.', 'published'),
   ('/reviews', 'Guest reviews', 'Hear from travelers who explored Uganda with Jackfruit Safaris', 'Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason.', 'published'),
   ('/travel-guide', 'Uganda safari travel guide', 'Practical articles that answer booking questions', 'These are ready as CMS article topics for SEO, buyer education, and AI-search visibility.', 'published')
 ON CONFLICT (page_slug) DO UPDATE SET
@@ -78,7 +78,7 @@ SELECT
 FROM (VALUES
   ('hero', 'Explore Uganda With Local Safari Experts', 'Local safari experts from Jinja',
    jsonb_build_object(
-     'subtitle', 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.',
+     'subtitle', 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.',
      'cta_primary', 'Plan My Safari',
      'cta_secondary', 'View Safari Packages'
    ), 1, 'published'),

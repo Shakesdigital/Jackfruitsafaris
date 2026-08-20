@@ -11,14 +11,14 @@ insert into public.site_settings (
 )
 select *
 from (values (
-  'Jackfruit Safaris Uganda',
+  'Jackfruit Safaris',
   'jackfruitsafarisuganda@gmail.com',
   '+256 772 550 268',
   '+256 752 550 268',
   'Craft Village, Jinja, Uganda',
   '9 AM - 5 PM, with WhatsApp support for travel inquiries',
   '{"tripadvisor": "https://tripadvisor.com", "facebook": "https://facebook.com"}'::jsonb,
-  '© 2024 Jackfruit Safaris Uganda. All rights reserved.'
+  '© 2024 Jackfruit Safaris. All rights reserved.'
 )) as seed(
   business_name,
   contact_email,

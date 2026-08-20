@@ -71,7 +71,7 @@ $$;
 
 create table if not exists public.site_settings (
   id uuid primary key default gen_random_uuid(),
-  business_name text not null default 'Jackfruit Safaris Uganda',
+  business_name text not null default 'Jackfruit Safaris',
   logo_url text,
   favicon_url text,
   contact_email text,

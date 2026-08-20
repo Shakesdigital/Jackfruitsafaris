@@ -16,7 +16,7 @@ alter table public.site_settings add column if not exists cta_button text;
 -- Update seeded settings with homepage-specific values
 update public.site_settings set
   hero_title = coalesce(hero_title, 'Explore Uganda With Local Safari Experts'),
-  hero_subtitle = coalesce(hero_subtitle, 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.'),
+  hero_subtitle = coalesce(hero_subtitle, 'Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.'),
   badge_text = coalesce(badge_text, 'Local safari experts from Jinja'),
   cta_primary = coalesce(cta_primary, 'Plan My Safari'),
   cta_secondary = coalesce(cta_secondary, 'View Safari Packages'),
@@ -28,4 +28,4 @@ update public.site_settings set
   cta_title = coalesce(cta_title, 'Tell us your dates, group size, budget, and dream experiences.'),
   cta_intro = coalesce(cta_intro, 'Jackfruit Safaris will recommend the best route and quote, with clear inclusions, exclusions, and items that need live checking.'),
   cta_button = coalesce(cta_button, 'Request a Custom Quote')
-where business_name = 'Jackfruit Safaris Uganda';
+where business_name = 'Jackfruit Safaris';

@@ -64,7 +64,7 @@ select
   seed.status::public.content_status
 from (values
 ('hero', 'Explore Uganda With Local Safari Experts', 'Local safari experts from Jinja',
- '{"subtitle": "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris Uganda from Jinja.", "cta_primary": "Plan My Safari", "cta_secondary": "View Safari Packages"}', 1, 'published'),
+ '{"subtitle": "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.", "cta_primary": "Plan My Safari", "cta_secondary": "View Safari Packages"}', 1, 'published'),
 
 ('trust_bar', 'Trust Items', null, '{}'::jsonb, 2, 'published'),
 

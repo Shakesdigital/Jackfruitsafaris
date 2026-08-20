@@ -54,19 +54,19 @@ export default async function AboutPage() {
       <section
         className="relative hero-h-responsive bg-[var(--foreground)] bg-cover bg-center text-white"
         style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
-        aria-label="About Jackfruit Safaris Uganda"
+        aria-label="About Jackfruit Safaris"
       >
         {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" aria-hidden="true" />}
         <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
           <div>
             <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-              {hero?.eyebrow || "About Jackfruit Safaris Uganda"}
+              {hero?.eyebrow || "About Jackfruit Safaris"}
             </p>
             <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
               {hero?.title || "Local roots, practical planning, and warm guest care"}
             </h1>
             <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
-              {hero?.intro || "Jackfruit Safaris Uganda is a registered tour company based in Jinja, one of Uganda's most exciting travel hubs and the adventure capital of East Africa."}
+              {hero?.intro || "Jackfruit Safaris is a registered tour company based in Jinja, one of Uganda's most exciting travel hubs and the adventure capital of East Africa."}
             </p>
           </div>
         </div>

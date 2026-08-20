@@ -61,7 +61,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
               name="business_name"
               label="Business Name"
               required
-              placeholder="Jackfruit Safaris Uganda"
+              placeholder="Jackfruit Safaris"
             />
             <TextField
               name="contact_email"
@@ -410,7 +410,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
             name="footer_copy"
             label="Footer Copyright"
             rows={3}
-            placeholder="© 2024 Jackfruit Safaris Uganda. All rights reserved."
+            placeholder="© 2024 Jackfruit Safaris. All rights reserved."
           />
         </div>
 

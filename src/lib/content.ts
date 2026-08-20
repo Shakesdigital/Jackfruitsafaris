@@ -52,7 +52,7 @@ export const iconMap = {
 } satisfies Record<IconName, typeof Binoculars>;
 
 export const site = {
-  name: "Jackfruit Safaris Uganda",
+  name: "Jackfruit Safaris",
   shortName: "Jackfruit Safaris",
   email: "jackfruitsafarisuganda@gmail.com",
   phone: "+256 772 550 268",

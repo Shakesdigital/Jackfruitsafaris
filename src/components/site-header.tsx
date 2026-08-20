@@ -44,11 +44,11 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
               {settings?.business_name || "Jackfruit"}
             </span>
             <span className="block text-fluid-xs font-semibold text-[var(--brand-muted-text)]">
-              Safaris Uganda
+              Safaris
             </span>
           </span>
           <span className="block sm:hidden text-fluid-xs font-semibold text-[var(--brand-muted-text)]">
-            {settings?.business_name || "Jackfruit Safaris Uganda"}
+            {settings?.business_name || "Jackfruit Safaris"}
           </span>
         </Link>
 

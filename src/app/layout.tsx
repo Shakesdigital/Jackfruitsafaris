@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       url: "https://www.jackfruitsafaris.org",
-      siteName: settings?.business_name || "Jackfruit Safaris Uganda",
+      siteName: settings?.business_name || "Jackfruit Safaris",
       locale: "en_US",
       type: "website",
     },

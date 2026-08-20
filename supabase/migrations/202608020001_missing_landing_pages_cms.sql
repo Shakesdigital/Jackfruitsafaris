@@ -35,7 +35,7 @@ insert into public.page_content_sections (
     'Get in Touch',
     'We\'d love to hear from you',
     $json${
-        "intro": "Contact Jackfruit Safaris Uganda by email, phone, WhatsApp, or inquiry form for safaris, Jinja activities, and airport transfers.",
+        "intro": "Contact Jackfruit Safaris by email, phone, WhatsApp, or inquiry form for safaris, Jinja activities, and airport transfers.",
         "items": [
             {
                 "icon": "Mail",
@@ -243,7 +243,7 @@ where p.slug = section_rows.page_slug;
 -- Also ensure these pages exist in the pages table
 insert into public.pages (slug, title, summary, status, featured_image_url)
 values
-('contact', 'Contact Jackfruit Safaris', 'Contact Jackfruit Safaris Uganda by email, phone, WhatsApp, or inquiry form for safaris, Jinja activities, and airport transfers.', 'published', 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82'),
+('contact', 'Contact Jackfruit Safaris', 'Contact Jackfruit Safaris by email, phone, WhatsApp, or inquiry form for safaris, Jinja activities, and airport transfers.', 'published', 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82'),
 ('request-quote', 'Request a Uganda Safari Quote', 'Request a custom Uganda safari quote from Jackfruit Safaris for gorilla trekking, wildlife safaris, Jinja activities, culture, and transport.', 'published', 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=82'),
 ('transport/airport-transfers', 'Airport Pickups and Transport Services', 'Book reliable Entebbe airport pickups, Kampala and Jinja transfers, hotel transfers, safari vehicle hire, and group transport with Jackfruit Safaris.', 'published', 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1600&q=82')
 on conflict (slug) do update
