@@ -25,6 +25,21 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
     <footer className="pb-16 pt-10 md:pb-12" style={{ backgroundColor: footerBg, color: "var(--footer-text)" }}>
       <div className="container-responsive grid gap-8 md:gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
         <div>
+          <Link href="/" className="mb-5 inline-flex" aria-label={`${settings?.business_name || "Jackfruit Safaris"} - Home`}>
+            {settings?.logo_url ? (
+              <img
+                src={settings.logo_url}
+                alt={`${settings?.business_name || "Jackfruit Safaris"} logo`}
+                className="logo-responsive rounded-full object-contain"
+                width="72"
+                height="72"
+              />
+            ) : (
+              <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-xl font-black text-[var(--foreground)]">
+                J
+              </span>
+            )}
+          </Link>
           <p className="text-fluid-sm font-black uppercase tracking-[0.24em] text-[var(--brand-accent)]">
             {settings?.business_name || "Jackfruit Safaris"}
           </p>
@@ -37,7 +52,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
         </div>
         <div>
           <h2 className="text-fluid-sm font-black uppercase tracking-[0.18em]" style={{ color: "var(--footer-muted-text)" }}>
-            Explore
+            Quick Links
           </h2>
           <div className="mt-4 grid gap-3">
             {navigation.map((item) => (
