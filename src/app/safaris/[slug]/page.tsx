@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import { Section } from "@/components/section";
 import { StickyQuoteCard } from "@/components/sticky-quote-card";
-import { getSafariBySlug } from "@/lib/cms-data";
+import { RelatedGallery } from "@/components/related-gallery";
+import { getSafariBySlug, getGalleryMediaBySafari } from "@/lib/cms-data";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -37,6 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SafariDetailPage({ params }: Props) {
   const { slug } = await params;
   const safari = await getSafariBySlug(slug);
+  const galleryImages = await getGalleryMediaBySafari(slug);
 
   if (!safari) {
     notFound();
@@ -277,7 +279,13 @@ export default async function SafariDetailPage({ params }: Props) {
               </Link>
             </div>
           </article>
-          <StickyQuoteCard sourcePage={displayData.slug} defaultService={displayData.title} />
+          <div className="space-y-8">
+            <RelatedGallery
+              images={galleryImages as any[]}
+              safariTitle={displayData.title}
+            />
+            <StickyQuoteCard sourcePage={displayData.slug} defaultService={displayData.title} />
+          </div>
         </div>
       </Section>
     </>

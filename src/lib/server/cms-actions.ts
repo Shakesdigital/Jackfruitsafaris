@@ -881,9 +881,10 @@ export async function deleteEntity(table: string, id: string) {
     experiences: ["/", "/experiences", "/experiences/[slug]"],
     reviews: ["/", "/reviews"],
     pages: ["/", "/contact", "/request-quote", "/transport/airport-transfers"],
+    gallery_media: ["/", "/safaris", "/safaris/[slug]"],
   };
   revalidateCmsRoutes(...(publicPathsByTable[table] || ["/"]));
-  redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table}`);
+  redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table === "gallery_media" ? "gallery" : table}`);
 }
 // Page Actions
 const pageSchema = z.object({
@@ -1351,3 +1352,71 @@ export async function upsertPageContentSection(formData: FormData) {
   revalidateCmsRoutes(parsed.data.page_slug);
   redirect(`/admin/pages/content?page=${encodeURIComponent(parsed.data.page_slug)}`);
 }
+
+// Gallery Media Actions
+const galleryMediaSchema = z.object({
+  media_url: z.string().min(1),
+  media_type: z.enum(["image", "video"]).default("image"),
+  alt_text: z.string().min(1),
+  caption: z.string().optional(),
+  photographer: z.string().optional(),
+  safari_package_id: z.string().uuid().optional().nullable(),
+  order_column: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+  permission_status: z.enum(["needs_review", "approved", "rejected"]).default("approved"),
+});
+
+export async function upsertGalleryMedia(formData: FormData) {
+  // Verify user with anon client
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  // Use admin client for writes
+  const supabase = await getAdminSupabase();
+
+  const id = formData.get("id") as string;
+  const isNew = !id;
+  const mediaUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "media_file",
+      `media/gallery/${id || "new"}`,
+      `/admin/gallery/${id || "new"}`,
+    )) ||
+    formData.get("media_url") ||
+    undefined;
+
+  const parsed = galleryMediaSchema.safeParse({
+    media_url: mediaUrl,
+    media_type: formData.get("media_type") || "image",
+    alt_text: formData.get("alt_text"),
+    caption: formData.get("caption") || undefined,
+    photographer: formData.get("photographer") || undefined,
+    safari_package_id: formData.get("safari_package_id") || null,
+    order_column: formData.get("order_index") ? parseInt(formData.get("order_index") as string) : 0,
+    status: formData.get("status") || "published",
+    permission_status: formData.get("permission_status") || "approved",
+  });
+
+  if (!parsed.success) {
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/gallery/${id || "new"}`,
+      "Gallery media save",
+    );
+  }
+
+  const { error } = await supabase.from("gallery_media").upsert({
+    id: id || undefined,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+    ...(isNew ? { created_at: new Date().toISOString() } : {}),
+  });
+  redirectOnMutationError(error, `/admin/gallery/${id || "new"}`, "Gallery media save");
+
+  revalidateCmsRoutes("/", "/safaris", "/safaris/[slug]");
+  redirect("/admin/gallery");
+}
+

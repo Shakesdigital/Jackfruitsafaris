@@ -250,6 +250,79 @@ export async function getGalleryMedia() {
   return data || [];
 }
 
+// Fetch gallery media for a specific safari package by slug
+export async function getGalleryMediaBySafari(slug: string) {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  // Step 1: Resolve the safari package id from its slug
+  const { data: safari } = await supabase
+    .from("safari_packages")
+    .select("id")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (!safari?.id) {
+    return [];
+  }
+
+  // Step 2: Fetch approved gallery media for that safari
+  const { data } = await supabase
+    .from("gallery_media")
+    .select("*")
+    .eq("status", "published")
+    .eq("permission_status", "approved")
+    .eq("safari_package_id", safari.id)
+    .order("order_column", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch all gallery media for admin (bypass RLS)
+export async function getAdminGalleryMedia() {
+  const supabase = await createAdminClient();
+
+  const { data, error } = await supabase
+    .from("gallery_media")
+    .select("*")
+    .order("order_column", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  return data || [];
+}
+
+// Fetch gallery media for a specific safari for admin (bypass RLS)
+export async function getAdminGalleryMediaBySafari(safariId: string) {
+  const supabase = await createAdminClient();
+
+  const { data } = await supabase
+    .from("gallery_media")
+    .select("*")
+    .eq("safari_package_id", safariId)
+    .order("order_column", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch all published safari packages (for admin gallery assignment)
+export async function getAdminSafariPackagesForGallery() {
+  const supabase = await createAdminClient();
+
+  const { data } = await supabase
+    .from("safari_packages")
+    .select("id, slug, title")
+    .order("order_column", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch a single gallery media record by id for admin editing
+export async function getAdminGalleryMediaByIdResult(id: string) {
+  return getAdminRecordById("gallery_media", id);
+}
+
 // Admin fetch functions - use service role key to bypass RLS
 export async function getAdminSafaris() {
   const supabase = await createAdminClient();
