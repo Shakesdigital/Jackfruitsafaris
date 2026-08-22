@@ -13,14 +13,6 @@ export async function POST(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL_KEY || process.env.SUPABASE_URL || process.env.SUPABASE_URL_KEY;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
-  // Debug logging
-  console.log("LOGIN ENV CHECK:", { 
-    hasUrl: !!supabaseUrl, 
-    hasKey: !!supabaseKey,
-    urlSet: supabaseUrl ? "yes" : "no",
-    keySet: supabaseKey ? "yes" : "no"
-  });
-
   if (!supabaseUrl || !supabaseKey) {
     const missing = [];
     if (!supabaseUrl) missing.push("NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL_KEY");
@@ -39,6 +31,14 @@ export async function POST(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet: { name: string; value: string; options: any }[], _headers?: Record<string, string>) {
+          // Apply cache-control headers from @supabase/ssr to prevent
+          // CDN/proxy from caching the auth redirect response (which would
+          // cache it without user-specific cookies)
+          if (_headers) {
+            for (const [key, value] of Object.entries(_headers)) {
+              response.headers.set(key, value);
+            }
+          }
           cookiesToSet.forEach(({ name, value, options }) => {
             response.cookies.set(name, value, {
               path: options?.path ?? "/",

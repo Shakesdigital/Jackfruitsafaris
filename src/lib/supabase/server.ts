@@ -11,14 +11,15 @@ export async function createClient() {
 
   if (!url || !key) {
     // Return a mock client that will fail gracefully
-    const emptyResult = { data: [], error: null };
     const nullResult = { data: null, error: null };
+    const emptyResult = { data: [], error: null };
     const chainable: any = {
       eq: () => ({ ...chainable }),
-      order: () => ({ ...emptyResult }),
+      order: () => ({ ...chainable }),
       single: () => ({ ...nullResult }),
       all: () => ({ ...emptyResult }),
       maybeSingle: () => ({ ...nullResult }),
+      limit: () => ({ ...chainable }),
       select: () => ({ ...chainable }),
     };
     return {
@@ -88,9 +89,11 @@ export async function createAdminClient() {
       const nullResult = { data: null, error: null };
       const chainable: any = {
         eq: () => ({ ...chainable }),
-        order: () => ({ ...emptyResult }),
+        order: () => ({ ...chainable }),
         single: () => ({ ...nullResult }),
         all: () => ({ ...emptyResult }),
+        limit: () => ({ ...chainable }),
+        maybeSingle: () => ({ ...nullResult }),
       };
       return {
         from: () => ({

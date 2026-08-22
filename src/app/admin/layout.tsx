@@ -32,11 +32,13 @@ export default async function AdminLayout({
   const supabase = await createClient();
 
   // Verify session with Supabase (uses cookies internally via createClient)
+  // getUser() performs server-side JWT verification — more secure and
+  // reliable than getSession() which only reads cookies without verification
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/auth/login");
   }
 
