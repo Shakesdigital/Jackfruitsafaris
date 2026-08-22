@@ -280,6 +280,36 @@ export async function getGalleryMediaBySafari(slug: string) {
   return data || [];
 }
 
+// Fetch gallery media for a specific experience by slug
+export async function getGalleryMediaByExperience(slug: string) {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  // Resolve the experience id from its slug
+  const { data: experience } = await supabase
+    .from("experiences")
+    .select("id")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (!experience?.id) {
+    return [];
+  }
+
+  // Fetch approved, published gallery media linked to this experience
+  const { data } = await supabase
+    .from("gallery_media")
+    .select("*")
+    .eq("status", "published")
+    .eq("permission_status", "approved")
+    .eq("experience_id", experience.id)
+    .order("order_column", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  return data || [];
+}
+
 // Fetch all gallery media for admin (bypass RLS)
 export async function getAdminGalleryMedia() {
   const supabase = await createAdminClient();

@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAdminGalleryMediaByIdResult, getAdminSafariPackagesForGallery } from "@/lib/cms-data";
+import {
+  getAdminGalleryMediaByIdResult,
+  getAdminSafariPackagesForGallery,
+  getAdminExperiences,
+} from "@/lib/cms-data";
 import { DeleteButton } from "@/app/admin/_components/delete-button";
 import { ImageUploadField } from "@/app/admin/_components/cms-form-controls";
 
@@ -12,7 +16,7 @@ export const metadata: Metadata = {
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ safari?: string }>;
+  searchParams: Promise<{ safari?: string; experience?: string }>;
 };
 
 type GalleryImage = {
@@ -23,6 +27,7 @@ type GalleryImage = {
   caption?: string | null;
   photographer?: string | null;
   safari_package_id?: string | null;
+  experience_id?: string | null;
   order_column?: number;
   status?: string;
   permission_status?: string;
@@ -34,13 +39,19 @@ type SafariOption = {
   title: string;
 };
 
+type ExperienceOption = {
+  id: string;
+  slug: string;
+  name: string;
+};
+
 function fieldValue(value: string | number | null | undefined) {
   return value ?? "";
 }
 
 export default async function GalleryEditPage({ params, searchParams }: Props) {
   const { id } = await params;
-  const { safari: safariParam } = await searchParams;
+  const { safari: safariParam, experience: experienceParam } = await searchParams;
   const isNew = id === "new";
 
   const result = await getAdminGalleryMediaByIdResult(
@@ -48,6 +59,7 @@ export default async function GalleryEditPage({ params, searchParams }: Props) {
   );
   const safari = result.data as GalleryImage | null;
   const safaris = await getAdminSafariPackagesForGallery();
+  const experiences = await getAdminExperiences();
 
   // For "new" records, result is null and we proceed; for existing, check error
   if (result.error && !isNew) {
@@ -70,6 +82,8 @@ export default async function GalleryEditPage({ params, searchParams }: Props) {
   }
 
   const selectedSafari = safari?.safari_package_id || safariParam || "";
+  const selectedExperience =
+    safari?.experience_id || experienceParam || "";
 
   return (
     <div className="max-w-3xl">
@@ -167,6 +181,22 @@ export default async function GalleryEditPage({ params, searchParams }: Props) {
             </label>
 
             <label className="block">
+              <span className="text-sm font-medium text-gray-700">Experience</span>
+              <select
+                name="experience_id"
+                defaultValue={selectedExperience}
+                className="mt-1 block w-full rounded-md border-gray-300 text-sm"
+              >
+                <option value="">— Not linked to an experience —</option>
+                {experiences.map((e: ExperienceOption) => (
+                  <option key={e.id} value={e.id}>
+                    {e.name} ({e.slug})
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="block sm:col-span-2">
               <span className="text-sm font-medium text-gray-700">Order Index</span>
               <input
                 type="number"

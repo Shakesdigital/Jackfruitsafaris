@@ -1361,6 +1361,7 @@ const galleryMediaSchema = z.object({
   caption: z.string().optional(),
   photographer: z.string().optional(),
   safari_package_id: z.string().uuid().optional().nullable(),
+  experience_id: z.string().uuid().optional().nullable(),
   order_column: z.number().int().default(0),
   status: z.enum(["draft", "published", "archived"]).default("published"),
   permission_status: z.enum(["needs_review", "approved", "rejected"]).default("approved"),
@@ -1395,6 +1396,7 @@ export async function upsertGalleryMedia(formData: FormData) {
     caption: formData.get("caption") || undefined,
     photographer: formData.get("photographer") || undefined,
     safari_package_id: formData.get("safari_package_id") || null,
+    experience_id: formData.get("experience_id") || null,
     order_column: formData.get("order_index") ? parseInt(formData.get("order_index") as string) : 0,
     status: formData.get("status") || "published",
     permission_status: formData.get("permission_status") || "approved",
@@ -1416,7 +1418,13 @@ export async function upsertGalleryMedia(formData: FormData) {
   });
   redirectOnMutationError(error, `/admin/gallery/${id || "new"}`, "Gallery media save");
 
-  revalidateCmsRoutes("/", "/safaris", "/safaris/[slug]");
+  revalidateCmsRoutes(
+    "/",
+    "/safaris",
+    "/safaris/[slug]",
+    "/experiences",
+    "/experiences/[slug]",
+  );
   redirect("/admin/gallery");
 }
 

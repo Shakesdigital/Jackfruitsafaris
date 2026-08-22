@@ -5,7 +5,13 @@ import { CheckCircle2 } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
-import { getExperienceBySlug, getPublishedSafaris } from "@/lib/cms-data";
+import { ExperienceGallery } from "@/components/experience-gallery";
+import {
+  getExperienceBySlug,
+  getGalleryMediaByExperience,
+  getPublishedSafaris,
+} from "@/lib/cms-data";
+import type { GalleryMedia } from "@/components/experience-gallery";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -53,6 +59,8 @@ export default async function ExperienceDetailPage({ params }: Props) {
   if (!experience) {
     notFound();
   }
+
+  const galleryMedia = await getGalleryMediaByExperience(slug);
 
   const safaris = await getPublishedSafaris();
   const displaySafaris = safaris.slice(0, 2).map((s: { slug: string; title: string; duration?: string; summary?: string; price_from?: number; comfort_levels?: string[]; featured_image_url?: string }) => ({
@@ -134,7 +142,13 @@ export default async function ExperienceDetailPage({ params }: Props) {
               </div>
             </div>
           </article>
-          <QuoteForm sourcePage={experience.slug} defaultService={experience.name} />
+          <div className="space-y-8">
+            <ExperienceGallery
+              images={galleryMedia as GalleryMedia[]}
+              experienceTitle={experience.name}
+            />
+            <QuoteForm sourcePage={experience.slug} defaultService={experience.name} />
+          </div>
         </div>
       </Section>
     </>
