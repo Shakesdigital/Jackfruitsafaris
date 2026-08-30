@@ -4,6 +4,18 @@ import { createBrowserClient } from "@supabase/ssr";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+/**
+ * CmsLiveRefresh — listens for Supabase Realtime events on the
+ * `cms_refresh_events` table (populated by the database trigger
+ * `cms_emit_refresh_event`) and, when an admin saves content, clears
+ * the Next.js server cache and triggers a `router.refresh()` so the
+ * published frontend picks up changes immediately.
+ *
+ * The companion `CmsRealtimeProvider` (in `src/lib/supabase/realtime-context.tsx`)
+ * provides direct table subscriptions + a client-side pub/sub bus for
+ * components that hold local state and need sub-second updates.
+ */
+
 async function clearServerCmsCache(pathname: string) {
   try {
     const response = await fetch("/api/clear-cache", {
@@ -17,10 +29,10 @@ async function clearServerCmsCache(pathname: string) {
     });
 
     if (!response.ok) {
-      console.warn("CMS cache clearing failed:", response.status);
+      console.warn("[CmsLiveRefresh] cache clearing failed:", response.status);
     }
   } catch (error) {
-    console.warn("CMS cache clearing failed:", error);
+    console.warn("[CmsLiveRefresh] cache clearing failed:", error);
   }
 }
 
@@ -62,7 +74,7 @@ export function CmsLiveRefresh() {
 
         lastRefreshTime = now;
         refreshCmsContent(router, currentPathname).catch((error) => {
-          console.warn("CMS live refresh failed:", error);
+          console.warn("[CmsLiveRefresh] live refresh failed:", error);
         });
       }, 150);
     };
@@ -76,6 +88,7 @@ export function CmsLiveRefresh() {
     window.addEventListener("focus", scheduleRefresh);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
+    // If Supabase env vars are missing, we still want focus-based refresh.
     if (!supabaseUrl || !supabaseKey) {
       return () => {
         if (refreshTimer) clearTimeout(refreshTimer);
@@ -85,6 +98,8 @@ export function CmsLiveRefresh() {
     }
 
     const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+
+    // Primary channel: the trigger-emitted `cms_refresh_events` table.
     const channel = supabase
       .channel(`cms-public-refresh:${currentPathname}`)
       .on(
@@ -94,7 +109,12 @@ export function CmsLiveRefresh() {
           schema: "public",
           table: "cms_refresh_events",
         },
-        scheduleRefresh,
+        () => {
+          // The event payload carries `scope` (the table name) but we
+          // refresh the whole page for simplicity — `cms-data` fetchers
+          // already use `unstable_noStore()`.
+          scheduleRefresh();
+        },
       )
       .subscribe();
 

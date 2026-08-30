@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { MobileCta } from "@/components/mobile-cta";
 import { CmsLiveRefresh } from "@/components/cms-live-refresh";
+import { CmsRealtimeProvider } from "@/lib/supabase/realtime-context";
 import { OrganizationJsonLd } from "@/components/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -132,7 +133,9 @@ export default async function RootLayout({
         className="min-h-full bg-[var(--background)] text-[var(--foreground)]"
         style={aestheticStyle}
       >
-        <CmsLiveRefresh />
+        <CmsRealtimeProvider>
+          <CmsLiveRefresh />
+        </CmsRealtimeProvider>
         <OrganizationJsonLd />
         <Suspense fallback={<header className="sticky top-0 z-50 border-b border-black/10 bg-white/92 backdrop-blur-xl"><div className="container-responsive flex items-center justify-between py-3 sm:py-4"><div className="animate-pulse h-10 w-10 rounded-full bg-gray-200" /><div className="hidden sm:block ml-4"><div className="h-4 w-32 bg-gray-200 rounded" /><div className="h-3 w-24 bg-gray-200 rounded mt-1" /></div></div></header>}>
           <SiteHeader settings={settings} />
