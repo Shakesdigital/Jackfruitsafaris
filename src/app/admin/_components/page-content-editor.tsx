@@ -28,6 +28,7 @@ const SECTION_FIELDS: Record<string, SectionField[]> = {
     { name: "section_title", label: "Section Title", type: "text" },
     { name: "intro", label: "Intro Text", type: "wysiwyg" },
     { name: "paragraph", label: "Body Text", type: "wysiwyg" },
+    { name: "background_image", label: "Background Image URL", type: "url" },
   ],
   cta: [
     { name: "box_title", label: "Box Title", type: "wysiwyg" },
