@@ -5,17 +5,17 @@ import {
   MapPin,
   MessageCircle,
   ShieldCheck,
+  UserCircle2 as UserCircle,
 } from "lucide-react";
-import { QuoteForm } from "@/components/quote-form";
 import { CmsRichText } from "@/components/cms-rich-text";
 import { SafariCard } from "@/components/safari-card";
+import { Carousel } from "@/components/carousel";
 import { Section } from "@/components/section";
 import {
   experiences as hardcodedExperiences,
   iconMap,
   safaris as hardcodedSafaris,
   testimonials as hardcodedTestimonials,
-  guideArticles as hardcodedGuideArticles,
   trustItems as hardcodedTrustItems,
   images,
 } from "@/lib/content";
@@ -23,7 +23,6 @@ import {
   getPublishedSafaris,
   getPublishedExperiences,
   getPublishedReviews,
-  getHomepageGuideArticles,
   getPublishedQuickLinks,
   getPublishedTrustItems,
   getPublishedFeatures,
@@ -61,11 +60,10 @@ function truncateBrief(text: string | undefined, maxLen: number = 120): string {
 
 export default async function Home() {
   // Fetch CMS data
-  const [cmsSafaris, cmsExperiences, cmsTestimonials, guideArticles, quickLinks, trustItems, features, settings, pageSections] = await Promise.all([
+  const [cmsSafaris, cmsExperiences, cmsTestimonials, quickLinks, trustItems, features, settings, pageSections] = await Promise.all([
     getPublishedSafaris(),
     getPublishedExperiences(),
     getPublishedReviews(),
-    getHomepageGuideArticles(),
     getPublishedQuickLinks(),
     getPublishedTrustItems(),
     getPublishedFeatures(),
@@ -78,7 +76,6 @@ export default async function Home() {
   const featuredSafarisSection = getPageSection(pageSections, "featured_safaris");
   const experiencesSection = getPageSection(pageSections, "experiences");
   const reviewsSection = getPageSection(pageSections, "reviews");
-  const travelGuideSection = getPageSection(pageSections, "travel_guide");
   const quoteCtaSection = getPageSection(pageSections, "quote_cta");
 
   // Use hardcoded data as fallbacks when CMS returns empty
@@ -93,8 +90,11 @@ export default async function Home() {
     slug: e.slug, title: e.title, icon: e.icon, image: e.image, summary: e.summary,
   }));
 
-  const testimonials = cmsTestimonials.length ? cmsTestimonials : hardcodedTestimonials.map(t => ({
-    guest_name: t.name, trip_type: t.trip, quote: t.quote,
+  const testimonials = (cmsTestimonials.length ? cmsTestimonials : hardcodedTestimonials).map((t: any) => ({
+    guest_name: t.guest_name || t.name,
+    trip_type: t.trip_type || t.trip,
+    quote: t.quote,
+    image_url: t.image_url || (t as any).avatar_url,
   }));
 
   const fallbackFeatures = getSectionStringList(whyUgandaSection, "fallback_features", [
@@ -201,23 +201,34 @@ export default async function Home() {
         title={getStringValue(whyUgandaSection, "title", getStringValue(settings, "why_uganda_title", "One compact country, many safari worlds"))}
         intro={<CmsRichText html={getSectionText(whyUgandaSection, "intro", getStringValue(settings, "why_uganda_intro", "Uganda can take you from the River Nile to open savannah, roaring waterfalls, crater lakes, rainforest chimpanzees, and mountain gorillas in one carefully routed journey."))} />}
       >
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr]">
-          <div className="rounded-[var(--brand-radius)] bg-[var(--brand-primary)] p-6 sm:p-8 sm:p-10 text-white">
-            <CmsRichText
-              className="text-fluid-lg leading-fluid-relaxed text-white/82"
-              html={getSectionText(whyUgandaSection, "body", getStringValue(settings, "why_uganda_paragraph", "Jackfruit Safaris helps you experience Uganda smoothly, with local guides who understand the roads, parks, permits, lodges, and small details that make a trip feel effortless."))}
-            />
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {featuresList.map((item: any) => (
-                <p key={item.id || item.text} className="flex items-center gap-3 font-bold">
-                  <BadgeCheck className="text-[var(--brand-accent)]" size={18} aria-hidden="true" />
-                  {item.text}
-                </p>
-              ))}
+        {(() => {
+          const whyUgandaBgImage = getSectionText(whyUgandaSection, "background_image", "");
+          return (
+            <div className="space-y-8">
+              <CmsRichText
+                className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+                html={getSectionText(whyUgandaSection, "paragraph", getStringValue(settings, "why_uganda_paragraph", "Jackfruit Safaris helps you experience Uganda smoothly, with local guides who understand the roads, parks, permits, lodges, and small details that make a trip feel effortless."))}
+              />
+              {whyUgandaBgImage && (
+                <div className="rounded-[var(--brand-radius)] overflow-hidden">
+                  <img
+                    src={whyUgandaBgImage}
+                    alt="Uganda landscape — why travel with Jackfruit Safaris"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              )}
+              <div className="grid gap-4 sm:grid-cols-2">
+                {featuresList.map((item: any) => (
+                  <p key={item.id || item.text} className="flex items-center gap-3 font-bold">
+                    <BadgeCheck className="text-[var(--brand-accent)]" size={18} aria-hidden="true" />
+                    {item.text}
+                  </p>
+                ))}
+              </div>
             </div>
-          </div>
-          <QuoteForm sourcePage="homepage" compact />
-        </div>
+          );
+        })()}
       </Section>
 
       {/* Featured Safaris Section */}
@@ -227,7 +238,7 @@ export default async function Home() {
         title={getStringValue(featuredSafarisSection, "title", "Start with a proven Uganda route")}
         intro={<CmsRichText html={getSectionText(featuredSafarisSection, "intro", "Choose a ready itinerary or ask Jackfruit Safaris to adjust the route, dates, accommodation tier, and pace around your group.")} />}
       >
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <Carousel>
           {safaris.map((safari: any) => (
             <SafariCard key={safari.slug} safari={{
               slug: safari.slug,
@@ -239,7 +250,7 @@ export default async function Home() {
               image: safari.featured_image_url || safari.image || "",
             }} />
           ))}
-        </div>
+        </Carousel>
       </Section>
 
       {/* Experiences Section */}
@@ -248,7 +259,7 @@ export default async function Home() {
         title={getStringValue(experiencesSection, "title", "The right trip for your travel style")}
         intro={<CmsRichText html={getSectionText(experiencesSection, "intro", "Jackfruit Safaris can combine wildlife, primates, Nile adventure, culture, and transport into a single smooth plan.")} />}
       >
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <Carousel>
           {experiences.map((experience: any) => {
             const Icon = iconMap[experience.icon as keyof typeof iconMap];
             const IconComponent = Icon || BadgeCheck;
@@ -275,7 +286,7 @@ export default async function Home() {
               </Link>
             );
           })}
-        </div>
+        </Carousel>
       </Section>
 
       {/* Reviews Section */}
@@ -288,10 +299,21 @@ export default async function Home() {
         <div className="grid gap-5 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (
             <article key={review.guest_name || index} className="flex flex-col rounded-[var(--brand-radius)] border border-black/10 bg-[var(--background)] p-6">
-              <p className="text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
-                {review.trip_type}
-              </p>
-              <p className="mt-4 text-fluid-lg font-bold leading-8 text-[var(--foreground)]">
+              <div className="flex items-start gap-3">
+                {review.image_url ? (
+                  <img
+                    src={review.image_url}
+                    alt={review.guest_name}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <UserCircle size={40} className="text-[var(--brand-muted-text)]" />
+                )}
+                <p className="text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
+                  {review.trip_type}
+                </p>
+              </div>
+              <p className="mt-4 text-fluid-lg font-normal leading-8 text-[var(--foreground)]">
                 "{truncateBrief(review.quote)}"
               </p>
               <p className="mt-4 text-fluid-sm font-bold text-[var(--brand-muted-text)]">
@@ -305,28 +327,6 @@ export default async function Home() {
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </article>
-          ))}
-        </div>
-      </Section>
-
-      {/* Travel Guide Section */}
-      <Section
-        className="bg-[var(--brand-primary)] text-white"
-        eyebrow={getStringValue(travelGuideSection, "subtitle", "Travel guide")}
-        title={getStringValue(travelGuideSection, "title", "Helpful planning content for safari buyers")}
-        intro={<CmsRichText html={getSectionText(travelGuideSection, "intro", "Priority guide topics are ready for CMS publishing, SEO expansion, and AI-search visibility.")} />}
-      >
-        <div className="grid gap-3 md:grid-cols-2">
-          {guideArticles.length ? guideArticles.map((article: any) => (
-            <Link key={article.id || article.title || article} href={getSectionLink(travelGuideSection, "link_href", "/travel-guide")} className="flex items-center justify-between rounded-[var(--brand-radius)] bg-white/8 p-4 text-fluid-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
-              {article.title || article}
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          )) : hardcodedGuideArticles.map(article => (
-            <Link key={article} href={getSectionLink(travelGuideSection, "link_href", "/travel-guide")} className="flex items-center justify-between rounded-[var(--brand-radius)] bg-white/8 p-4 text-fluid-sm font-bold text-white ring-1 ring-white/10 hover:bg-white/12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
-              {article}
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
           ))}
         </div>
       </Section>
