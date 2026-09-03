@@ -18,7 +18,6 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
 
   if (!navigation.length)
     navigation = DEFAULT_MAIN_NAVIGATION;
-  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-white/92 backdrop-blur-xl">
