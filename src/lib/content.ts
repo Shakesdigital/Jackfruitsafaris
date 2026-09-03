@@ -697,6 +697,7 @@ export const cmsModels = [
   "Site Settings",
   "Navigation",
   "Pages",
+  "Heroes",
   "Safari Packages",
   "Destinations",
   "Experiences",
@@ -710,3 +711,107 @@ export const cmsModels = [
   "Inquiry Leads",
   "Redirects",
 ];
+
+export type PageHeroFallback = {
+  badgeText?: string;
+  title: string;
+  intro: string;
+  backgroundImage?: string;
+  eyebrow?: string;
+  ctaPrimary?: { label: string; href: string };
+  ctaSecondary?: { label: string; href: string };
+  quickLinks?: Array<{ label: string; href: string }>;
+};
+
+export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
+  "/": {
+    badgeText: "Local safari experts from Jinja",
+    title: "Explore Uganda With Local Safari Experts",
+    intro:
+      "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.",
+    backgroundImage: images.hero,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/about": {
+    badgeText: "About Jackfruit Safaris",
+    title: "Local roots, practical planning, and warm guest care",
+    intro:
+      "Jackfruit Safaris is a registered tour company based in Jinja, one of Uganda's most exciting travel hubs and the adventure capital of East Africa.",
+    backgroundImage: images.gorilla,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/safaris": {
+    badgeText: "Uganda safari packages",
+    title: "Choose a proven route, then make it yours",
+    intro:
+      "Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda's landscapes and wildlife as budget, mid-range, or luxury private trips.",
+    backgroundImage: images.savannah,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/destinations": {
+    badgeText: "Destinations",
+    title: "Uganda safari places, routed with care",
+    intro:
+      "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote.",
+    backgroundImage: images.falls,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/experiences": {
+    badgeText: "Experiences",
+    title: "Build your Uganda trip around the moments that matter",
+    intro:
+      "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary.",
+    backgroundImage: images.forest,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/reviews": {
+    badgeText: "Guest reviews",
+    title: "Hear from travelers who explored Uganda with Jackfruit Safaris",
+    intro:
+      "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason.",
+    backgroundImage: images.nile,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/travel-guide": {
+    badgeText: "Uganda safari travel guide",
+    title: "Practical articles that answer booking questions",
+    intro:
+      "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility.",
+    backgroundImage: images.culture,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/contact": {
+    badgeText: "Contact Jackfruit Safaris",
+    title: "Plan Your Uganda Safari",
+    intro:
+      "Send your travel details and Jackfruit Safaris will help you choose the right safari, activity, transfer, or custom itinerary.",
+    backgroundImage: images.lake,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/request-quote": {
+    badgeText: "Request a quote",
+    title: "Tell Jackfruit Safaris what you want from Uganda",
+    intro:
+      "Dates, group size, budget, activity interests, and comfort level are enough to start a practical route recommendation.",
+    backgroundImage: images.vehicle,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+  "/transport/airport-transfers": {
+    badgeText: "Transport",
+    title: "Airport Pickups and Transport Services",
+    intro:
+      "Reliable airport pickups, hotel transfers, Jinja transfers, and safari transport with professional drivers.",
+    backgroundImage: images.vehicle,
+    ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
+    ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+  },
+};

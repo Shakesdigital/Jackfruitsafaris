@@ -568,7 +568,9 @@ export async function getAdminGuideArticles() {
   return data || [];
 }
 
-// Fetch page hero content
+// Fetch page hero content — selects the full hero record including
+// badge, dual CTA, and quick_links fields so every landing page can
+// render the home-page-style hero.
 export async function getPageHero(pageSlug: string) {
   unstable_noStore();
   const supabase = await createClient();
@@ -579,6 +581,17 @@ export async function getPageHero(pageSlug: string) {
     .eq("status", "published")
     .single();
   return data;
+}
+
+// Resolve a page hero from CMS, falling back to hardcoded content.
+// This keeps pages rendering the home-page-style hero even when the
+// CMS row is missing or fields are blank.
+export async function getPageHeroWithFallback(pageSlug: string) {
+  const hero = await getPageHero(pageSlug);
+  if (hero) return hero;
+
+  // Fallback: no DB row at all
+  return null;
 }
 
 // Admin functions for page heroes

@@ -1,13 +1,13 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  BadgeCheck,
   MapPin,
   MessageCircle,
   ShieldCheck,
   UserCircle2 as UserCircle,
 } from "lucide-react";
 import { CmsRichText } from "@/components/cms-rich-text";
+import { HeroSection } from "@/components/hero-section";
 import { SafariCard } from "@/components/safari-card";
 import { Carousel } from "@/components/carousel";
 import { Section } from "@/components/section";
@@ -18,6 +18,7 @@ import {
   testimonials as hardcodedTestimonials,
   trustItems as hardcodedTrustItems,
   images,
+  pageHeroFallbacks,
 } from "@/lib/content";
 import {
   getPublishedSafaris,
@@ -56,6 +57,15 @@ function truncateBrief(text: string | undefined, maxLen: number = 120): string {
   if (!text) return "";
   if (text.length <= maxLen) return text;
   return text.slice(0, maxLen).trimEnd() + "…";
+}
+
+// Normalize quick links from CMS into QuickLink[] shape
+function normalizeQuickLinks(items: unknown): Array<{ label: string; href: string }> {
+  if (!Array.isArray(items)) return [];
+  return items
+    .filter((item): item is { label?: string; href?: string } => typeof item === "object" && item !== null)
+    .filter((item) => typeof item.label === "string" && typeof item.href === "string")
+    .map((item) => ({ label: item.label!, href: item.href! }));
 }
 
 export default async function Home() {
@@ -116,65 +126,22 @@ export default async function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section
-        className="relative hero-h-responsive bg-cover bg-center text-white"
-        style={{ backgroundImage: `url(${getStringValue(settings, "hero_image", images.hero)})` }}
-        aria-label="Jackfruit Safaris - Hero"
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />
-        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
-          <div className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-fluid-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20">
-              <BadgeCheck size={17} aria-hidden="true" />
-              {getStringValue(settings, "badge_text", "Local safari experts from Jinja")}
-            </p>
-            <h1 className="mt-6 text-fluid-5xl font-black leading-fluid-tight">
-              {getStringValue(settings, "hero_title", "Explore Uganda With Local Safari Experts")}
-            </h1>
-            <p className="mt-6 max-w-2xl text-fluid-lg leading-fluid-relaxed text-white/84">
-              {getStringValue(settings, "hero_subtitle", "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.")}
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/request-quote"
-                className="btn-h-responsive inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-6 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-              >
-                {getStringValue(settings, "cta_primary", "Plan My Safari")}
-              </Link>
-              <Link
-                href="/safaris"
-                className="btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-6 text-fluid-sm font-black text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-              >
-                {getStringValue(settings, "cta_secondary", "View Safari Packages")}
-                <ArrowRight size={17} aria-hidden="true" />
-              </Link>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-2">
-              {quickLinks.length ? quickLinks.map((item: any) => (
-                <Link
-                  key={item.id || item.href}
-                  href={item.href}
-                  className="rounded-full bg-white/12 px-4 py-2 text-fluid-sm font-bold text-white ring-1 ring-white/18 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-                >
-                  {item.label}
-                </Link>
-              )) : (
-                [
-                  { label: "Gorilla Trekking", href: "/experiences/gorilla-trekking" },
-                  { label: "Murchison Falls", href: "/safaris/3-days-murchison-falls" },
-                  { label: "10 Days Uganda", href: "/safaris/10-days-uganda-safari" },
-                  { label: "Jinja Activities", href: "/experiences/jinja-adventures" },
-                  { label: "Airport Transfer", href: "/transport/airport-transfers" },
-                ].map(item => (
-                  <Link key={item.href} href={item.href} className="rounded-full bg-white/12 px-4 py-2 text-fluid-sm font-bold text-white ring-1 ring-white/18 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
-                    {item.label}
-                  </Link>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badgeText={getStringValue(settings, "badge_text", pageHeroFallbacks["/"]?.badgeText || "Local safari experts from Jinja")}
+        title={getStringValue(settings, "hero_title", pageHeroFallbacks["/"]?.title || "Explore Uganda With Local Safari Experts")}
+        intro={getStringValue(settings, "hero_subtitle", pageHeroFallbacks["/"]?.intro || "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.")}
+        backgroundImage={getStringValue(settings, "hero_image", images.hero)}
+        ctaPrimary={{
+          label: getStringValue(settings, "cta_primary", "Plan My Safari"),
+          href: getStringValue(settings, "cta_primary_href", "/request-quote"),
+        }}
+        ctaSecondary={{
+          label: getStringValue(settings, "cta_secondary", "View Safari Packages"),
+          href: getStringValue(settings, "cta_secondary_href", "/safaris"),
+        }}
+        quickLinks={normalizeQuickLinks(quickLinks.length ? quickLinks : undefined) || undefined}
+        ariaLabel="Jackfruit Safaris - Hero"
+      />
 
       {/* Trust Bar */}
       <section className="border-y border-black/10 bg-white py-5 sm:py-6">

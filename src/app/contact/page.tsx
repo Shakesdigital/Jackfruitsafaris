@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { CmsRichText } from "@/components/cms-rich-text";
+import { HeroSection } from "@/components/hero-section";
 import { Section } from "@/components/section";
-import { site } from "@/lib/content";
+import { site, pageHeroFallbacks } from "@/lib/content";
 import {
   getPageHero,
   getPublishedPageContentSections,
@@ -29,6 +30,7 @@ export default async function ContactPage() {
     getPublishedPageContentSections("/contact"),
     getSiteSettings(),
   ]);
+  const fallback = pageHeroFallbacks["/contact"];
   const contactInfoSection = getPageSection(pageSections, "contact_info");
   const quoteFormSection = getPageSection(pageSections, "quote_form");
 
@@ -56,26 +58,22 @@ export default async function ContactPage() {
 
   return (
     <>
-      <section
-        className="relative hero-h-responsive bg-cover bg-center text-white"
-        style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
-        aria-label="Contact Jackfruit Safaris"
-      >
-        {hero?.background_image && <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />}
-        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
-          <div className="max-w-3xl">
-            <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-              {hero?.eyebrow || "Contact"}
-            </p>
-            <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
-              {hero?.title || "Plan Your Uganda Safari"}
-            </h1>
-            <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
-              {hero?.intro || "Send your travel details and Jackfruit Safaris will help you choose the right safari, activity, transfer, or custom itinerary."}
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badgeText={hero?.badge_text || fallback?.badgeText}
+        title={hero?.title || fallback?.title || "Plan Your Uganda Safari"}
+        intro={hero?.intro || fallback?.intro || "Send your travel details and Jackfruit Safaris will help you choose the right safari, activity, transfer, or custom itinerary."}
+        backgroundImage={hero?.background_image || fallback?.backgroundImage}
+        ctaPrimary={{
+          label: hero?.cta_primary || "Plan My Safari",
+          href: hero?.cta_primary_href || "/request-quote",
+        }}
+        ctaSecondary={{
+          label: hero?.cta_secondary || "View Safari Packages",
+          href: hero?.cta_secondary_href || "/safaris",
+        }}
+        quickLinks={hero?.quick_links || fallback?.quickLinks}
+        ariaLabel="Contact Jackfruit Safaris"
+      />
       <Section>
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="space-y-4">

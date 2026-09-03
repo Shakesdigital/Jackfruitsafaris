@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen, PenLine } from "lucide-react";
 import { CmsRichText } from "@/components/cms-rich-text";
+import { HeroSection } from "@/components/hero-section";
 import { Section } from "@/components/section";
 import {
   getHomepageGuideArticles,
@@ -14,6 +15,7 @@ import {
   getSectionStringList,
   getSectionText,
 } from "@/lib/cms-page-content";
+import { pageHeroFallbacks } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +25,7 @@ export default async function TravelGuidePage() {
     getPageHero("/travel-guide"),
     getPublishedPageContentSections("/travel-guide"),
   ]);
+  const fallback = pageHeroFallbacks["/travel-guide"];
   const gridSection = getPageSection(pageSections, "guide_topic_grid");
   const quoteCtaSection = getPageSection(pageSections, "quote_cta");
 
@@ -46,25 +49,23 @@ export default async function TravelGuidePage() {
 
   return (
     <>
-      <section
-        className="relative hero-h-responsive bg-[var(--foreground)] bg-cover bg-center text-white"
-        style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
-        aria-label="Uganda safari travel guide"
-      >
-        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" aria-hidden="true" />}
-        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
-          <p className="inline-flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-            <BookOpen size={18} aria-hidden="true" />
-            {hero?.eyebrow || "Uganda safari travel guide"}
-          </p>
-          <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
-            {hero?.title || "Practical articles that answer booking questions"}
-          </h1>
-          <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
-            {hero?.intro || "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility."}
-          </p>
-        </div>
-      </section>
+      <HeroSection
+        badgeText={hero?.badge_text || fallback?.badgeText}
+        title={hero?.title || fallback?.title || "Practical articles that answer booking questions"}
+        intro={hero?.intro || fallback?.intro || "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility."}
+        backgroundImage={hero?.background_image || fallback?.backgroundImage}
+        icon={<BookOpen size={18} aria-hidden="true" />}
+        ctaPrimary={{
+          label: hero?.cta_primary || "Plan My Safari",
+          href: hero?.cta_primary_href || "/request-quote",
+        }}
+        ctaSecondary={{
+          label: hero?.cta_secondary || "View Safari Packages",
+          href: hero?.cta_secondary_href || "/safaris",
+        }}
+        quickLinks={hero?.quick_links || fallback?.quickLinks}
+        ariaLabel="Uganda safari travel guide"
+      />
       <Section
         eyebrow={gridSection?.subtitle || undefined}
         title={gridSection?.title || undefined}

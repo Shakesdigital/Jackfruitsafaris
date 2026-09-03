@@ -1225,9 +1225,20 @@ export async function upsertGuideArticle(formData: FormData) {
 const pageHeroSchema = z.object({
   page_slug: z.string().min(1),
   eyebrow: z.string().optional(),
+  badge_text: z.string().optional(),
   title: z.string().optional(),
   intro: z.string().optional(),
   background_image: z.string().url().optional().or(z.literal("")),
+  cta_primary: z.string().optional(),
+  cta_secondary: z.string().optional(),
+  cta_primary_href: z.string().optional(),
+  cta_secondary_href: z.string().optional(),
+  quick_links: z.array(
+    z.object({
+      label: z.string().min(1),
+      href: z.string().min(1),
+    }),
+  ).optional(),
   content: z.record(z.string(), z.any()).optional(),
   status: z.enum(["draft", "published", "archived"]).default("published"),
 });
@@ -1264,12 +1275,29 @@ export async function upsertPageHero(formData: FormData) {
       .filter(([, value]) => typeof value === "string" && value.trim()),
   );
 
+  // Parse quick_links from form (JSON string)
+  const quickLinksRaw = formData.get("quick_links");
+  let quickLinks: unknown = undefined;
+  if (quickLinksRaw && typeof quickLinksRaw === "string" && quickLinksRaw.trim()) {
+    try {
+      quickLinks = JSON.parse(quickLinksRaw);
+    } catch {
+      // Invalid JSON — leave undefined so Zod schema catches it
+    }
+  }
+
   const parsed = pageHeroSchema.safeParse({
     page_slug: formData.get("page_slug"),
     eyebrow: formData.get("eyebrow") || undefined,
+    badge_text: formData.get("badge_text") || undefined,
     title: formData.get("title") || undefined,
     intro: formData.get("intro") || undefined,
     background_image: backgroundImage,
+    cta_primary: formData.get("cta_primary") || undefined,
+    cta_secondary: formData.get("cta_secondary") || undefined,
+    cta_primary_href: formData.get("cta_primary_href") || undefined,
+    cta_secondary_href: formData.get("cta_secondary_href") || undefined,
+    quick_links: quickLinks,
     content: Object.keys(detailContent).length ? detailContent : undefined,
     status: formData.get("status") || "published",
   });

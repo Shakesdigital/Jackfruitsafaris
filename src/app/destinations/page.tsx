@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, Map } from "lucide-react";
+import { HeroSection } from "@/components/hero-section";
 import { Section } from "@/components/section";
-import { destinations as hardcodedDestinations, images } from "@/lib/content";
+import { destinations as hardcodedDestinations, pageHeroFallbacks } from "@/lib/content";
 import {
   getPublishedDestinations,
   getPageHero,
@@ -27,6 +27,7 @@ export default async function DestinationsPage() {
     getPageHero("/destinations"),
     getPublishedPageContentSections("/destinations"),
   ]);
+  const fallback = pageHeroFallbacks["/destinations"];
   const gridSection = getPageSection(pageSections, "destination_grid");
 
   // Use CMS data if available, otherwise fall back to hardcoded content
@@ -48,24 +49,22 @@ export default async function DestinationsPage() {
 
   return (
     <>
-      <section
-        className="relative hero-h-responsive bg-[var(--foreground)] bg-cover bg-center text-white"
-        style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
-        aria-label="Uganda safari destinations"
-      >
-        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" aria-hidden="true" />}
-        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
-          <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-            {hero?.eyebrow || "Destinations"}
-          </p>
-          <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
-            {hero?.title || "Uganda safari places, routed with care"}
-          </h1>
-          <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
-            {hero?.intro || "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote."}
-          </p>
-        </div>
-      </section>
+      <HeroSection
+        badgeText={hero?.badge_text || fallback?.badgeText}
+        title={hero?.title || fallback?.title || "Uganda safari places, routed with care"}
+        intro={hero?.intro || fallback?.intro || "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote."}
+        backgroundImage={hero?.background_image || fallback?.backgroundImage}
+        ctaPrimary={{
+          label: hero?.cta_primary || "Plan My Safari",
+          href: hero?.cta_primary_href || "/request-quote",
+        }}
+        ctaSecondary={{
+          label: hero?.cta_secondary || "View Safari Packages",
+          href: hero?.cta_secondary_href || "/safaris",
+        }}
+        quickLinks={hero?.quick_links || fallback?.quickLinks}
+        ariaLabel="Uganda safari destinations"
+      />
 
       <Section
         eyebrow={gridSection?.subtitle || undefined}

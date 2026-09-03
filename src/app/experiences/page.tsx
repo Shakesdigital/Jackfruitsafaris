@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { HeroSection } from "@/components/hero-section";
 import { Section } from "@/components/section";
-import { experiences as hardcodedExperiences, iconMap } from "@/lib/content";
+import { experiences as hardcodedExperiences, iconMap, pageHeroFallbacks } from "@/lib/content";
 import {
   getPublishedExperiences,
   getPageHero,
@@ -18,6 +19,7 @@ export default async function ExperiencesPage() {
     getPageHero("/experiences"),
     getPublishedPageContentSections("/experiences"),
   ]);
+  const fallback = pageHeroFallbacks["/experiences"];
   const gridSection = getPageSection(pageSections, "experience_grid");
 
   // Use CMS data if available, otherwise fall back to hardcoded content
@@ -39,24 +41,22 @@ export default async function ExperiencesPage() {
 
   return (
     <>
-      <section
-        className="relative hero-h-responsive bg-[var(--foreground)] bg-cover bg-center text-white"
-        style={hero?.background_image ? { backgroundImage: `url(${hero.background_image})` } : undefined}
-        aria-label="Uganda safari experiences"
-      >
-        {hero?.background_image && <div className="absolute inset-0 bg-[var(--foreground)]/45" aria-hidden="true" />}
-        <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
-          <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-            {hero?.eyebrow || "Experiences"}
-          </p>
-          <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
-            {hero?.title || "Build your Uganda trip around the moments that matter"}
-          </h1>
-          <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/76">
-            {hero?.intro || "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary."}
-          </p>
-        </div>
-      </section>
+      <HeroSection
+        badgeText={hero?.badge_text || fallback?.badgeText}
+        title={hero?.title || fallback?.title || "Build your Uganda trip around the moments that matter"}
+        intro={hero?.intro || fallback?.intro || "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary."}
+        backgroundImage={hero?.background_image || fallback?.backgroundImage}
+        ctaPrimary={{
+          label: hero?.cta_primary || "Plan My Safari",
+          href: hero?.cta_primary_href || "/request-quote",
+        }}
+        ctaSecondary={{
+          label: hero?.cta_secondary || "View Safari Packages",
+          href: hero?.cta_secondary_href || "/safaris",
+        }}
+        quickLinks={hero?.quick_links || fallback?.quickLinks}
+        ariaLabel="Uganda safari experiences"
+      />
       <Section
         eyebrow={gridSection?.subtitle || undefined}
         title={gridSection?.title || undefined}
