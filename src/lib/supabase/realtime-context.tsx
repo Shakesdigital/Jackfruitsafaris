@@ -124,8 +124,8 @@ export function CmsRealtimeProvider({
   const channelsRef = useRef<any[]>([]);
   const supabaseRef = useRef<any>(null);
   const lastRefreshTimeRef = useRef(0);
-  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
-  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const subscribedRef = useRef(false);
 
   // Keep the latest pathname/search in a ref so triggerRefresh stays stable

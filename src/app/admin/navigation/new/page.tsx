@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { upsertMenu } from "@/lib/server/cms-actions";
 
 export const dynamic = "force-dynamic";

@@ -9,6 +9,7 @@ import {
   ColorInputField,
   ImageUploadField,
   SocialLinkEditor,
+  KeyValueEditor,
 } from "./_components/FormFields";
 
 export const dynamic = "force-dynamic";

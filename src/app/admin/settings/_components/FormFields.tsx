@@ -212,7 +212,7 @@ interface SocialLinkEditorProps {
 
 export function SocialLinkEditor({ name, label, value, className }: SocialLinkEditorProps) {
   const { value: formValue, onChange: handleChange } = useFormField(name);
-  const [pairs, setPairs] = useState<Array<{ key: string; value: string }>>([]);
+  const [pairs, setPairs] = useState<Array<{ key: string; label: string; value: string }>>([]);
 
   useEffect(() => {
     const source = value || (typeof formValue === "object" && formValue !== null ? formValue : {});
