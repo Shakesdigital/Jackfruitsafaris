@@ -345,3 +345,15 @@ button.rounded-full {
 @media print {
   .no-print { display: none !important; }
 }
+
+/* Carousel: CSS scroll-snap horizontal scrolling */
+.carousel-container {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.carousel-container::-webkit-scrollbar {
+  display: none;
+}
+.carousel-container .scroll-snap-start {
+  scroll-snap-align: start;
+}
