@@ -158,23 +158,7 @@ export async function getSiteSettings() {
 
     // Ensure we return a proper object with all expected fields
     if (data && typeof data === "object") {
-      // Cast to any to handle the dynamic nature of the RPC response
       const settings = data as Record<string, unknown>;
-
-      // Ensure nav_items is properly formatted as an array
-      if (settings.nav_items && !Array.isArray(settings.nav_items)) {
-        console.warn("nav_items is not an array, attempting to parse:", settings.nav_items);
-        try {
-          const parsed = typeof settings.nav_items === 'string' ? JSON.parse(settings.nav_items) : settings.nav_items;
-          if (Array.isArray(parsed)) {
-            settings.nav_items = parsed;
-          } else {
-            settings.nav_items = null;
-          }
-        } catch {
-          settings.nav_items = null;
-        }
-      }
 
       // Ensure hero_image is a string (not null/undefined)
       if (!settings.hero_image || typeof settings.hero_image !== 'string') {

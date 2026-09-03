@@ -1,23 +1,28 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr";
 
 /**
- * A lightweight client-side realtime hub for CMS content.
+ * CmsRealtimeProvider
  *
- * The database triggers in `202607300004_cms_realtime_refresh.sql` already
- * emit rows into `cms_refresh_events`, and `CmsLiveRefresh` listens for those
- * events and calls `router.refresh()`. However, for client-side components
- * that fetch data with SWR / React Query (or hold local state), we also need
- * a pub/sub channel so they can invalidate their caches instantly — without
- * waiting for a full-page revalidation round-trip.
+ * A single, robust client-side realtime hub for CMS content changes.
  *
- * This context provides:
- *   1. `subscribe` – register a callback for a change to one or more tables.
- *   2. `broadcast`  – emit a synthetic event (used by admin save handlers
- *                     after a successful mutation so the editor sees updates
- *                     on every open tab immediately).
- *   3. `isRefreshing` – a boolean that UI can use to show a "live" indicator.
+ * How it works:
+ *   1. The database trigger `cms_emit_refresh_event` (defined in
+ *      `202607300004_cms_realtime_refresh.sql`) fires on every INSERT/UPDATE/DELETE
+ *      to any CMS content table and inserts a row into the `cms_refresh_events`
+ *      proxy table.
+ *   2. This provider subscribes to INSERT events on `cms_refresh_events` via
+ *      Supabase Realtime.
+ *   3. On each event it calls `router.refresh()` (which re-runs server components
+ *      that use `unstable_noStore()`) and also notifies any local subscribers
+ *      registered via `useCmsChanges`.
+ *
+ * This design avoids per-table Realtime subscriptions (which require every
+ * content table to be in the Realtime publication) and instead relies on a
+ * single, reliable proxy-table subscription.
  */
 
 type CmsTable =
@@ -38,8 +43,12 @@ type CmsTable =
   | "travel_guide_articles"
   | "faqs"
   | "partners"
+  | "menus"
+  | "menu_items"
   | "accommodations"
-  | "redirects";
+  | "transfer_services"
+  | "redirects"
+  | "inquiry_leads";
 
 type CmsChangeHandler = (payload: {
   table: CmsTable;
@@ -54,6 +63,8 @@ type RealtimeContextValue = {
   broadcast: (tables: CmsTable | CmsTable[], event?: "INSERT" | "UPDATE" | "DELETE") => void;
   /** True while a page-wide refresh is in flight. */
   isRefreshing: boolean;
+  /** Realtime connection status. */
+  isConnected: boolean;
 };
 
 const CmsRealtimeContext = createContext<RealtimeContextValue | undefined>(undefined);
@@ -76,39 +87,110 @@ const ALL_TABLES: CmsTable[] = [
   "travel_guide_articles",
   "faqs",
   "partners",
+  "menus",
+  "menu_items",
   "accommodations",
+  "transfer_services",
   "redirects",
+  "inquiry_leads",
 ];
 
-const getEnvVar = (a: string, b: string, c: string) =>
-  process.env[a] || process.env[b] || process.env[c];
+function getEnvVar(...keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = process.env[key];
+    if (value) return value;
+  }
+  return undefined;
+}
+
+function isKnownTable(scope: string | undefined): scope is CmsTable {
+  return ALL_TABLES.includes(scope as CmsTable);
+}
 
 export function CmsRealtimeProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const handlers = useRef(new Map<string, Set<CmsChangeHandler>>());
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const broadcast = (
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+
+  // Refs that don't need to be in the subscription dependency array
+  const handlersRef = useRef(new Map<string, Set<CmsChangeHandler>>());
+  const channelsRef = useRef<any[]>([]);
+  const supabaseRef = useRef<any>(null);
+  const lastRefreshTimeRef = useRef(0);
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
+  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
+  const subscribedRef = useRef(false);
+
+  // Keep the latest pathname/search in a ref so triggerRefresh stays stable
+  const locationRef = useRef("");
+  useEffect(() => {
+    locationRef.current = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : "");
+  }, [pathname, searchParams]);
+
+  /** Clear the server-side ISR cache (no-op for force-dynamic pages, but harmless). */
+  async function clearServerCmsCache() {
+    try {
+      await fetch("/api/clear-cache", {
+        method: "POST",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tags: ["cms", "site-settings", "published-content"],
+          paths: [locationRef.current || "/"],
+        }),
+      });
+    } catch (error) {
+      // Non-fatal — router.refresh() is the real refresh mechanism for
+      // force-dynamic pages.
+      console.warn("[CMS Realtime] Cache clear failed:", error);
+    }
+  }
+
+  /** Trigger a full page refresh via Next.js router. */
+  const triggerRefresh = useCallback((reason: string) => {
+    const now = Date.now();
+    // Debounce: limit to one refresh per 300ms
+    if (now - lastRefreshTimeRef.current < 300) {
+      return;
+    }
+    lastRefreshTimeRef.current = now;
+
+    console.log("[CMS Realtime] Triggering page refresh:", reason);
+
+    setIsRefreshing(true);
+
+    // Fire-and-forget cache clear, then refresh
+    clearServerCmsCache();
+    router.refresh();
+
+    // Reset the refreshing flag after a short delay
+    if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
+    refreshTimeoutRef.current = setTimeout(() => setIsRefreshing(false), 1500);
+  }, [router]);
+
+  const broadcast = useCallback((
     tables: CmsTable | CmsTable[],
     event: "INSERT" | "UPDATE" | "DELETE" = "UPDATE",
   ) => {
     const tableList = Array.isArray(tables) ? tables : [tables];
     for (const table of tableList) {
-      const key = `*:${table}`;
-      handlers.current.get(key)?.forEach((fn) =>
+      handlersRef.current.get(`*:${table}`)?.forEach((fn) =>
         fn({ table, event, payload: null }),
       );
-      // Also notify "*" general subscribers
-      handlers.current.get("*:*")?.forEach((fn) =>
+      handlersRef.current.get("*:*")?.forEach((fn) =>
         fn({ table, event, payload: null }),
       );
     }
-  };
+  }, []);
 
-  const subscribe = (
+  const subscribe = useCallback((
     tables: CmsTable | CmsTable[],
     handler: CmsChangeHandler,
   ): (() => void) => {
@@ -117,69 +199,64 @@ export function CmsRealtimeProvider({
 
     for (const table of tableList) {
       const key = `*:${table}`;
-      if (!handlers.current.has(key)) {
-        handlers.current.set(key, new Set());
+      if (!handlersRef.current.has(key)) {
+        handlersRef.current.set(key, new Set());
       }
-      handlers.current.get(key)!.add(handler);
+      handlersRef.current.get(key)!.add(handler);
 
-      const remove = () => {
-        handlers.current.get(key)?.delete(handler);
-      };
-      unsubFns.push(remove);
+      unsubFns.push(() => {
+        handlersRef.current.get(key)?.delete(handler);
+      });
     }
 
-    // Always listen to the global "*" channel as well
+    // Also listen on the global "*" channel
     const globalKey = "*:*";
-    if (!handlers.current.has(globalKey)) {
-      handlers.current.set(globalKey, new Set());
+    if (!handlersRef.current.has(globalKey)) {
+      handlersRef.current.set(globalKey, new Set());
     }
-    handlers.current.get(globalKey)!.add((payload) => {
+    const globalHandler: CmsChangeHandler = (payload) => {
       if (tableList.includes(payload.table)) {
         handler(payload);
       }
-    });
+    };
+    handlersRef.current.get(globalKey)!.add(globalHandler);
 
     return () => {
       unsubFns.forEach((fn) => fn());
-      handlers.current.get(globalKey)?.delete(handler as CmsChangeHandler);
+      handlersRef.current.get(globalKey)?.delete(globalHandler);
     };
-  };
+  }, []);
 
-  // Subscribe to Supabase Realtime on the `cms_refresh_events` table
-  // (the trigger-based approach) AND, as a backup, directly to each
-  // CMS table so changes propagate even if triggers haven't been
-  // re-run for a new table.
+  // ---- Realtime subscription (set up once) ----
   useEffect(() => {
-    const supabaseUrl =
-      getEnvVar(
-        "NEXT_PUBLIC_SUPABASE_URL",
-        "NEXT_PUBLIC_SUPABASE_URL_KEY",
-        "SUPABASE_URL",
-      ) || getEnvVar("SUPABASE_URL", "SUPABASE_URL_KEY", "SUPABASE_URL");
-    const supabaseKey =
-      getEnvVar(
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-        "NEXT_SUPABASE_ANON_KEY",
-        "SUPABASE_ANON_KEY"
-      );
+    const supabaseUrl = getEnvVar(
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_URL_KEY",
+      "SUPABASE_URL",
+      "SUPABASE_URL_KEY",
+    );
+    const supabaseKey = getEnvVar(
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "NEXT_SUPABASE_ANON_KEY",
+      "SUPABASE_ANON_KEY",
+    );
 
     if (!supabaseUrl || !supabaseKey) {
-      console.warn("[CmsRealtime] Supabase env vars not configured — Realtime will use broadcast-only mode.");
+      console.warn(
+        "[CMS Realtime] Supabase env vars not configured — Realtime live refresh is disabled. " +
+        "Pages will still show fresh data on manual reload.",
+      );
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let supabase: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const channelList: any[] = [];
+    const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+    supabaseRef.current = supabase;
 
-    const setup = async () => {
-      const { createBrowserClient } = await import("@supabase/ssr");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      supabase = createBrowserClient(supabaseUrl, supabaseKey) as any;
+    /** Set up (or re-connect) the Realtime subscription. */
+    const connect = () => {
+      if (subscribedRef.current) return;
 
-      // 1. Listen to the trigger-based refresh event table
-      const refreshChannel = supabase
+      const channel = supabase
         .channel("cms-refresh-events")
         .on(
           "postgres_changes",
@@ -188,71 +265,73 @@ export function CmsRealtimeProvider({
             schema: "public",
             table: "cms_refresh_events",
           },
-          () => {
-            setIsRefreshing(true);
-            // Broadcast a generic "everything changed" notification
-            ALL_TABLES.forEach((table) => {
-              handlers.current.get(`*:${table}`)?.forEach((fn) =>
-                fn({ table, event: "*", payload: null }),
-              );
-              handlers.current.get("*:*")?.forEach((fn) =>
-                fn({ table, event: "*", payload: null }),
-              );
-            });
+          (_event: any) => {
+            // The trigger inserts `scope = tg_table_name` so we know what changed.
+            const scope = _event?.payload?.new?.scope;
+            const table = isKnownTable(scope) ? scope : "site_settings";
 
-            // Clear the refreshing state after a short delay
-            setTimeout(() => setIsRefreshing(false), 1000);
+            console.log("[CMS Realtime] Change event received:", { scope, table });
+
+            // Notify pub/sub subscribers
+            handlersRef.current.get(`*:${table}`)?.forEach((fn) =>
+              fn({ table, event: "UPDATE", payload: null }),
+            );
+            handlersRef.current.get("*:*")?.forEach((fn) =>
+              fn({ table, event: "UPDATE", payload: null }),
+            );
+
+            // Trigger a full page refresh so server components re-fetch
+            triggerRefresh(`cms_refresh_events INSERT (scope=${scope})`);
           },
         )
-        .subscribe();
+        .subscribe((status: string) => {
+          const isJoined = status === "SUBSCRIBED";
+          setIsConnected(isJoined);
 
-      channelList.push(refreshChannel);
+          if (isJoined) {
+            console.log("[CMS Realtime] Connected to Supabase Realtime.");
+            subscribedRef.current = true;
+          }
 
-      // 2. Directly subscribe to each CMS table as a fallback / enhancement.
-      //    This gives us the actual row payload and fires instantly.
-      for (const table of ALL_TABLES) {
-        const channel = supabase
-          .channel(`cms-table-${table}`)
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table,
-            },
-            (change: { event: string; payload: unknown }) => {
-              const event = (change?.event ?? "*") as "INSERT" | "UPDATE" | "DELETE" | "*";
-              handlers.current.get(`*:${table}`)?.forEach((fn) =>
-                fn({ table, event, payload: change }),
-              );
-              handlers.current.get("*:*")?.forEach((fn) =>
-                fn({ table, event, payload: change }),
-              );
-            },
-          )
-          .subscribe();
+          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+            console.warn(`[CMS Realtime] Subscription status: ${status}. Retrying in 3s…`);
+            subscribedRef.current = false;
+            retryTimeoutRef.current = setTimeout(connect, 3000);
+          }
+        });
 
-        channelList.push(channel);
-      }
+      channelsRef.current.push(channel);
     };
 
-    setup();
+    connect();
+
+    // Also notify subscribers when the admin broadcasts a synthetic event
+    // directly from the client (e.g. after a successful save in a client form).
+    // This is a fallback for cases where the DB trigger might not fire.
 
     return () => {
-      channelList.forEach((ch) => {
-        try {
-          supabase?.removeChannel(ch);
-        } catch {
-          // Channel may already be removed
-        }
-      });
+      if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
+      if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
+
+      if (supabaseRef.current) {
+        channelsRef.current.forEach((ch) => {
+          try {
+            supabaseRef.current.removeChannel(ch);
+          } catch {
+            // Channel may already be removed
+          }
+        });
+      }
+      channelsRef.current = [];
+      subscribedRef.current = false;
     };
-  }, []);
+  }, [triggerRefresh]);
 
   const value: RealtimeContextValue = {
     subscribe,
     broadcast,
     isRefreshing,
+    isConnected,
   };
 
   return (
@@ -266,7 +345,7 @@ export const useCmsRealtime = (): RealtimeContextValue => {
   const ctx = useContext(CmsRealtimeContext);
   if (!ctx) {
     throw new Error(
-      "useCmsRealtime must be used within a <CmsRealtimeProvider>"
+      "useCmsRealtime must be used within a <CmsRealtimeProvider>",
     );
   }
   return ctx;
@@ -274,7 +353,7 @@ export const useCmsRealtime = (): RealtimeContextValue => {
 
 /**
  * Convenience hook: subscribe to changes on one or more CMS tables and
- * run a callback. Returns `isRefreshing` for UI feedback.
+ * run a callback. Returns `isRefreshing` and `isConnected` for UI feedback.
  */
 export function useCmsChanges(
   tables: CmsTable | CmsTable[],
@@ -287,5 +366,5 @@ export function useCmsChanges(
     return unsub;
   }, [rt, tables, onChange]);
 
-  return { isRefreshing: rt.isRefreshing };
+  return { isRefreshing: rt.isRefreshing, isConnected: rt.isConnected };
 }

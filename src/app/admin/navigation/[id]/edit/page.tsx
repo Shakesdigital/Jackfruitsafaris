@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+import { deleteMenuItem, reorderMenuItems } from "@/lib/server/cms-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -142,13 +144,8 @@ export default async function MenuEditPage({ params, searchParams }: MenuPagePro
                     Edit
                   </Link>
                   <form action={async (formData: FormData) => {
-                    const supabase = await createClient();
-                    const { error } = await supabase
-                      .from("menu_items")
-                      .delete()
-                      .eq("id", item.id);
-                    if (error) console.error("Delete item error:", error);
-                    redirect(`/admin/navigation/${menu.id}/edit?success=Item+deleted`);
+                    "use server";
+                    await deleteMenuItem(menu.id, item.id);
                   }}>
                     <button type="submit" className="text-sm text-red-600 hover:text-red-800">
                       Delete
@@ -181,5 +178,7 @@ async function updateMenu(formData: FormData) {
     redirect(`/admin/navigation/${menuId}/edit?error=Failed+to+update+menu`);
   }
 
+  revalidatePath("/", "layout");
+  revalidatePath("/admin", "layout");
   redirect(`/admin/navigation/${menuId}/edit?success=Menu+updated`);
 }

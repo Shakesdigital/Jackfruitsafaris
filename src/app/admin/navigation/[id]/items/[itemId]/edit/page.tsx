@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { upsertMenuItem } from "@/lib/server/cms-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -70,9 +70,9 @@ export default async function EditMenuItemPage({ params, searchParams }: EditMen
         </div>
       )}
 
-      <form action={updateMenuItem} className="rounded-lg border border-gray-200 bg-white p-6 space-y-4">
+      <form action={upsertMenuItem} className="rounded-lg border border-gray-200 bg-white p-6 space-y-4">
+        <input type="hidden" name="id" value={itemId} />
         <input type="hidden" name="menu_id" value={menuId} />
-        <input type="hidden" name="item_id" value={itemId} />
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block sm:col-span-2">
             <span className="text-sm font-medium text-gray-700">Label</span>
@@ -125,40 +125,4 @@ export default async function EditMenuItemPage({ params, searchParams }: EditMen
       </form>
     </div>
   );
-}
-
-async function updateMenuItem(formData: FormData) {
-  const supabase = await createClient();
-  const menuId = formData.get("menu_id") as string;
-  const itemId = formData.get("item_id") as string;
-  const label = formData.get("label") as string;
-  const href = formData.get("href") as string;
-  const parentId = formData.get("parent_id") as string || null;
-  const orderColumn = parseInt(formData.get("order_column") as string) || 0;
-
-  if (!label || !href) {
-    redirect(`/admin/navigation/${menuId}/items/${itemId}/edit?error=Label+and+URL+are+required`);
-  }
-
-  // Prevent circular reference
-  if (parentId === itemId) {
-    redirect(`/admin/navigation/${menuId}/items/${itemId}/edit?error=Item+cannot+be+its+own+parent`);
-  }
-
-  const { error } = await supabase
-    .from("menu_items")
-    .update({
-      label,
-      href,
-      parent_id: parentId,
-      order_column: orderColumn,
-    })
-    .eq("id", itemId);
-
-  if (error) {
-    console.error("Update menu item error:", error);
-    redirect(`/admin/navigation/${menuId}/items/${itemId}/edit?error=Failed+to+update+item`);
-  }
-
-  redirect(`/admin/navigation/${menuId}/edit?success=Item+updated`);
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
 import { PageContentEditor } from "@/app/admin/_components/page-content-editor";
+import { SectionTypeSelector } from "@/app/admin/_components/cms-form-controls";
 import { getAdminPageContentSectionByIdResult } from "@/lib/cms-data";
 
 type Props = {
@@ -131,12 +132,11 @@ export default async function PageContentSectionEdit({ params, searchParams }: P
 
           <label className="block">
             <span className="text-sm font-medium text-gray-700">Section Type</span>
-            <input
-              required
+            <SectionTypeSelector
               name="section_type"
-              defaultValue={section?.section_type || ""}
-              placeholder="entity_card_grid"
-              className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
+              label="Section Type"
+              value={section?.section_type || ""}
+              allowCustom
             />
           </label>
 
@@ -172,7 +172,10 @@ export default async function PageContentSectionEdit({ params, searchParams }: P
         </label>
 
         <div className="border-t pt-6">
-          <PageContentEditor initialContent={contentValue} />
+          <PageContentEditor
+            initialContent={contentValue}
+            sectionType={section?.section_type || ""}
+          />
         </div>
 
         <div className="flex gap-3 pt-4">

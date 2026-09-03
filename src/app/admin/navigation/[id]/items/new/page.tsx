@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { upsertMenuItem } from "@/lib/server/cms-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -63,7 +63,8 @@ export default async function NewMenuItemPage({ params, searchParams }: NewMenuI
         </div>
       )}
 
-      <form action={createMenuItem} className="rounded-lg border border-gray-200 bg-white p-6 space-y-4">
+      <form action={upsertMenuItem} className="rounded-lg border border-gray-200 bg-white p-6 space-y-4">
+        <input type="hidden" name="id" value="" />
         <input type="hidden" name="menu_id" value={menuId} />
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block sm:col-span-2">
@@ -117,34 +118,4 @@ export default async function NewMenuItemPage({ params, searchParams }: NewMenuI
       </form>
     </div>
   );
-}
-
-async function createMenuItem(formData: FormData) {
-  const supabase = await createClient();
-  const menuId = formData.get("menu_id") as string;
-  const label = formData.get("label") as string;
-  const href = formData.get("href") as string;
-  const parentId = formData.get("parent_id") as string || null;
-  const orderColumn = parseInt(formData.get("order_column") as string) || 0;
-
-  if (!label || !href) {
-    redirect(`/admin/navigation/${menuId}/items/new?error=Label+and+URL+are+required`);
-  }
-
-  const { error } = await supabase
-    .from("menu_items")
-    .insert({
-      menu_id: menuId,
-      label,
-      href,
-      parent_id: parentId,
-      order_column: orderColumn,
-    });
-
-  if (error) {
-    console.error("Create menu item error:", error);
-    redirect(`/admin/navigation/${menuId}/items/new?error=Failed+to+create+item`);
-  }
-
-  redirect(`/admin/navigation/${menuId}/edit?success=Item+added`);
 }

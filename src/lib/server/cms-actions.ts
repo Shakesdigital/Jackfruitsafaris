@@ -240,7 +240,6 @@ const siteSettingsSchema = z.object({
   footer_copy: z.string().optional(),
   footer_tagline: z.string().optional(),
   footer_note: z.string().optional(),
-  nav_items: z.array(z.record(z.string(), z.any())).optional(),
   seo: z.record(z.string(), z.any()).optional(),
   integrations: z.record(z.string(), z.any()).optional(),
   // Homepage fields
@@ -316,7 +315,6 @@ export async function upsertSiteSettings(formData: FormData) {
     footer_copy: formData.get("footer_copy") || undefined,
     footer_tagline: formData.get("footer_tagline") || undefined,
     footer_note: formData.get("footer_note") || undefined,
-    nav_items: parseJsonField(formData.get("nav_items"), undefined),
     seo: parseJsonField(formData.get("seo"), undefined),
     integrations: parseJsonField(formData.get("integrations"), undefined),
     hero_title: formData.get("hero_title") || undefined,
@@ -1425,6 +1423,155 @@ export async function upsertGalleryMedia(formData: FormData) {
     "/experiences",
     "/experiences/[slug]",
   );
-  redirect("/admin/gallery");
+  redirect("/admin/gallery");}
+
+// ---------------------------------------------------------------------------
+// Navigation (Menus + Menu Items) Actions
+// ---------------------------------------------------------------------------
+
+const menuSchema = z.object({
+  name: z.string().min(1),
+  location: z.string().min(1),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
+});
+
+const menuItemSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().min(1),
+  parent_id: z.string().nullable().optional(),
+  order_column: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+});
+
+export async function upsertMenu(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const isNew = !id;
+
+  const parsed = menuSchema.safeParse({
+    name: formData.get("name"),
+    location: formData.get("location"),
+    status: formData.get("status") || "draft",
+  });
+
+  if (!parsed.success) {
+    redirectOnValidationError(parsed.error, "/admin/navigation", "Menu save");
+  }
+
+  if (isNew) {
+    const { error } = await supabase.from("menus").insert({
+      ...parsed.data,
+      created_at: new Date().toISOString(),
+    });
+    redirectOnMutationError(error, "/admin/navigation/new", "Menu create");
+  } else {
+    const { error } = await supabase
+      .from("menus")
+      .update({ ...parsed.data, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    redirectOnMutationError(error, `/admin/navigation/${id}/edit`, "Menu update");
+  }
+
+  revalidateCmsRoutes("/");
+  redirect("/admin/navigation");
+}
+
+export async function upsertMenuItem(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const menuId = formData.get("menu_id") as string;
+  const isNew = !id;
+
+  const parsed = menuItemSchema.safeParse({
+    label: formData.get("label"),
+    href: formData.get("href"),
+    parent_id: formData.get("parent_id") || null,
+    order_column: formData.get("order_column")
+      ? parseInt(formData.get("order_column") as string)
+      : 0,
+    status: formData.get("status") || "published",
+  });
+
+  if (!parsed.success) {
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/navigation/${menuId}/items/${id || "new"}`,
+      "Menu item save",
+    );
+  }
+
+  if (isNew) {
+    const { error } = await supabase.from("menu_items").insert({
+      menu_id: menuId,
+      ...parsed.data,
+      created_at: new Date().toISOString(),
+    });
+    redirectOnMutationError(error, `/admin/navigation/${menuId}/items/new`, "Menu item create");
+  } else {
+    const { error } = await supabase
+      .from("menu_items")
+      .update({ ...parsed.data, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("menu_id", menuId);
+    redirectOnMutationError(error, `/admin/navigation/${menuId}/items/${id}/edit`, "Menu item update");
+  }
+
+  revalidateCmsRoutes("/");
+  redirect(`/admin/navigation/${menuId}/edit?success=Item+saved`);
+}
+
+export async function deleteMenu(menuId: string) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+  const { error } = await supabase.from("menus").delete().eq("id", menuId);
+  redirectOnMutationError(error, "/admin/navigation", "Menu delete");
+  revalidateCmsRoutes("/");
+  redirect("/admin/navigation");
+}
+
+export async function deleteMenuItem(menuId: string, itemId: string) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+  const { error } = await supabase
+    .from("menu_items")
+    .delete()
+    .eq("id", itemId)
+    .eq("menu_id", menuId);
+  redirectOnMutationError(error, `/admin/navigation/${menuId}/edit`, "Menu item delete");
+  revalidateCmsRoutes("/");
+  redirect(`/admin/navigation/${menuId}/edit?success=Item+deleted`);
+}
+
+export async function reorderMenuItems(menuId: string, newOrder: Array<{ id: string; order_column: number }>) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+  for (const item of newOrder) {
+    const { error } = await supabase
+      .from("menu_items")
+      .update({ order_column: item.order_column, updated_at: new Date().toISOString() })
+      .eq("id", item.id)
+      .eq("menu_id", menuId);
+    if (error) {
+      console.error("Reorder menu item error:", error);
+    }
+  }
+  revalidateCmsRoutes("/");
 }
 

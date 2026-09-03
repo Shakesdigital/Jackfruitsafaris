@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { deleteMenu } from "@/lib/server/cms-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -156,22 +157,17 @@ function MenuEditor({ menu }: { menu: MenuWithItems }) {
           >
             Edit Menu
           </Link>
-          <form action={async () => {}} className="inline">
-            <button
-              type="submit"
-              className="text-sm text-red-600 hover:text-red-800"
-              formAction={async (formData: FormData) => {
-                const supabase = await createClient();
-                const { error } = await supabase
-                  .from("menus")
-                  .delete()
-                  .eq("id", menu.id);
-                if (error) {
-                  console.error("Delete menu error:", error);
-                }
-                redirect("/admin/navigation?success=Menu+deleted");
+            <form
+              action={async (formData: FormData) => {
+                "use server";
+                await deleteMenu(menu.id);
               }}
+              className="inline"
             >
+              <button
+                type="submit"
+                className="text-sm text-red-600 hover:text-red-800"
+              >
               Delete
             </button>
           </form>

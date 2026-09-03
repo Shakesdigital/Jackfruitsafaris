@@ -191,6 +191,81 @@ export function ImageUploadField({ name, fileName, label, currentUrl, className 
 
 import { useEffect, useState } from "react";
 
+const SOCIAL_PLATFORMS = [
+  { key: "facebook", label: "Facebook" },
+  { key: "instagram", label: "Instagram" },
+  { key: "twitter", label: "X / Twitter" },
+  { key: "linkedin", label: "LinkedIn" },
+  { key: "youtube", label: "YouTube" },
+  { key: "tiktok", label: "TikTok" },
+  { key: "whatsapp", label: "WhatsApp" },
+  { key: "tripadvisor", label: "TripAdvisor" },
+  { key: "safaribookings", label: "SafariBookings" },
+];
+
+interface SocialLinkEditorProps {
+  name: string;
+  label: string;
+  value?: Record<string, unknown> | null;
+  className?: string;
+}
+
+export function SocialLinkEditor({ name, label, value, className }: SocialLinkEditorProps) {
+  const { value: formValue, onChange: handleChange } = useFormField(name);
+  const [pairs, setPairs] = useState<Array<{ key: string; value: string }>>([]);
+
+  useEffect(() => {
+    const source = value || (typeof formValue === "object" && formValue !== null ? formValue : {});
+    if (typeof source === "object" && source !== null) {
+      setPairs(
+        SOCIAL_PLATFORMS.map((platform) => ({
+          key: platform.key,
+          label: platform.label,
+          value: typeof source[platform.key] === "string" ? source[platform.key] as string : "",
+        })),
+      );
+    }
+  }, [value, formValue]);
+
+  const updateValue = (key: string, val: string) => {
+    const updated = pairs.map((p) => (p.key === key ? { ...p, value: val } : p));
+    setPairs(updated);
+    const obj = Object.fromEntries(
+      updated.filter((p) => p.value.trim()).map((p) => [p.key, p.value.trim()]),
+    );
+    handleChange(obj);
+  };
+
+  return (
+    <label className="block">
+      <span className="text-sm font-medium text-gray-700">{label}</span>
+      <div className={`mt-2 space-y-2 ${className || ""}`}>
+        {pairs.map((pair) => (
+          <div key={pair.key} className="flex items-center gap-3">
+            <span className="w-36 text-sm text-gray-600">{pair.label}</span>
+            <input
+              type="url"
+              value={pair.value}
+              onChange={(e) => updateValue(pair.key, e.target.value)}
+              placeholder="https://..."
+              className="flex-1 rounded-md border-gray-300 text-sm"
+            />
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-xs text-gray-500">
+        Enter full URLs (e.g. https://facebook.com/jackfruitsafaris). Leave blank to hide a platform.
+      </p>
+      {/* Serialize the full object into a hidden field for form submission */}
+      <input type="hidden" name={name} value={JSON.stringify(
+        Object.fromEntries(
+          pairs.filter((p) => p.value.trim()).map((p) => [p.key, p.value.trim()]),
+        ),
+      )} />
+    </label>
+  );
+}
+
 interface KeyValueEditorProps {
   name: string;
   label: string;

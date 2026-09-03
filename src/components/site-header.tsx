@@ -16,10 +16,8 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
     console.error("SiteHeader navigation error:", err);
   }
 
-  if (!navigation.length) {
-    navigation = settings?.nav_items?.length
-      ? settings.nav_items
-      : DEFAULT_MAIN_NAVIGATION;
+  if (!navigation.length)
+    navigation = DEFAULT_MAIN_NAVIGATION;
   }
 
   return (

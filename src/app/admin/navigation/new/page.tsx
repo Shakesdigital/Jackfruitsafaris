@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { upsertMenu } from "@/lib/server/cms-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +41,8 @@ export default async function NewMenuPage({ searchParams }: NewMenuPageProps) {
         </div>
       )}
 
-      <form action={createMenu} className="rounded-lg border border-gray-200 bg-white p-6 space-y-4">
+      <form action={upsertMenu} className="rounded-lg border border-gray-200 bg-white p-6 space-y-4">
+        <input type="hidden" name="id" value="" />
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
             <span className="text-sm font-medium text-gray-700">Menu Name</span>
@@ -81,28 +82,4 @@ export default async function NewMenuPage({ searchParams }: NewMenuPageProps) {
       </form>
     </div>
   );
-}
-
-async function createMenu(formData: FormData) {
-  const supabase = await createClient();
-  const name = formData.get("name") as string;
-  const location = formData.get("location") as string;
-  const status = formData.get("status") as string;
-
-  if (!name) {
-    redirect("/admin/navigation/new?error=Menu+name+is+required");
-  }
-
-  const { data, error } = await supabase
-    .from("menus")
-    .insert({ name, location, status })
-    .select("id")
-    .single();
-
-  if (error) {
-    console.error("Create menu error:", error);
-    redirect("/admin/navigation/new?error=Failed+to+create+menu");
-  }
-
-  redirect(`/admin/navigation/${data.id}/edit?success=Menu+created`);
 }

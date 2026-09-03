@@ -8,7 +8,7 @@ import {
   SelectField,
   ColorInputField,
   ImageUploadField,
-  KeyValueEditor,
+  SocialLinkEditor,
 } from "./_components/FormFields";
 
 export const dynamic = "force-dynamic";
@@ -381,12 +381,10 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
 
         <div className="border-b pb-6 mb-6">
           <h2 className="mb-4 text-fluid-lg font-medium">Social Links</h2>
-          <KeyValueEditor
+          <SocialLinkEditor
             name="social_links"
             label="Social Links"
             value={initialSettings.social_links as Record<string, unknown> | null}
-            keyPlaceholder="facebook"
-            valuePlaceholder="https://..."
           />
         </div>
 
@@ -412,24 +410,6 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
             rows={3}
             placeholder="© 2024 Jackfruit Safaris. All rights reserved."
           />
-        </div>
-
-        <div className="border-b pb-6 mb-6">
-          <h2 className="mb-4 text-fluid-lg font-medium">Navigation (Legacy JSON)</h2>
-          <TextAreaField
-            name="nav_items"
-            label="Main Navigation JSON"
-            rows={10}
-            placeholder={`[
-  { "label": "Home", "href": "/" },
-  { "label": "Safaris", "href": "/safaris" }
-]`}
-            className="font-mono text-fluid-sm"
-          />
-          <p className="mt-2 text-fluid-xs text-gray-500">
-            Use an array of menu items with label and href. For full navigation management, use the
-            <a href="/admin/navigation" className="text-blue-600 underline">Navigation page</a>.
-          </p>
         </div>
 
         <div className="border-b pb-6 mb-6">
