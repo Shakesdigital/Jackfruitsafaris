@@ -18,7 +18,7 @@ set highlights_content = (
     'image_url', null,
     'image_alignment', null
   ))
-  from jsonb_array_elements_text(highlights::jsonb) as elem
+  from unnest(highlights) as elem
 )
 where (highlights_content is null or highlights_content = '[]'::jsonb)
   and highlights is not null
