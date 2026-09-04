@@ -516,6 +516,7 @@ export const SECTION_TYPE_OPTIONS = [
   { value: "cta", label: "Call to Action" },
   { value: "cta_panel", label: "Quote CTA Panel" },
   { value: "content_split", label: "Content Split" },
+  { value: "rich_text", label: "Rich Text" },
   { value: "feature_split_with_quote_form", label: "Feature Split + Quote Form" },
   { value: "testimonials", label: "Testimonials Slider" },
   { value: "entity_card_grid", label: "Entity Card Grid" },

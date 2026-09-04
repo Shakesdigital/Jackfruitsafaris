@@ -49,6 +49,10 @@ const SECTION_FIELDS: Record<string, SectionField[]> = {
     { name: "intro", label: "Intro Text", type: "wysiwyg" },
     { name: "body", label: "Body Text", type: "wysiwyg" },
   ],
+  rich_text: [
+    { name: "intro", label: "Intro Text", type: "wysiwyg" },
+    { name: "body", label: "Body Text", type: "wysiwyg" },
+  ],
   feature_split_with_quote_form: [
     { name: "intro", label: "Intro Text", type: "wysiwyg" },
     { name: "body", label: "Body Text", type: "wysiwyg" },
