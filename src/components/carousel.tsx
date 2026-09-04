@@ -7,9 +7,15 @@ type CarouselProps = {
   children: React.ReactNode[];
   /** Number of cards to show on mobile (default 1) */
   mobileCount?: number;
+  /**
+   * Number of cards to show on desktop/tablet (≥1024px).
+   * When set, uses a single lg+ breakpoint instead of the default
+   * xl(4)/lg(3) split. Omit to preserve the original responsive behavior.
+   */
+  desktopCount?: number;
 };
 
-export function Carousel({ children, mobileCount = 1 }: CarouselProps) {
+export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const itemCount = children.length;
@@ -17,6 +23,10 @@ export function Carousel({ children, mobileCount = 1 }: CarouselProps) {
   // Determine how many cards are visible based on viewport width
   function getVisibleCount() {
     if (typeof window === "undefined") return mobileCount;
+    if (desktopCount !== undefined) {
+      if (window.innerWidth >= 1024) return desktopCount;
+      return mobileCount;
+    }
     if (window.innerWidth >= 1280) return 4;
     if (window.innerWidth >= 1024) return 3;
     return mobileCount;

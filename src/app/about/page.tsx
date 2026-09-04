@@ -55,7 +55,8 @@ export default async function AboutPage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Local roots, practical planning, and warm guest care"}
+        title={hero?.title || fallback?.title || "Local Roots, Practical Planning"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "Warm Guest Care"}
         intro={hero?.intro || fallback?.intro || "Jackfruit Safaris is a registered tour company based in Jinja, one of Uganda's most exciting travel hubs and the adventure capital of East Africa."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         icon={<BadgeCheck size={18} aria-hidden="true" />}

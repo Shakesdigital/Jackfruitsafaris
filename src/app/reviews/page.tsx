@@ -45,7 +45,8 @@ export default async function ReviewsPage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Hear from travelers who explored Uganda with Jackfruit Safaris"}
+        title={hero?.title || fallback?.title || "Hear From Travelers"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "Who Explored Uganda With Jackfruit Safaris"}
         intro={hero?.intro || fallback?.intro || "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         ctaPrimary={{

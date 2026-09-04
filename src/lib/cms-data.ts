@@ -663,3 +663,53 @@ export async function getAdminPageContentSections(pageSlug?: string) {
 export async function getAdminPageContentSectionByIdResult(id: string) {
   return getAdminRecordById("page_content_sections", id);
 }
+
+// ---------------------------------------------------------------------------
+// Team Members (Staff) — public fetch + admin fetch
+// ---------------------------------------------------------------------------
+
+// Fetch all published team members ordered by display_order
+export async function getPublishedTeamMembers() {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("team_members")
+    .select("*")
+    .eq("status", "published")
+    .order("display_order", { ascending: true });
+
+  return data || [];
+}
+
+// Admin fetch — uses service role key to bypass RLS
+export async function getAdminTeamMembers() {
+  const supabase = await createAdminClient();
+
+  const { data } = await supabase
+    .from("team_members")
+    .select("*")
+    .order("display_order", { ascending: true });
+
+  return data || [];
+}
+
+// Fetch a single team member by slug (public)
+export async function getTeamMemberBySlug(slug: string) {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("team_members")
+    .select("*")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  return data;
+}
+
+// Fetch a single team member by id (admin)
+export async function getAdminTeamMemberByIdResult(id: string) {
+  return getAdminRecordById("team_members", id);
+}

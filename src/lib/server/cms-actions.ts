@@ -245,6 +245,7 @@ const siteSettingsSchema = z.object({
   // Homepage fields
   hero_title: z.string().optional(),
   hero_subtitle: z.string().optional(),
+  hero_subtitle_heading: z.string().optional(),
   badge_text: z.string().optional(),
   cta_primary: z.string().optional(),
   cta_secondary: z.string().optional(),
@@ -319,6 +320,7 @@ export async function upsertSiteSettings(formData: FormData) {
     integrations: parseJsonField(formData.get("integrations"), undefined),
     hero_title: formData.get("hero_title") || undefined,
     hero_subtitle: formData.get("hero_subtitle") || undefined,
+    hero_subtitle_heading: formData.get("hero_subtitle_heading") || undefined,
     badge_text: formData.get("badge_text") || undefined,
     cta_primary: formData.get("cta_primary") || undefined,
     cta_secondary: formData.get("cta_secondary") || undefined,
@@ -1026,6 +1028,7 @@ export async function upsertHomepageSection(formData: FormData) {
   const supabase = await getAdminSupabase();
   const contentFromFields = {
     subtitle: formData.get("content_subtitle") || undefined,
+    subtitle_heading: formData.get("content_subtitle_heading") || undefined,
     cta_primary: formData.get("content_cta_primary") || undefined,
     cta_secondary: formData.get("content_cta_secondary") || undefined,
     background_image:
@@ -1066,6 +1069,7 @@ export async function upsertHomepageSection(formData: FormData) {
   if (parsed.data.section_type === "hero") {
     const settingsPatch = {
       hero_title: parsed.data.title,
+      hero_subtitle_heading: parsed.data.content?.subtitle_heading,
       badge_text: parsed.data.subtitle,
       hero_subtitle: parsed.data.content?.subtitle,
       cta_primary: parsed.data.content?.cta_primary,

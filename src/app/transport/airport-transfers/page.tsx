@@ -50,7 +50,8 @@ export default async function AirportTransfersPage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Airport Pickups and Transport Services"}
+        title={hero?.title || fallback?.title || "Airport Pickups and Transport"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "Reliable, Professional Service"}
         intro={hero?.intro || fallback?.intro || "Reliable airport pickups, hotel transfers, Jinja transfers, and safari transport with professional drivers."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         icon={<Car size={18} aria-hidden="true" />}

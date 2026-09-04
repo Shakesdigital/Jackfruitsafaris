@@ -56,7 +56,8 @@ export default async function RequestQuotePage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Tell Jackfruit Safaris what you want from Uganda"}
+        title={hero?.title || fallback?.title || "Tell Us What You Want"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "From Uganda"}
         intro={hero?.intro || fallback?.intro || "Dates, group size, budget, activity interests, and comfort level are enough to start a practical route recommendation."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         ctaPrimary={{

@@ -226,7 +226,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                   Related Uganda safaris
                 </h2>
                 <div className="mt-6">
-                  <Carousel>
+                  <Carousel desktopCount={2}>
                     {displaySafaris.map((safari: Safari) => (
                       <SafariCard
                         key={safari.slug}

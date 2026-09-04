@@ -39,22 +39,33 @@ export default async function HeroEditPage() {
         <input type="hidden" name="id" value={hero?.id} />
         <input type="hidden" name="section_type" value="hero" />
 
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Hero Title</span>
+          <label className="block">
+          <span className="text-sm font-medium text-gray-700">Hero Title (h1)</span>
           <input
             required
             name="title"
-            defaultValue={hero?.title || "Explore Uganda With Local Safari Experts"}
+            defaultValue={hero?.title || "Explore Uganda"}
             className="mt-1 block w-full rounded-md border-gray-300"
           />
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-700">Hero Subtitle</span>
+          <span className="text-sm font-medium text-gray-700">Hero Subtitle (h2)</span>
+          <input
+            name="content_subtitle_heading"
+            defaultValue={(content as Record<string, unknown>)?.subtitle_heading as string | undefined || "With Local Safari Experts"}
+            placeholder="Short complementary heading below the title"
+            className="mt-1 block w-full rounded-md border-gray-300"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-sm font-medium text-gray-700">Hero Badge / Eyebrow</span>
           <input
             required
             name="subtitle"
             defaultValue={hero?.subtitle || "Local safari experts from Jinja"}
+            placeholder="Badge pill text (e.g. 'Local safari experts from Jinja')"
             className="mt-1 block w-full rounded-md border-gray-300"
           />
         </label>

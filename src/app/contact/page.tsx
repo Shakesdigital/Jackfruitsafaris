@@ -61,6 +61,7 @@ export default async function ContactPage() {
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Plan Your Uganda Safari"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "Send us your travel details"}
         intro={hero?.intro || fallback?.intro || "Send your travel details and Jackfruit Safaris will help you choose the right safari, activity, transfer, or custom itinerary."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         ctaPrimary={{

@@ -51,7 +51,8 @@ export default async function TravelGuidePage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Practical articles that answer booking questions"}
+        title={hero?.title || fallback?.title || "Practical Travel Articles"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "That Answer Your Booking Questions"}
         intro={hero?.intro || fallback?.intro || "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         icon={<BookOpen size={18} aria-hidden="true" />}

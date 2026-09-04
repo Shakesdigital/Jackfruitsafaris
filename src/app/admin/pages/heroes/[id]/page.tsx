@@ -144,7 +144,7 @@ export default async function PageHeroEdit({ params, searchParams }: Props) {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-gray-700">Title</span>
+          <span className="text-sm font-medium text-gray-700">Title (h1)</span>
           <input
             name="title"
             defaultValue={hero?.title}

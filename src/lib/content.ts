@@ -846,12 +846,14 @@ export type PageHeroFallback = {
   ctaPrimary?: { label: string; href: string };
   ctaSecondary?: { label: string; href: string };
   quickLinks?: Array<{ label: string; href: string }>;
+  content?: Record<string, string>;
 };
 
 export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   "/": {
     badgeText: "Local safari experts from Jinja",
-    title: "Explore Uganda With Local Safari Experts",
+    title: "Explore Uganda",
+    subtitle: "With Local Safari Experts",
     intro:
       "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.",
     backgroundImage: images.hero,
@@ -860,12 +862,23 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/about": {
     badgeText: "About Jackfruit Safaris",
-    title: "Local roots, practical planning, and warm guest care",
+    title: "Local Roots, Practical Planning",
+    subtitle: "Warm Guest Care",
     intro:
-      "Jackfruit Safaris is a registered tour company based in Jinja, one of Uganda's most exciting travel hubs and the adventure capital of East Africa.",
+      "Jackfruit Safaris is a registered Ugandan tour company born from a simple idea: tourism should support the communities that call Uganda home.",
     backgroundImage: images.gorilla,
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
+    content: {
+      intro_body:
+        "Born from a story of loss and giving back, Jackfruit Safaris was founded by Elvis — a former orphan from Jinja who was introduced to the travel world by his father before he passed. Seeing the challenges orphaned and vulnerable children face, Elvis built Jackfruit to ensure that every safari adventure directly supports those children through education, healthcare, and community programs. Today, Jackfruit connects travelers with Uganda's extraordinary wildlife and culture while channeling a portion of every booking into meaningful change.",
+      mission:
+        "To create authentic, locally-rooted safari experiences that connect travelers with Uganda's wildlife and culture while reinvesting in orphaned and vulnerable children.",
+      vision:
+        "A Uganda where tourism empowers local communities and every child has the chance to thrive.",
+      give_back:
+        "A portion of every safari profit supports orphaned and vulnerable children across Uganda through education, healthcare, and community programs.",
+    },
   },
   "/safaris": {
     badgeText: "Uganda Safari Packages",
@@ -879,7 +892,8 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/destinations": {
     badgeText: "Destinations",
-    title: "Uganda safari places, routed with care",
+    title: "Uganda Safari Places",
+    subtitle: "Routed With Care",
     intro:
       "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote.",
     backgroundImage: images.falls,
@@ -898,7 +912,8 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/reviews": {
     badgeText: "Guest reviews",
-    title: "Hear from travelers who explored Uganda with Jackfruit Safaris",
+    title: "Hear From Travelers",
+    subtitle: "Who Explored Uganda With Jackfruit Safaris",
     intro:
       "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason.",
     backgroundImage: images.nile,
@@ -907,7 +922,8 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/travel-guide": {
     badgeText: "Uganda safari travel guide",
-    title: "Practical articles that answer booking questions",
+    title: "Practical Travel Articles",
+    subtitle: "That Answer Your Booking Questions",
     intro:
       "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility.",
     backgroundImage: images.culture,
@@ -917,6 +933,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   "/contact": {
     badgeText: "Contact Jackfruit Safaris",
     title: "Plan Your Uganda Safari",
+    subtitle: "Send us your travel details",
     intro:
       "Send your travel details and Jackfruit Safaris will help you choose the right safari, activity, transfer, or custom itinerary.",
     backgroundImage: images.lake,
@@ -925,7 +942,8 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/request-quote": {
     badgeText: "Request a quote",
-    title: "Tell Jackfruit Safaris what you want from Uganda",
+    title: "Tell Us What You Want",
+    subtitle: "From Uganda",
     intro:
       "Dates, group size, budget, activity interests, and comfort level are enough to start a practical route recommendation.",
     backgroundImage: images.vehicle,
@@ -934,7 +952,8 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/transport/airport-transfers": {
     badgeText: "Transport",
-    title: "Airport Pickups and Transport Services",
+    title: "Airport Pickups and Transport",
+    subtitle: "Reliable, Professional Service",
     intro:
       "Reliable airport pickups, hotel transfers, Jinja transfers, and safari transport with professional drivers.",
     backgroundImage: images.vehicle,

@@ -65,7 +65,8 @@ export default async function DestinationsPage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Uganda safari places, routed with care"}
+        title={hero?.title || fallback?.title || "Uganda Safari Places"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "Routed With Care"}
         intro={hero?.intro || fallback?.intro || "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         ctaPrimary={{

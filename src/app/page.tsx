@@ -129,7 +129,8 @@ export default async function Home() {
       {/* Hero Section */}
       <HeroSection
         badgeText={getStringValue(settings, "badge_text", pageHeroFallbacks["/"]?.badgeText || "Local safari experts from Jinja")}
-        title={getStringValue(settings, "hero_title", pageHeroFallbacks["/"]?.title || "Explore Uganda With Local Safari Experts")}
+        title={getStringValue(settings, "hero_title", pageHeroFallbacks["/"]?.title || "Explore Uganda")}
+        subtitle={getStringValue(settings, "hero_subtitle_heading", pageHeroFallbacks["/"]?.subtitle || "With Local Safari Experts")}
         intro={getStringValue(settings, "hero_subtitle", pageHeroFallbacks["/"]?.intro || "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.")}
         backgroundImage={getStringValue(settings, "hero_image", images.hero)}
         ctaPrimary={{

@@ -119,12 +119,17 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
           <div className="grid gap-4">
             <TextField
               name="hero_title"
-              label="Hero Title"
-              placeholder="Explore Uganda With Local Safari Experts"
+              label="Hero Title (h1)"
+              placeholder="Explore Uganda"
+            />
+            <TextField
+              name="hero_subtitle_heading"
+              label="Hero Subtitle (h2)"
+              placeholder="With Local Safari Experts"
             />
             <TextField
               name="hero_subtitle"
-              label="Hero Subtitle"
+              label="Hero Intro (body text)"
               placeholder="Private Uganda safaris..."
             />
             <TextField
