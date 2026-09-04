@@ -117,7 +117,20 @@ on conflict (slug) do update
 ---------------------------------------------------------------------------
 -- 5. Update the /about page_heroes row with the new mission/vision/give-back
 --    narrative and hero subtitle split (h1 + h2).
+--    The badge_text / subtitle / cta_ columns may not exist yet if the
+--    202609020005_page_heroes_hero_fields migration hasn't run; add them
+--    conditionally to be safe.
 ---------------------------------------------------------------------------
+
+alter table public.page_heroes
+  add column if not exists badge_text         text,
+  add column if not exists subtitle           text,
+  add column if not exists cta_primary        text,
+  add column if not exists cta_secondary      text,
+  add column if not exists cta_primary_href   text,
+  add column if not exists cta_secondary_href text,
+  add column if not exists quick_links        jsonb,
+  add column if not exists content           jsonb not null default '{}'::jsonb;
 
 update public.page_heroes
 set
