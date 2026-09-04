@@ -836,6 +836,48 @@ export const cmsModels = [
   "Redirects",
 ];
 
+export type TeamMember = {
+  slug: string;
+  name: string;
+  position: string;
+  bio?: string;
+  photo_url?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  social_links?: Record<string, string>;
+};
+
+export const teamMembers: TeamMember[] = [
+  {
+    slug: "elvis-tumwebaze",
+    name: "Elvis Tumwebaze",
+    position: "Founder & Managing Director",
+    bio: "Raised as an orphan in Jinja, Elvis was introduced to tourism and travel by his father at a young age. When his father passed away, he saw firsthand the challenges orphaned and vulnerable children face across Uganda. That experience became the heart of Jackfruit Safaris: a portion of every safari profit is channelled back into education, healthcare, and community programs for orphaned and vulnerable children. Elvis built Jackfruit on the belief that authentic travel should lift up the communities it touches.",
+    photo_url: null,
+  },
+  {
+    slug: "sam-kiggundu",
+    name: "Sam Kiggundu",
+    position: "Lead Safari Guide",
+    bio: "With over 15 years guiding across Uganda's national parks, Sam is a specialist in mountain-gorilla tracking, birding, and cultural storytelling. A Uganda Wildlife Authority-certified guide, he brings deep ecology knowledge and a warm, engaging presence to every trek.",
+    photo_url: null,
+  },
+  {
+    slug: "maria-wanja",
+    name: "Maria Wanja",
+    position: "Operations Manager",
+    bio: "Maria coordinates permits, logistics, and guest relations for every Jackfruit safari. With a background in hospitality and NGO project management, she ensures every detail — from arrival to departure — runs like clockwork while maintaining the personal touch that guests remember.",
+    photo_url: null,
+  },
+  {
+    slug: "david-okello",
+    name: "David Okello",
+    position: "Senior Driver-Guide",
+    bio: "Behind every smooth safari is David, a professional 4x4 driver-guide with 12 years on Ugandan roads. Known for his spot-on wildlife spotting, safety-first approach, and encyclopedic knowledge of local stories, he keeps guests comfortable and informed between parks.",
+    photo_url: null,
+  },
+];
+
 export type PageHeroFallback = {
   badgeText?: string;
   title: string;

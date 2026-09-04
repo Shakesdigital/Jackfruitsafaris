@@ -860,6 +860,82 @@ export async function upsertReview(formData: FormData) {
   redirect("/admin/reviews");
 }
 
+// ---------------------------------------------------------------------------
+// Team Member Actions
+// ---------------------------------------------------------------------------
+
+const teamMemberSchema = z.object({
+  slug: z.string().min(1),
+  name: z.string().min(1),
+  position: z.string().min(1),
+  bio: z.string().optional(),
+  email: z.string().email().optional().or(z.literal("")),
+  phone: z.string().optional(),
+  social_links: z.record(z.string(), z.any()).optional(),
+  display_order: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
+  meta_title: z.string().optional(),
+  meta_description: z.string().optional(),
+  meta_image_url: z.string().url().optional().or(z.literal("")),
+});
+
+export async function upsertTeamMember(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const isNew = !id;
+  const photoUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "photo_file",
+      `media/team_members/${id || "new"}`,
+      `/admin/team/${id || "new"}`,
+    )) ||
+    formData.get("photo_url") ||
+    undefined;
+
+  const parsed = teamMemberSchema.safeParse({
+    slug: formData.get("slug"),
+    name: formData.get("name"),
+    position: formData.get("position"),
+    bio: formData.get("bio") || undefined,
+    email: formData.get("email") || undefined,
+    phone: formData.get("phone") || undefined,
+    social_links: parseJsonField(formData.get("social_links"), undefined),
+    display_order: parseInt(formData.get("display_order") as string) || 0,
+    status: formData.get("status") || "draft",
+    meta_title: formData.get("meta_title") || undefined,
+    meta_description: formData.get("meta_description") || undefined,
+    meta_image_url: photoUrl,
+  });
+
+  if (!parsed.success) {
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/team/${id || "new"}`,
+      "Team member save",
+    );
+  }
+
+  const { error } = await supabase.from("team_members").upsert({
+    id: isNew ? undefined : id,
+    ...parsed.data,
+    updated_at: new Date().toISOString(),
+  });
+  redirectOnMutationError(
+    error,
+    `/admin/team/${id || "new"}`,
+    "Team member save",
+  );
+
+  revalidateCmsRoutes("/", "/about");
+  redirect("/admin/team");
+}
+
 // Media Upload Actions
 export async function uploadMedia(formData: FormData) {
   // Verify user with anon client
@@ -921,9 +997,10 @@ export async function deleteEntity(table: string, id: string) {
     reviews: ["/", "/reviews"],
     pages: ["/", "/contact", "/request-quote", "/transport/airport-transfers"],
     gallery_media: ["/", "/safaris", "/safaris/[slug]"],
+    team_members: ["/", "/about"],
   };
   revalidateCmsRoutes(...(publicPathsByTable[table] || ["/"]));
-  redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table === "gallery_media" ? "gallery" : table}`);
+  redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table === "gallery_media" ? "gallery" : table === "team_members" ? "team" : table}`);
 }
 // Page Actions
 const pageSchema = z.object({
@@ -1306,14 +1383,10 @@ export async function upsertPageHero(formData: FormData) {
 
   const detailContent = Object.fromEntries(
     [
-      "why_jackfruit_title",
-      "why_jackfruit_body",
-      "where_operates_title",
-      "where_operates_body",
-      "guiding_style_title",
-      "guiding_style_body",
-      "services_title",
-      "services_intro",
+      "intro_body",
+      "mission",
+      "vision",
+      "give_back",
     ]
       .map((key) => [key, formData.get(key)])
       .filter(([, value]) => typeof value === "string" && value.trim()),

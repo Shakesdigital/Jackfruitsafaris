@@ -53,6 +53,12 @@ const SECTION_FIELDS: Record<string, SectionField[]> = {
     { name: "intro", label: "Intro Text", type: "wysiwyg" },
     { name: "body", label: "Body Text", type: "wysiwyg" },
   ],
+  feature_list: [
+    { name: "intro", label: "Intro Text", type: "wysiwyg" },
+    { name: "items", label: "List Items (JSON array of strings)", type: "text" },
+    { name: "cta_label", label: "CTA Button Label", type: "text" },
+    { name: "cta_href", label: "CTA Button Link", type: "url" },
+  ],
   feature_split_with_quote_form: [
     { name: "intro", label: "Intro Text", type: "wysiwyg" },
     { name: "body", label: "Body Text", type: "wysiwyg" },

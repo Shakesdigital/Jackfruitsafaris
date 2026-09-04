@@ -186,70 +186,39 @@ export default async function PageHeroEdit({ params, searchParams }: Props) {
             <h2 className="mb-4 text-lg font-medium">About Page Content</h2>
             <div className="grid gap-4">
               <label className="block">
-                <span className="text-sm font-medium text-gray-700">Why Jackfruit Title</span>
-                <input
-                  name="why_jackfruit_title"
-                  defaultValue={aboutContent.why_jackfruit_title}
-                  className="mt-1 block w-full rounded-md border-gray-300"
-                />
-              </label>
-              <label className="block">
-                <span className="text-sm font-medium text-gray-700">Why Jackfruit Body</span>
+                <span className="text-sm font-medium text-gray-700">Intro Body</span>
                 <textarea
-                  name="why_jackfruit_body"
-                  defaultValue={aboutContent.why_jackfruit_body}
-                  rows={3}
+                  name="intro_body"
+                  defaultValue={aboutContent.intro_body}
+                  rows={5}
+                  placeholder="Founder's story and give-back narrative shown below the hero"
                   className="mt-1 block w-full rounded-md border-gray-300"
                 />
               </label>
               <label className="block">
-                <span className="text-sm font-medium text-gray-700">Where Jackfruit Operates Title</span>
-                <input
-                  name="where_operates_title"
-                  defaultValue={aboutContent.where_operates_title}
-                  className="mt-1 block w-full rounded-md border-gray-300"
-                />
-              </label>
-              <label className="block">
-                <span className="text-sm font-medium text-gray-700">Where Jackfruit Operates Body</span>
+                <span className="text-sm font-medium text-gray-700">Mission</span>
                 <textarea
-                  name="where_operates_body"
-                  defaultValue={aboutContent.where_operates_body}
-                  rows={3}
+                  name="mission"
+                  defaultValue={aboutContent.mission}
+                  rows={2}
                   className="mt-1 block w-full rounded-md border-gray-300"
                 />
               </label>
               <label className="block">
-                <span className="text-sm font-medium text-gray-700">Guiding Style Title</span>
-                <input
-                  name="guiding_style_title"
-                  defaultValue={aboutContent.guiding_style_title}
-                  className="mt-1 block w-full rounded-md border-gray-300"
-                />
-              </label>
-              <label className="block">
-                <span className="text-sm font-medium text-gray-700">Guiding Style Body</span>
+                <span className="text-sm font-medium text-gray-700">Vision</span>
                 <textarea
-                  name="guiding_style_body"
-                  defaultValue={aboutContent.guiding_style_body}
-                  rows={3}
+                  name="vision"
+                  defaultValue={aboutContent.vision}
+                  rows={2}
                   className="mt-1 block w-full rounded-md border-gray-300"
                 />
               </label>
               <label className="block">
-                <span className="text-sm font-medium text-gray-700">Services Section Title</span>
-                <input
-                  name="services_title"
-                  defaultValue={aboutContent.services_title}
-                  className="mt-1 block w-full rounded-md border-gray-300"
-                />
-              </label>
-              <label className="block">
-                <span className="text-sm font-medium text-gray-700">Services Section Intro</span>
+                <span className="text-sm font-medium text-gray-700">Give Back</span>
                 <textarea
-                  name="services_intro"
-                  defaultValue={aboutContent.services_intro}
-                  rows={3}
+                  name="give_back"
+                  defaultValue={aboutContent.give_back}
+                  rows={2}
                   className="mt-1 block w-full rounded-md border-gray-300"
                 />
               </label>
