@@ -17,6 +17,7 @@ type PageHero = {
   eyebrow?: string | null;
   badge_text?: string | null;
   title?: string | null;
+  subtitle?: string | null;
   intro?: string | null;
   background_image?: string | null;
   cta_primary?: string | null;
@@ -147,7 +148,17 @@ export default async function PageHeroEdit({ params, searchParams }: Props) {
           <input
             name="title"
             defaultValue={hero?.title}
-            placeholder="Page title"
+            placeholder="Page title (h1)"
+            className="mt-1 block w-full rounded-md border-gray-300"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-sm font-medium text-gray-700">Subtitle (h2)</span>
+          <input
+            name="subtitle"
+            defaultValue={hero?.subtitle ?? ""}
+            placeholder="Sub-title rendered as h2 between title and intro"
             className="mt-1 block w-full rounded-md border-gray-300"
           />
         </label>

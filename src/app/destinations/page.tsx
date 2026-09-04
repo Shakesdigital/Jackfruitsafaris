@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowRight, Map } from "lucide-react";
 import { HeroSection } from "@/components/hero-section";
 import { Section } from "@/components/section";
@@ -8,7 +9,7 @@ import {
   getPageHero,
   getPublishedPageContentSections,
 } from "@/lib/cms-data";
-import { getPageSection } from "@/lib/cms-page-content";
+import { getPageSection, getSectionText } from "@/lib/cms-page-content";
 
 type Destination = {
   slug: string;
@@ -21,6 +22,12 @@ type Destination = {
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = {
+  title: "Uganda Safari Destinations | Jackfruit Safaris",
+  description:
+    "Explore Uganda's premier adventure destinations including Bwindi Impenetrable National Park, Murchison Falls, Queen Elizabeth, Kibale Forest, Lake Mburo, Lake Bunyonyi, and Jinja at the source of the Nile.",
+};
+
 export default async function DestinationsPage() {
   const [destinations, hero, pageSections] = await Promise.all([
     getPublishedDestinations(),
@@ -29,6 +36,7 @@ export default async function DestinationsPage() {
   ]);
   const fallback = pageHeroFallbacks["/destinations"];
   const gridSection = getPageSection(pageSections, "destination_grid");
+  const introSection = getPageSection(pageSections, "destination_intro");
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const displayedDestinations = destinations.length
@@ -44,8 +52,14 @@ export default async function DestinationsPage() {
       name: d.name,
       region: d.region,
       featured_image_url: d.image,
-      overview: d.summary,
+      overview: d.overview || d.summary,
     }));
+
+  const introText = getSectionText(
+    introSection,
+    "intro",
+    "Each destination below is chosen for its distinct wildlife, landscape, or adventure — from mountain gorillas in misty Bwindi to the roaring cataract of Murchison Falls, from chimpanzee tracking in Kibale to highland canoeing on Lake Bunyonyi, and the adventure capital of Jinja at the source of the Nile. Jackfruit Safaris plans the routes, timing, and logistics so you can focus on the experience.",
+  );
 
   return (
     <>
@@ -68,7 +82,12 @@ export default async function DestinationsPage() {
 
       <Section
         eyebrow={gridSection?.subtitle || undefined}
-        title={gridSection?.title || undefined}
+        title={getSectionText(gridSection, "fallback_title", "Uganda's premier adventure destinations")}
+        intro={
+          <p className="max-w-3xl text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]">
+            {introText}
+          </p>
+        }
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {displayedDestinations.map((destination: any) => (

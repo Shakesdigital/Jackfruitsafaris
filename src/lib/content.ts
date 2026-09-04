@@ -119,6 +119,31 @@ export const trustItems = [
   "WhatsApp support before and during your trip",
 ];
 
+export type ImageAlignment = "left" | "right" | "center" | null;
+
+export type HighlightWithImage = {
+  text: string;
+  image_url?: string | null;
+  image_alignment?: ImageAlignment;
+};
+
+export type SafariPageSection = {
+  key: string;
+  title?: string | null;
+  body?: string | null;
+  image_url?: string | null;
+  image_alignment?: ImageAlignment;
+};
+
+export type SafariDayWithImage = {
+  day: string;
+  title: string;
+  body: string;
+  meals?: string;
+  image_url?: string | null;
+  image_alignment?: ImageAlignment;
+};
+
 export type Safari = {
   slug: string;
   title: string;
@@ -580,7 +605,21 @@ export const destinations = [
     image: images.gorilla,
     summary:
       "Uganda's iconic mountain gorilla trekking destination, with forest trails, sector-sensitive lodge choices, community visits, and powerful conservation value.",
+    overview:
+      "Bwindi Impenetrable National Park protects the mist-shrouded montane forest home to roughly half the world's remaining mountain gorillas. A UNESCO World Heritage Site, the park covers 331 km² of dense jungle on Uganda's southwestern border, where ancient trees, orchids, and over 300 bird species create a pristine safari wilderness.",
     whyGo: ["Mountain gorillas", "Rainforest trekking", "Batwa and community experiences"],
+    howToGetThere: [
+      "From Kampala: 8–9 hour drive via Mbarara and the western Rift Valley",
+      "From Entebbe: 9–10 hour drive via Masaka and Mbarara",
+      "Domestic flights: Kihihi airstrip (charter from Entebbe or Kajjansi)",
+      "Recommended: combine with Lake Bunyonyi for post-trek relaxation",
+    ],
+    keyHighlights: [
+      { title: "Gorilla Family Tracking", description: "Spend one unforgettable hour observing endangered mountain gorillas in their natural habitat, guided by Uganda Wildlife Authority rangers.", image: images.gorilla },
+      { title: "Batwa Cultural Experience", description: "Walk with the Batwa people, Uganda's forest-dwelling ancestors, and learn their traditional ways of living in the jungle.", image: images.culture },
+      { title: "Bwindi Birdlife", description: "With over 300 bird species including the Rwenzori turaco, the forest is a birder's paradise.", image: images.forest },
+      { title: "Forest Nature Walks", description: "Guided trails through the montane forest reveal orchids, ferns, and other endemic flora.", image: images.hero },
+    ],
     bestTime:
       "Drier months usually make trekking footing easier, while greener months can be scenic and quieter.",
     nights: "2-3 nights depending on route and comfort",
@@ -592,9 +631,23 @@ export const destinations = [
     image: images.falls,
     summary:
       "A strong short-safari choice with Nile boat cruises, big game, giraffes, elephants, hippos, crocodiles, and the dramatic Top of the Falls.",
+    overview:
+      "Murchison Falls National Park is Uganda's largest protected area at 3,840 km², spanning savannah, woodland, and wetlands along the Victoria Nile. The park's centerpiece is the dramatic Murchison Falls, where the Nile squeezes through a 7-meter gorge before thundering into a spectacular cascade.",
     whyGo: ["Nile boat cruise", "Game drives", "Ziwa rhino pairing"],
+    howToGetThere: [
+      "From Kampala: 300 km via Masindi — 6+ hour drive (roads now paved)",
+      "From Fort Portal: 320 km via Hoima — 6+ hour drive",
+      "Domestic flights: Pakuba Airfield via AeroLink from Entebbe or Kajjansi",
+      "Charter flights also available from Entebbe or Kajjansi",
+    ],
+    keyHighlights: [
+      { title: "Murchison Falls", description: "Watch 300 cubic meters of water plunge through a 7-meter gorge in a breathtaking display of raw power and mist.", image: images.falls },
+      { title: "Nile Boat Safari", description: "Cruise to the base of the falls and witness hippos, crocodiles, elephants, and river birds along the scenic waterway.", image: images.nile },
+      { title: "Ziwa Rhino Sanctuary", description: "Track endangered southern white rhinos with expert guides on guided rhino walks.", image: images.savannah },
+      { title: "Top of the Falls", description: "Hike 500 steps to the viewpoint for dramatic perspectives of the cascade and rainbow over the gorge.", image: images.falls },
+    ],
     bestTime:
-      "Wildlife viewing is good much of the year; road and river timing should be planned around season and park operations.",
+      "December to February (dry season) for excellent wildlife viewing; June to September (high season) for peak conditions.",
     nights: "2-3 nights",
   },
   {
@@ -604,7 +657,21 @@ export const destinations = [
     image: images.savannah,
     summary:
       "A varied park for game drives, Kazinga Channel cruises, crater scenery, and Ishasha tree-climbing lion searches.",
+    overview:
+      "Queen Elizabeth National Park spans 1,978 km² at the intersection of the Albertine Rift and the Great Lakes, offering Uganda's most diverse safari experiences. The park is home to all the Big Five except rhino and is famous for tree-climbing lions in Ishasha and the Kazinga Channel boat cruise.",
     whyGo: ["Kazinga Channel", "Ishasha sector", "Crater landscapes"],
+    howToGetThere: [
+      "From Kampala: 380 km via Mbarara — 6–7 hour drive",
+      "From Entebbe: 6–7 hour drive via Masaka and Mbarara",
+      "Domestic flights: Kihihi or Mbarara airstrips from Entebbe or Kajjansi",
+      "3-hour drive south to Bwindi; 2-hour drive north to Kibale",
+    ],
+    keyHighlights: [
+      { title: "Kazinga Channel Boat Cruise", description: "Navigate the channel between Lakes Edward and George, spotting hippos, crocodiles, buffalo, and over 300 bird species.", image: images.nile },
+      { title: "Ishasha Tree-Climbing Lions", description: "Witness lions lounging in the branches of fig trees, a rare behavior unique to this lion population.", image: images.savannah },
+      { title: "Kyambura Gorge Chimpanzees", description: "Trek through misty gorge forest to encounter habituated chimpanzees.", image: images.forest },
+      { title: "Crater Lakes", description: "Explore scenic crater lakes of the Rwenzori foothills, perfect for photography and quiet nature walks.", image: images.lake },
+    ],
     bestTime:
       "Excellent as part of a Kibale-Bwindi circuit; lodge choice should match your priority sector.",
     nights: "2-3 nights",
@@ -616,7 +683,21 @@ export const destinations = [
     image: images.forest,
     summary:
       "Uganda's leading chimpanzee tracking forest, often paired with Bigodi Wetland and Queen Elizabeth National Park.",
+    overview:
+      "Kibale National Park protects 795 km² of regenerating and primary Afrotropical rainforest, home to the world's largest population of chimpanzees and over 13 primate species. The park sits between the Rwenzori foothills and the Fort Portal plateau, offering cool temperatures, misty mornings, and dense forest trails.",
     whyGo: ["Chimpanzee tracking", "Bigodi Wetland", "Forest birding"],
+    howToGetThere: [
+      "From Kampala: 310 km via Mbarara — 5–6 hour drive",
+      "From Fort Portal: 35 km — under 1 hour drive",
+      "From Entebbe: 6–7 hour drive via Kampala and Mbarara",
+      "Nearest charter airstrip: Kihihi or Fort Portal from Entebbe",
+    ],
+    keyHighlights: [
+      { title: "Chimpanzee Tracking", description: "Follow habituated chimpanzees through the rainforest, spending up to 8 hours with these intelligent primates.", image: images.forest },
+      { title: "Bigodi Wetland Sanctuary", description: "Walk elevated boardwalks through papyrus and marsh, spotting blue monkeys, bushbabies, and over 180 bird species.", image: images.hero },
+      { title: "Forest Elephant Trail", description: "Spot the rare forest elephant and other wildlife along lesser-known forest paths.", image: images.gorilla },
+      { title: "Primate Diversity", description: "Encounter black-and-white colobus monkeys, red colobus, and L'Hoest's monkeys in their natural habitat.", image: images.forest },
+    ],
     bestTime:
       "Book chimp permits early and stay near the activity sector for easier morning logistics.",
     nights: "1-2 nights",
@@ -628,7 +709,21 @@ export const destinations = [
     image: images.vehicle,
     summary:
       "A compact park with zebras, impala, giraffes, nature walks, boat trips, and useful routing between Entebbe and the southwest.",
+    overview:
+      "Lake Mburo National Park is Uganda's smallest protected area at 370 km², but one of its most accessible — just 3 to 4 hours from Kampala. Unlike Uganda's forest parks, Lake Mburo features open acacia woodland and savannah, supporting unique species like the rare impala and large herds of Burchell's zebra.",
     whyGo: ["Short safaris", "Nature walks", "Route breaker"],
+    howToGetThere: [
+      "From Kampala: 250 km — 3–4 hour drive via Masaka",
+      "From Entebbe: 4–5 hour drive via Kampala and Masaka",
+      "From Mbarara: 80 km — 1.5 hour drive",
+      "No commercial flights; drive is the only access to the park",
+    ],
+    keyHighlights: [
+      { title: "Walking Safaris", description: "Safely walk acacia woodland trails on foot, the only park in Uganda where this is possible without lions or elephants.", image: images.vehicle },
+      { title: "Lake Mburo Boat Cruise", description: "Cruise the lake's shoreline, spotting hippos, crocodiles, and waterbirds including the rare African finfoot.", image: images.lake },
+      { title: "Zebra Herds", description: "Photograph large herds of Burchell's zebra, Uganda's largest zebra population, in the open savannah grassland.", image: images.savannah },
+      { title: "Night Game Drives", description: "Search for nocturnal wildlife including leopards, porcupines, and genets under the African night sky.", image: images.falls },
+    ],
     bestTime:
       "Works well at the beginning or end of western Uganda circuits.",
     nights: "1-2 nights",
@@ -640,7 +735,22 @@ export const destinations = [
     image: images.lake,
     summary:
       "A scenic, restful lake often used after gorilla trekking for canoe rides, views, and a slower final night.",
+    overview:
+      "Lake Bunyonyi, meaning 'a place of many little birds,' sits at 6,308 feet above sea level in southwestern Uganda, making it one of the highest lakes in the region. The scenic lake stretches 29 km through misty hills, dotted with 29 small islands connected by traditional dugout canoes and guided canoe safaris.",
     whyGo: ["Relaxation", "Canoeing", "Post-trek scenery"],
+    howToGetThere: [
+      "From Kampala: 400 km via Mbarara — 7–8 hour drive",
+      "From Entebbe: 8–9 hour drive via Kampala and Mbarara",
+      "From Bwindi (Buhoma): 1-hour drive",
+      "From Kihihi: 30-minute drive",
+      "No commercial flights; drive is the only access",
+    ],
+    keyHighlights: [
+      { title: "Canoe Safaris", description: "Paddle traditional dugout canoes across the glassy lake, spotting bushbuck, bush pigs, and over 200 bird species.", image: images.lake },
+      { title: "Terraced Hillsides", description: "Walk through meticulously terraced hillsides cultivated with bananas, maize, and beans by local communities.", image: images.hero },
+      { title: "Batwa Cultural Experience", description: "Meet the Batwa people, learn their traditional songs, storytelling, and sustainable forest living practices.", image: images.culture },
+      { title: "Island Hopping", description: "Visit the 29 small islands, each with its own story and lakeside viewpoint.", image: images.nile },
+    ],
     bestTime:
       "A gentle add-on after Bwindi when the itinerary needs rest and beautiful views.",
     nights: "1-2 nights",
@@ -652,7 +762,21 @@ export const destinations = [
     image: images.nile,
     summary:
       "Jackfruit Safaris' home base and Uganda's adventure hub for rafting, cycling, horse riding, craft visits, Nile views, and transfers.",
+    overview:
+      "Jinja sits on the northern shore of Lake Victoria where the Nile River begins its 6,650-kilometer journey to the Mediterranean. As Uganda's adventure capital and the historic source of the Nile, Jinja offers world-class white-water rafting, bungee jumping, quad biking, cycling tours, and boat excursions to the famous source point.",
     whyGo: ["Source of the Nile", "Rafting and cycling", "Local Jackfruit base"],
+    howToGetThere: [
+      "From Kampala: 80 km — 1.5–2 hour drive via the New Jinja Bridge",
+      "From Entebbe: 2–2.5 hour drive via Kampala",
+      "Domestic flights: Entebbe to Kajjansi airstrip, then 2-hour drive to Jinja",
+      "Regular bus and taxi services between Kampala and Jinja",
+    ],
+    keyHighlights: [
+      { title: "White-Water Rafting", description: "Navigate the Nile's intense rapids with professional guides, suitable for beginners and experienced rafters alike.", image: images.nile },
+      { title: "Source of the Nile", description: "Boat to the spot where the White Nile begins its journey, marked by a monument and lakeside viewpoint.", image: images.hero },
+      { title: "Bungee Jumping", description: "Leap 44 meters into the gorge at Wildwaters Club, one of Africa's most spectacular bungee jumping sites.", image: images.falls },
+      { title: "Mabira Forest Canopy Walk", description: "Walk suspended bridges through the rainforest canopy, spotting primates and over 300 bird species.", image: images.forest },
+    ],
     bestTime:
       "Great before or after safari, especially for travelers with a free day around Kampala, Entebbe, or Jinja.",
     nights: "1-3 nights",
@@ -715,6 +839,7 @@ export const cmsModels = [
 export type PageHeroFallback = {
   badgeText?: string;
   title: string;
+  subtitle?: string;
   intro: string;
   backgroundImage?: string;
   eyebrow?: string;
@@ -743,8 +868,9 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/safaris": {
-    badgeText: "Uganda safari packages",
-    title: "Choose a proven route, then make it yours",
+    badgeText: "Uganda Safari Packages",
+    title: "Choose Proven Route",
+    subtitle: "Make It Yours",
     intro:
       "Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda's landscapes and wildlife as budget, mid-range, or luxury private trips.",
     backgroundImage: images.savannah,
@@ -814,4 +940,19 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
+};
+
+export type SafariIntroFallback = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  body: string;
+};
+
+export const safariIntroFallback: SafariIntroFallback = {
+  title: "Why choose Jackfruit Safaris for your Uganda safari?",
+  subtitle: "Why Uganda",
+  intro:
+    "Uganda's compact geography lets you track mountain gorillas in Bwindi, watch tree-climbing lions in Queen Elizabeth, and raft the Nile at Jinja — all within a two-week loop. Known as the 'Pearl of Africa' since Churchill's 1907 visit, Uganda is one of only ten countries where mountain gorilla trekking is possible, with roughly half the world's population in Bwindi Impenetrable National Park. Jackfruit Safaris turns that density of experience into a single smooth trip: private 4x4 vehicles, local driver-guides who handle permits and lodge logistics, and routes that adjust to your dates, pace, and budget — from three-day gorilla getaways to full 10-day circuits.",
+  body: "<p><strong>Private, flexible, and fully supported</strong> — every package can be adjusted for start point, lodge tier, activity mix, and final night. Whether you want a focused 3-day gorilla trek, a 3-day Murchison Falls wildlife loop, or a 10-day circuit covering Lake Mburo, chimp tracking in Kibale, Queen Elizabeth's Kazinga Channel cruise, and Lake Bunyonyi relaxation, Jackfruit Safaris plans it from Jinja with clear inclusions, live permit checks, and WhatsApp support before and during your trip.</p>",
 };

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
 import { CmsRichText } from "@/components/cms-rich-text";
 import { HeroSection } from "@/components/hero-section";

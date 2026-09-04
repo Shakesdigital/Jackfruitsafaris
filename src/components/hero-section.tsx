@@ -12,9 +12,11 @@ export type HeroSectionProps = {
   eyebrow?: string;
   /** Badge pill text displayed above the headline */
   badgeText?: string;
-  /** Main page title */
+  /** Main page title (h1) */
   title: string;
-  /** Subtitle / body text */
+  /** Optional subtitle rendered as an h2 between the title and intro */
+  subtitle?: string;
+  /** Intro / body text */
   intro: string;
   /** Background image URL; when absent a solid dark background is used */
   backgroundImage?: string;
@@ -49,6 +51,7 @@ export function HeroSection({
   eyebrow,
   badgeText,
   title,
+  subtitle,
   intro,
   backgroundImage,
   icon,
@@ -92,6 +95,11 @@ export function HeroSection({
           <h1 className="mt-6 text-fluid-5xl font-black leading-fluid-tight">
             {title}
           </h1>
+          {subtitle && (
+            <h2 className="mt-4 text-fluid-4xl font-extrabold leading-fluid-tight text-white/95">
+              {subtitle}
+            </h2>
+          )}
           <p className="mt-6 max-w-2xl text-fluid-lg leading-fluid-relaxed text-white/84">
             {intro}
           </p>

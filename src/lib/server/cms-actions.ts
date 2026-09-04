@@ -476,6 +476,20 @@ export async function upsertSiteSettings(formData: FormData) {
 }
 
 // Safari Package Actions
+const highlightWithImageSchema = z.object({
+  text: z.string().min(1),
+  image_url: z.string().url().optional().or(z.literal("")).optional(),
+  image_alignment: z.enum(["left", "right", "center"]).nullable().optional(),
+});
+
+const pageSectionSchema = z.object({
+  key: z.string().min(1),
+  title: z.string().optional(),
+  body: z.string().optional(),
+  image_url: z.string().url().optional().or(z.literal("")).optional(),
+  image_alignment: z.enum(["left", "right", "center"]).nullable().optional(),
+});
+
 const safariSchema = z.object({
   slug: z.string().min(1),
   title: z.string().min(1),
@@ -488,8 +502,11 @@ const safariSchema = z.object({
   currency: z.string().default("USD"),
   comfort_levels: z.array(z.string()).optional(),
   highlights: z.array(z.string()).optional(),
+  highlights_content: z.array(highlightWithImageSchema).optional(),
+  page_sections: z.array(pageSectionSchema).optional(),
   included: z.array(z.string()).optional(),
   excluded: z.array(z.string()).optional(),
+  related_destinations: z.array(z.string()).optional(),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
   meta_title: z.string().optional(),
   meta_description: z.string().optional(),
@@ -531,8 +548,11 @@ export async function upsertSafariPackage(formData: FormData) {
     currency: formData.get("currency") || "USD",
     comfort_levels: parseJsonField(formData.get("comfort_levels"), []),
     highlights: parseJsonField(formData.get("highlights"), []),
+    highlights_content: parseJsonField(formData.get("highlights_content"), []),
+    page_sections: parseJsonField(formData.get("page_sections"), []),
     included: parseJsonField(formData.get("included"), []),
     excluded: parseJsonField(formData.get("excluded"), []),
+    related_destinations: parseJsonField(formData.get("related_destinations"), []),
     status: formData.get("status") || "draft",
     meta_title: formData.get("meta_title") || undefined,
     meta_description: formData.get("meta_description") || undefined,
@@ -583,14 +603,23 @@ function parseSafariDetails(formData: FormData) {
   const accommodations = [];
   const faqs = [];
 
-  // Parse itinerary days
+  // Parse itinerary days — each day can now include an optional image
   for (let i = 1; i <= daysCount; i++) {
     const day = formData.get(`day_${i}_number`) as string;
     const title = formData.get(`day_${i}_title`) as string;
     const body = formData.get(`day_${i}_body`) as string;
     const meals = formData.get(`day_${i}_meals`) as string;
+    const dayImageUrl = formData.get(`day_${i}_image_url`) as string;
+    const dayImageAlignment = formData.get(`day_${i}_image_alignment`) as string;
     if (day && title) {
-      itinerary.push({ day, title, body, meals });
+      itinerary.push({
+        day,
+        title,
+        body,
+        meals,
+        image_url: dayImageUrl || null,
+        image_alignment: dayImageAlignment || null,
+      });
     }
   }
 
@@ -624,6 +653,14 @@ const destinationSchema = z.object({
   why_go: z.array(z.string()).optional(),
   top_experiences: z.array(z.string()).optional(),
   wildlife: z.array(z.string()).optional(),
+  how_to_get_there: z.array(z.string()).optional(),
+  key_highlights: z.array(
+    z.object({
+      title: z.string().min(1),
+      description: z.string().optional(),
+      image_url: z.string().url().optional().or(z.literal("")),
+    })
+  ).optional(),
   best_time: z.string().optional(),
   recommended_nights: z.string().optional(),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
@@ -660,6 +697,8 @@ export async function upsertDestination(formData: FormData) {
     why_go: parseJsonField(formData.get("why_go"), []),
     top_experiences: parseJsonField(formData.get("top_experiences"), []),
     wildlife: parseJsonField(formData.get("wildlife"), []),
+    how_to_get_there: parseJsonField(formData.get("how_to_get_there"), []),
+    key_highlights: parseJsonField(formData.get("key_highlights"), []),
     best_time: formData.get("best_time") || undefined,
     recommended_nights: formData.get("recommended_nights") || undefined,
     status: formData.get("status") || "draft",
@@ -1227,6 +1266,7 @@ const pageHeroSchema = z.object({
   eyebrow: z.string().optional(),
   badge_text: z.string().optional(),
   title: z.string().optional(),
+  subtitle: z.string().optional(),
   intro: z.string().optional(),
   background_image: z.string().url().optional().or(z.literal("")),
   cta_primary: z.string().optional(),
@@ -1291,6 +1331,7 @@ export async function upsertPageHero(formData: FormData) {
     eyebrow: formData.get("eyebrow") || undefined,
     badge_text: formData.get("badge_text") || undefined,
     title: formData.get("title") || undefined,
+    subtitle: formData.get("subtitle") || undefined,
     intro: formData.get("intro") || undefined,
     background_image: backgroundImage,
     cta_primary: formData.get("cta_primary") || undefined,

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Filter, SlidersHorizontal } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { CmsRichText } from "@/components/cms-rich-text";
 import { HeroSection } from "@/components/hero-section";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
-import { safaris as hardcodedSafaris, pageHeroFallbacks } from "@/lib/content";
+import { safaris as hardcodedSafaris, pageHeroFallbacks, safariIntroFallback } from "@/lib/content";
 import {
   getPublishedSafaris,
   getPageHero,
@@ -38,6 +39,7 @@ export default async function SafarisPage() {
   ]);
   const fallback = pageHeroFallbacks["/safaris"];
   const filtersSection = getPageSection(pageSections, "filters");
+  const safariIntroSection = getPageSection(pageSections, "safari_intro");
   const safariGridSection = getPageSection(pageSections, "safari_grid");
   const customPlanningSection = getPageSection(pageSections, "custom_planning");
   const quoteFormSection = getPageSection(pageSections, "quote_form");
@@ -84,7 +86,8 @@ export default async function SafarisPage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Choose a proven route, then make it yours"}
+        title={hero?.title || fallback?.title || "Choose Proven Route"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "Make It Yours"}
         intro={hero?.intro || fallback?.intro || "Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda's landscapes and wildlife as budget, mid-range, or luxury private trips."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         ctaPrimary={{
@@ -99,7 +102,37 @@ export default async function SafarisPage() {
         ariaLabel="Safari packages"
       />
 
-      <Section
+      {safariIntroSection ? (
+        <Section
+          eyebrow={safariIntroSection?.subtitle || undefined}
+          title={safariIntroSection?.title || undefined}
+        >
+          <CmsRichText
+            className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={getSectionText(safariIntroSection, "intro", safariIntroFallback.intro)}
+          />
+          <CmsRichText
+            className="mt-4 text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={getSectionText(safariIntroSection, "body", safariIntroFallback.body)}
+          />
+        </Section>
+      ) : (
+        <Section
+          eyebrow={safariIntroFallback.subtitle}
+          title={safariIntroFallback.title}
+        >
+          <CmsRichText
+            className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={safariIntroFallback.intro}
+          />
+          <CmsRichText
+            className="mt-4 text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={safariIntroFallback.body}
+          />
+        </Section>
+      )}
+
+      <Section>
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
           <div>
             <div className="mb-6 flex flex-wrap gap-3">
