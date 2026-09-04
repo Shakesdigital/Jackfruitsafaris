@@ -251,14 +251,14 @@ export function PageSectionsSection({ safari }: { safari: SafariRecord | null })
 
   const jsonValue = JSON.stringify(
     clientSections
-      .map((s) => ({
-        key: s.key?.trim() || `section_${Math.random().toString(36).slice(2, 8)}`,
+      .map((s, idx) => ({
+        key: s.key?.trim() || `section_${idx + 1}`,
         title: s.title?.trim() || null,
         body: s.body?.trim() || null,
         image_url: s.image_url || null,
         image_alignment: s.image_alignment || null,
       }))
-      .filter(Boolean),
+      .filter((s) => s.key || s.title || s.body),
   );
 
   return (
