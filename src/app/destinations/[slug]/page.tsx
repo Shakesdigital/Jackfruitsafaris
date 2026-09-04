@@ -12,7 +12,11 @@ import {
   getDestinationBySlug,
   getPublishedSafaris,
   getSafarisByDestination,
+  getPageHero,
+  getPublishedPageContentSections,
 } from "@/lib/cms-data";
+import { pageHeroFallbacks } from "@/lib/content";
+import { getPageSection, getSectionText } from "@/lib/cms-page-content";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -53,6 +57,22 @@ export default async function DestinationDetailPage({ params }: Props) {
     notFound();
   }
 
+  // Fetch the page_heroes row for this destination detail page (CMS-editable
+  // title/subtitle split, badge text, CTAs, quick links, background image).
+  const heroSlug = `/destinations/${slug}`;
+  const hero = await getPageHero(heroSlug);
+  const heroFallback = (pageHeroFallbacks[heroSlug] ?? pageHeroFallbacks["/destinations"]) as {
+    badgeText?: string;
+    title: string;
+    subtitle?: string;
+    intro?: string;
+    backgroundImage?: string;
+    quickLinks?: Array<{ label: string; href: string }>;
+  };
+
+  // Fetch editable content sections for this destination detail page
+  const pageSections = await getPublishedPageContentSections(heroSlug);
+
   // Fetch destination-specific safaris from CMS; fall back to all published
   // safaris if no destination-specific safaris are tagged.
   const cmsSafaris = await getSafarisByDestination(slug);
@@ -84,30 +104,28 @@ export default async function DestinationDetailPage({ params }: Props) {
     ? destination.key_highlights
     : [];
 
-  // Fallback hero text for this destination detail page
-  const fallbackQuickLinks = [
-    { label: "Gorilla Trekking", href: "/experiences/gorilla-trekking" },
-    { label: "Safari Packages", href: "/safaris" },
-    { label: "Jinja Activities", href: "/experiences/jinja-adventures" },
-    { label: "Airport Transfer", href: "/transport/airport-transfers" },
-  ];
+  // CMS-editable overview section for the destination detail page
+  const overviewSection = getPageSection(pageSections, "destination_overview");
+  const overviewTitle = getSectionText(overviewSection, "title", "Destination overview");
+  const overviewBody = getSectionText(overviewSection, "intro", overview);
 
   return (
     <>
       <HeroSection
-        badgeText={destination.region || undefined}
-        title={destination.name}
-        intro={overview}
-        backgroundImage={destination.featured_image_url || undefined}
+        badgeText={hero?.badge_text || destination.region || heroFallback?.badgeText}
+        title={hero?.title || destination.name || heroFallback?.title}
+        subtitle={hero?.subtitle || undefined}
+        intro={hero?.intro || destination.overview || heroFallback?.intro || ""}
+        backgroundImage={hero?.background_image || destination.featured_image_url || heroFallback?.backgroundImage}
         ctaPrimary={{
-          label: "Plan My Safari",
-          href: "/request-quote",
+          label: hero?.cta_primary || "Plan My Safari",
+          href: hero?.cta_primary_href || "/request-quote",
         }}
         ctaSecondary={{
-          label: "View Safari Packages",
-          href: "/safaris",
+          label: hero?.cta_secondary || "View Safari Packages",
+          href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={fallbackQuickLinks}
+        quickLinks={hero?.quick_links || heroFallback?.quickLinks}
         ariaLabel={`${destination.name} - Destination details`}
       />
 
@@ -117,10 +135,10 @@ export default async function DestinationDetailPage({ params }: Props) {
             {/* Destination Overview */}
             <div>
               <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">
-                Destination overview
+                {overviewTitle}
               </h2>
               <p className="mt-4 max-w-3xl text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]">
-                {overview}
+                {overviewBody}
               </p>
             </div>
 
@@ -160,16 +178,18 @@ export default async function DestinationDetailPage({ params }: Props) {
                   {howToGetThere.map((item: string, index: number) => (
                     <div
                       key={index}
-                      className="flex gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
+                      className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
                     >
-                      <MapPin
-                        className="mt-0.5 shrink-0 text-[var(--brand-secondary)]"
-                        size={20}
-                        aria-hidden="true"
-                      />
-                      <p className="text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
-                        {item}
-                      </p>
+                      <div className="flex items-start gap-3">
+                        <MapPin
+                          className="mt-0.5 shrink-0 text-[var(--brand-secondary)]"
+                          size={20}
+                          aria-hidden="true"
+                        />
+                        <p className="text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
+                          {item}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
