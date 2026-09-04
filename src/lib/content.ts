@@ -888,7 +888,8 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/experiences": {
     badgeText: "Experiences",
-    title: "Build your Uganda trip around the moments that matter",
+    title: "Choose Your Experience",
+    subtitle: "Make It Yours",
     intro:
       "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary.",
     backgroundImage: images.forest,
@@ -955,4 +956,19 @@ export const safariIntroFallback: SafariIntroFallback = {
   intro:
     "Uganda's compact geography lets you track mountain gorillas in Bwindi, watch tree-climbing lions in Queen Elizabeth, and raft the Nile at Jinja — all within a two-week loop. Known as the 'Pearl of Africa' since Churchill's 1907 visit, Uganda is one of only ten countries where mountain gorilla trekking is possible, with roughly half the world's population in Bwindi Impenetrable National Park. Jackfruit Safaris turns that density of experience into a single smooth trip: private 4x4 vehicles, local driver-guides who handle permits and lodge logistics, and routes that adjust to your dates, pace, and budget — from three-day gorilla getaways to full 10-day circuits.",
   body: "<p><strong>Private, flexible, and fully supported</strong> — every package can be adjusted for start point, lodge tier, activity mix, and final night. Whether you want a focused 3-day gorilla trek, a 3-day Murchison Falls wildlife loop, or a 10-day circuit covering Lake Mburo, chimp tracking in Kibale, Queen Elizabeth's Kazinga Channel cruise, and Lake Bunyonyi relaxation, Jackfruit Safaris plans it from Jinja with clear inclusions, live permit checks, and WhatsApp support before and during your trip.</p>",
+};
+
+export type ExperienceIntroFallback = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  body: string;
+};
+
+export const experienceIntroFallback: ExperienceIntroFallback = {
+  title: "Why choose Jackfruit Safaris for your Uganda experiences?",
+  subtitle: "Experience Uganda",
+  intro:
+    "Uganda's experiences span mountain gorilla tracking in misty Bwindi, wildlife safaris across Murchison Falls and Queen Elizabeth, white-water rafting on the Nile at Jinja, cultural encounters with local communities, and reliable transport between parks. Jackfruit Safaris matches these activities to your available time, transfer point, safety needs, and comfort level, then connects the pieces into a realistic itinerary — whether you have three days or two weeks.",
+  body: "<p><strong>Flexible, fully supported, and locally guided</strong> — every experience can be combined and adjusted for start point, lodge tier, activity mix, and final night. Whether you want focused gorilla trekking, a Nile adventure day in Jinja, cultural immersion in local villages, or reliable airport transfers as standalone add-ons, Jackfruit Safaris plans it from Jinja with clear inclusions, live activity checks, and WhatsApp support before and during your trip.</p>",
 };

@@ -2,16 +2,23 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroSection } from "@/components/hero-section";
+import { CmsRichText } from "@/components/cms-rich-text";
 import { Section } from "@/components/section";
-import { experiences as hardcodedExperiences, iconMap, pageHeroFallbacks } from "@/lib/content";
+import { experiences as hardcodedExperiences, iconMap, pageHeroFallbacks, experienceIntroFallback } from "@/lib/content";
 import {
   getPublishedExperiences,
   getPageHero,
   getPublishedPageContentSections,
 } from "@/lib/cms-data";
-import { getPageSection } from "@/lib/cms-page-content";
+import { getPageSection, getSectionText } from "@/lib/cms-page-content";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Uganda Experiences | Jackfruit Safaris",
+  description:
+    "Explore Uganda's diverse experiences: gorilla trekking, wildlife safaris, Nile rafting, cultural visits, and airport transfers. All experiences can be combined and adjusted by Jackfruit Safaris.",
+};
 
 export default async function ExperiencesPage() {
   const [experiences, hero, pageSections] = await Promise.all([
@@ -21,6 +28,7 @@ export default async function ExperiencesPage() {
   ]);
   const fallback = pageHeroFallbacks["/experiences"];
   const gridSection = getPageSection(pageSections, "experience_grid");
+  const introSection = getPageSection(pageSections, "experience_intro");
 
   // Use CMS data if available, otherwise fall back to hardcoded content
   const displayedExperiences = experiences.length
@@ -43,7 +51,8 @@ export default async function ExperiencesPage() {
     <>
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
-        title={hero?.title || fallback?.title || "Build your Uganda trip around the moments that matter"}
+        title={hero?.title || fallback?.title || "Choose Your Experience"}
+        subtitle={hero?.subtitle || fallback?.subtitle || "Make It Yours"}
         intro={hero?.intro || fallback?.intro || "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary."}
         backgroundImage={hero?.background_image || fallback?.backgroundImage}
         ctaPrimary={{
@@ -57,6 +66,37 @@ export default async function ExperiencesPage() {
         quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Uganda safari experiences"
       />
+
+      {introSection ? (
+        <Section
+          eyebrow={introSection?.subtitle || undefined}
+          title={introSection?.title || undefined}
+        >
+          <CmsRichText
+            className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={getSectionText(introSection, "intro", experienceIntroFallback.intro)}
+          />
+          <CmsRichText
+            className="mt-4 text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={getSectionText(introSection, "body", experienceIntroFallback.body)}
+          />
+        </Section>
+      ) : (
+        <Section
+          eyebrow={experienceIntroFallback.subtitle}
+          title={experienceIntroFallback.title}
+        >
+          <CmsRichText
+            className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={experienceIntroFallback.intro}
+          />
+          <CmsRichText
+            className="mt-4 text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+            html={experienceIntroFallback.body}
+          />
+        </Section>
+      )}
+
       <Section
         eyebrow={gridSection?.subtitle || undefined}
         title={gridSection?.title || undefined}
