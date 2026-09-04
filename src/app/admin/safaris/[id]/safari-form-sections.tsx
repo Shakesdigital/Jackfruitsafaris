@@ -1,21 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { getAdminSafariByIdResult } from "@/lib/cms-data";
-import { DeleteButton } from "@/app/admin/_components/delete-button";
-import { AdminLoadError } from "@/app/admin/_components/admin-load-error";
-import {
-  ImageUploadField,
-  ListEditor,
-} from "@/app/admin/_components/cms-form-controls";
-import type { HighlightWithImage, ImageAlignment, SafariPageSection } from "@/lib/content";
-
-type Props = {
-  params: Promise<{ id: string }>;
-};
+import { ListEditor, ImageUploadField } from "@/app/admin/_components/cms-form-controls";
+import type {
+  HighlightWithImage,
+  ImageAlignment,
+  SafariPageSection,
+} from "@/lib/content";
 
 type SafariDay = {
   day?: string;
@@ -63,12 +54,6 @@ type SafariRecord = {
   related_destinations?: unknown;
 };
 
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-  title: "Edit Safari Package",
-};
-
 function asArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? value : [];
 }
@@ -77,212 +62,10 @@ function fieldValue(value: string | number | null | undefined) {
   return value ?? "";
 }
 
-export default async function SafariEditPage({ params }: Props) {
-  const { id } = await params;
-  // Fetch data with admin client (bypasses RLS)
-  const safariResult = await getAdminSafariByIdResult(id);
-  const safari = safariResult.data as SafariRecord | null;
+export { asArray, fieldValue };
+export type { SafariRecord, SafariDay, AccommodationOption, SafariFaq };
 
-  if (safariResult.error) {
-    return (
-      <AdminLoadError
-        title="Safari package could not be loaded"
-        message={safariResult.error}
-        code={safariResult.code}
-        backHref="/admin/safaris"
-        backLabel="Back to safari packages"
-      />
-    );
-  }
-
-  if (!safari && id !== "new") {
-    notFound();
-  }
-
-  const isNew = id === "new";
-
-  return (
-    <div className="max-w-4xl">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {isNew ? "New Safari Package" : "Edit Safari Package"}
-        </h1>
-        {!isNew && (
-          <DeleteButton
-            form="safari-form"
-            formAction={`/admin/safaris/actions`}
-            value={safari?.id ?? ""}
-            confirmMessage="Delete this safari package?"
-          >
-            Delete
-          </DeleteButton>
-        )}
-      </div>
-
-      <form
-        id="safari-form"
-        action="/admin/safaris/actions"
-        method="post"
-        className="space-y-6 rounded-lg border border-gray-200 bg-white p-6"
-        encType="multipart/form-data"
-      >
-        <input type="hidden" name="id" value={safari?.id ?? ""} />
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Slug</span>
-            <input
-              required
-              name="slug"
-              defaultValue={fieldValue(safari?.slug)}
-              placeholder="3-days-gorilla-tracking"
-              className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Status</span>
-            <select
-              name="status"
-              defaultValue={safari?.status || "draft"}
-              className="mt-1 block w-full rounded-md border-gray-300"
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="archived">Archived</option>
-            </select>
-          </label>
-        </div>
-
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Title</span>
-          <input
-            required
-            name="title"
-            defaultValue={fieldValue(safari?.title)}
-            placeholder="3 Days Gorilla Tracking Safari"
-            className="mt-1 block w-full rounded-md border-gray-300"
-          />
-        </label>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Duration</span>
-            <input
-              name="duration"
-              defaultValue={fieldValue(safari?.duration)}
-              placeholder="3 days"
-              className="mt-1 block w-full rounded-md border-gray-300"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Route</span>
-            <input
-              name="route"
-              defaultValue={fieldValue(safari?.route)}
-              placeholder="Entebbe - Bwindi - Entebbe"
-              className="mt-1 block w-full rounded-md border-gray-300"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Price (USD)</span>
-            <input
-              type="number"
-              name="price_from"
-              defaultValue={fieldValue(safari?.price_from)}
-              placeholder="1250"
-              className="mt-1 block w-full rounded-md border-gray-300"
-            />
-          </label>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">Start Point</span>
-            <input
-              required
-              name="start_point"
-              defaultValue={fieldValue(safari?.start_point)}
-              placeholder="Starts in Entebbe, Kampala, or Jinja"
-              className="mt-1 block w-full rounded-md border-gray-300"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700">End Point</span>
-            <input
-              name="end_point"
-              defaultValue={fieldValue(safari?.end_point)}
-              placeholder="Ends in Entebbe or Kampala"
-              className="mt-1 block w-full rounded-md border-gray-300"
-            />
-          </label>
-        </div>
-
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Summary</span>
-          <textarea
-            name="summary"
-            defaultValue={fieldValue(safari?.summary)}
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300"
-          />
-        </label>
-
-        <ImageUploadField
-          name="featured_image_url"
-          fileName="featured_image_file"
-          label="Featured Image"
-          currentUrl={safari?.featured_image_url}
-        />
-
-        <ListEditor
-          name="comfort_levels"
-          label="Comfort Levels"
-          values={asArray<string>(safari?.comfort_levels)}
-          placeholder="Budget, Mid-range, Luxury"
-          emptyRows={3}
-        />
-
-        <ItinerarySection safari={safari} />
-
-        <AccommodationsSection safari={safari} />
-
-        <HighlightsSection safari={safari} />
-
-        <PageSectionsSection safari={safari} />
-
-        <RelatedDestinationsSection safari={safari} />
-
-        <IncludedExcludedSection safari={safari} />
-
-        <FAQsSection safari={safari} />
-
-        <SEOFields safari={safari} />
-
-        <div className="flex gap-3 pt-4">
-          <Link
-            href="/admin/safaris"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-          >
-            Cancel
-          </Link>
-          <button
-            type="submit"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-          >
-            Save Safari Package
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-}
-
-// Itinerary Section
-function ItinerarySection({ safari }: { safari: SafariRecord | null }) {
+export function ItinerarySection({ safari }: { safari: SafariRecord | null }) {
   const itinerary = asArray<SafariDay>(safari?.itinerary);
   const rows: Array<SafariDay | null> =
     itinerary.length > 0 ? itinerary : [null, null, null];
@@ -342,8 +125,7 @@ function ItinerarySection({ safari }: { safari: SafariRecord | null }) {
   );
 }
 
-// Accommodations Section
-function AccommodationsSection({ safari }: { safari: SafariRecord | null }) {
+export function AccommodationsSection({ safari }: { safari: SafariRecord | null }) {
   const acc = asArray<AccommodationOption>(safari?.accommodation_options);
   const rows: Array<AccommodationOption | null> =
     acc.length > 0 ? acc : [null, null, null];
@@ -372,8 +154,7 @@ function AccommodationsSection({ safari }: { safari: SafariRecord | null }) {
 }
 
 // Highlights Section — image-aware editor
-function HighlightsSection({ safari }: { safari: SafariRecord | null }) {
-  // Use highlights_content (new column) if present, fall back to highlights text[]
+export function HighlightsSection({ safari }: { safari: SafariRecord | null }) {
   const highlightsContent = asArray<HighlightWithImage>(safari?.highlights_content);
   const highlightsText = asArray<string>(safari?.highlights);
   const rows: Array<HighlightWithImage> =
@@ -462,7 +243,7 @@ function HighlightsSection({ safari }: { safari: SafariRecord | null }) {
 }
 
 // Page Sections Section — CMS-managed arbitrary content sections with images
-function PageSectionsSection({ safari }: { safari: SafariRecord | null }) {
+export function PageSectionsSection({ safari }: { safari: SafariRecord | null }) {
   const sections = asArray<SafariPageSection>(safari?.page_sections);
   const [clientSections, setClientSections] = useState<SafariPageSection[]>(
     sections.length > 0 ? sections : [{ key: "", title: "", body: "", image_url: null, image_alignment: null }],
@@ -470,14 +251,14 @@ function PageSectionsSection({ safari }: { safari: SafariRecord | null }) {
 
   const jsonValue = JSON.stringify(
     clientSections
-      .map((s, idx) => ({
-        key: s.key?.trim() || `section_${idx + 1}`,
+      .map((s) => ({
+        key: s.key?.trim() || `section_${Math.random().toString(36).slice(2, 8)}`,
         title: s.title?.trim() || null,
         body: s.body?.trim() || null,
         image_url: s.image_url || null,
         image_alignment: s.image_alignment || null,
       }))
-      .filter((s) => s.key || s.title || s.body),
+      .filter(Boolean),
   );
 
   return (
@@ -570,7 +351,7 @@ function PageSectionsSection({ safari }: { safari: SafariRecord | null }) {
 }
 
 // Related Destinations Section
-function RelatedDestinationsSection({ safari }: { safari: SafariRecord | null }) {
+export function RelatedDestinationsSection({ safari }: { safari: SafariRecord | null }) {
   const destinations: string[] = asArray<string>(safari?.related_destinations);
   return (
     <div className="border-t pt-6">
@@ -586,7 +367,7 @@ function RelatedDestinationsSection({ safari }: { safari: SafariRecord | null })
 }
 
 // Included/Excluded Section
-function IncludedExcludedSection({ safari }: { safari: SafariRecord | null }) {
+export function IncludedExcludedSection({ safari }: { safari: SafariRecord | null }) {
   const included = asArray<string>(safari?.included);
   const excluded = asArray<string>(safari?.excluded);
 
@@ -614,7 +395,7 @@ function IncludedExcludedSection({ safari }: { safari: SafariRecord | null }) {
 }
 
 // FAQs Section
-function FAQsSection({ safari }: { safari: SafariRecord | null }) {
+export function FAQsSection({ safari }: { safari: SafariRecord | null }) {
   const faqs = asArray<SafariFaq>(safari?.faq);
   const rows: Array<SafariFaq | null> =
     faqs.length > 0 ? faqs : [null, null, null];
@@ -644,7 +425,7 @@ function FAQsSection({ safari }: { safari: SafariRecord | null }) {
 }
 
 // SEO Fields
-function SEOFields({ safari }: { safari: SafariRecord | null }) {
+export function SEOFields({ safari }: { safari: SafariRecord | null }) {
   return (
     <div className="border-t pt-6">
       <h3 className="mb-4 text-lg font-medium">SEO</h3>

@@ -9,10 +9,15 @@ import {
   MapPin,
   XCircle,
 } from "lucide-react";
+import { HeroSection } from "@/components/hero-section";
 import { Section } from "@/components/section";
 import { StickyQuoteCard } from "@/components/sticky-quote-card";
 import { RelatedGallery } from "@/components/related-gallery";
+import { FullWidthGallery } from "@/components/full-width-gallery";
+import { ContentWithImage } from "@/components/content-with-image";
 import { getSafariBySlug, getGalleryMediaBySafari } from "@/lib/cms-data";
+import type { GalleryImage } from "@/components/related-gallery";
+import type { HighlightWithImage, SafariPageSection, SafariDayWithImage } from "@/lib/content";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -45,6 +50,18 @@ export default async function SafariDetailPage({ params }: Props) {
   }
 
   // Transform CMS data to match frontend expectations
+  // highlights: use highlights_content if present, fall back to highlights text[]
+  const rawHighlightsContent = safari.highlights_content as HighlightWithImage[] | undefined;
+  const highlightsTextArray = (safari.highlights || []) as string[];
+  const highlightsWithImages: HighlightWithImage[] =
+    rawHighlightsContent && rawHighlightsContent.length > 0
+      ? rawHighlightsContent.map((h: HighlightWithImage) => ({
+          text: h.text,
+          image_url: h.image_url ?? null,
+          image_alignment: h.image_alignment ?? null,
+        }))
+      : highlightsTextArray.map((h: string) => ({ text: h, image_url: null, image_alignment: null }));
+
   const displayData = {
     slug: safari.slug,
     title: safari.title,
@@ -57,8 +74,10 @@ export default async function SafariDetailPage({ params }: Props) {
       : "quoted after dates and preferences",
     comfort: (safari.comfort_levels || []).join(", ") || "Budget to luxury",
     image: safari.featured_image_url || "",
-    highlights: safari.highlights || [],
-    itinerary: safari.itinerary || [],
+    highlights: highlightsTextArray,
+    highlightsWithImages,
+    itinerary: (safari.itinerary || []) as SafariDayWithImage[],
+    pageSections: (safari.page_sections || []) as SafariPageSection[],
     accommodations: safari.accommodation_options || [],
     included: safari.included || [],
     excluded: safari.excluded || [],
@@ -70,26 +89,21 @@ export default async function SafariDetailPage({ params }: Props) {
 
   return (
     <>
-      <section
-        className="relative hero-h-responsive bg-cover bg-center text-white"
-        style={{ backgroundImage: `url(${displayData.image})` }}
-        aria-label={`${displayData.title} - Safari details`}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />
-        <div className="relative container-responsive flex min-h-[inherit] items-end py-10 sm:py-14">
-          <div className="max-w-4xl">
-            <p className="text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-              {displayData.duration} private safari
-            </p>
-            <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
-              {displayData.title}
-            </h1>
-            <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/82">
-              {displayData.summary}
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badgeText={displayData.duration}
+        title={displayData.title}
+        intro={displayData.summary}
+        backgroundImage={displayData.image}
+        ctaPrimary={{
+          label: "Plan My Safari",
+          href: "/request-quote",
+        }}
+        ctaSecondary={{
+          label: "View All Safaris",
+          href: "/safaris",
+        }}
+        ariaLabel={`${displayData.title} - Safari details`}
+      />
 
       <section className="border-y border-black/10 bg-white py-5 sm:py-6">
         <div className="container-responsive grid gap-3 sm:grid-cols-2 md:grid-cols-4">
@@ -132,14 +146,18 @@ export default async function SafariDetailPage({ params }: Props) {
                 Highlights
               </h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {displayData.highlights.map((highlight: string) => (
-                  <p
-                    key={highlight}
+                {displayData.highlightsWithImages.map((highlight: HighlightWithImage, idx: number) => (
+                  <div
+                    key={highlight.text || idx}
                     className="flex gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4 text-fluid-sm font-bold leading-6 text-[var(--foreground)]"
                   >
                     <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-secondary)]" size={18} aria-hidden="true" />
-                    {highlight}
-                  </p>
+                    <ContentWithImage
+                      body={highlight.text}
+                      imageUrl={highlight.image_url}
+                      alignment={highlight.image_alignment}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -150,7 +168,7 @@ export default async function SafariDetailPage({ params }: Props) {
                 Day by day
               </p>
               <div className="mt-6 grid gap-5">
-                {displayData.itinerary.map((day: { day: string; title: string; body: string; meals: string }) => (
+                {displayData.itinerary.map((day: SafariDayWithImage) => (
                   <div
                     key={`${day.day}-${day.title}`}
                     className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
@@ -161,9 +179,14 @@ export default async function SafariDetailPage({ params }: Props) {
                     <h3 className="mt-2 text-fluid-xl font-black text-[var(--foreground)]">
                       {day.title}
                     </h3>
-                    <p className="mt-3 text-fluid-base leading-8 text-[var(--brand-muted-text)]">
-                      {day.body}
-                    </p>
+                    <div className="mt-3">
+                      <ContentWithImage
+                        body={day.body || ""}
+                        imageUrl={day.image_url}
+                        alignment={day.image_alignment}
+                        altText={day.title}
+                      />
+                    </div>
                     <p className="mt-3 text-fluid-sm font-bold text-[var(--foreground)]">
                       Meal plan: {day.meals}
                     </p>
@@ -181,7 +204,7 @@ export default async function SafariDetailPage({ params }: Props) {
                 {displayData.price}
               </h2>
               <p className="mt-3 text-fluid-base leading-8 text-[var(--brand-muted-text)]">
-                Prices are quoted as "from" guidance because permits, lodge
+                Prices are quoted as &ldquo;from&rdquo; guidance because permits, lodge
                 category, season, group size, and vehicle logistics affect the
                 final cost.
               </p>
@@ -242,6 +265,21 @@ export default async function SafariDetailPage({ params }: Props) {
               </div>
             </div>
 
+            {displayData.pageSections.length > 0 &&
+              displayData.pageSections.map((section: SafariPageSection, idx: number) => (
+                <Section
+                  key={section.key || idx}
+                  title={section.title || undefined}
+                >
+                  <ContentWithImage
+                    body={section.body || ""}
+                    imageUrl={section.image_url}
+                    alignment={section.image_alignment}
+                    altText={section.title || section.key || ""}
+                  />
+                </Section>
+              ))}
+
             <div>
               <h2 className="flex items-center gap-2 text-fluid-3xl font-black text-[var(--foreground)]">
                 <HelpCircle size={24} aria-hidden="true" />
@@ -281,13 +319,17 @@ export default async function SafariDetailPage({ params }: Props) {
           </article>
           <div className="space-y-8">
             <RelatedGallery
-              images={galleryImages as any[]}
+              images={galleryImages as GalleryImage[]}
               safariTitle={displayData.title}
             />
             <StickyQuoteCard sourcePage={displayData.slug} defaultService={displayData.title} />
           </div>
         </div>
       </Section>
+      <FullWidthGallery
+        images={galleryImages as GalleryImage[]}
+        title="Related safari photo gallery"
+      />
     </>
   );
 }

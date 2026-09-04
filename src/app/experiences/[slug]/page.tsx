@@ -5,6 +5,7 @@ import { CheckCircle2 } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
+import { HeroSection } from "@/components/hero-section";
 import { ExperienceGallery } from "@/components/experience-gallery";
 import {
   getExperienceBySlug,
@@ -79,26 +80,21 @@ export default async function ExperienceDetailPage({ params }: Props) {
 
   return (
     <>
-      <section
-        className="relative hero-h-responsive bg-cover bg-center text-white"
-        style={{ backgroundImage: `url(${experience.featured_image_url || ""})` }}
-        aria-label={`${experience.name} - Experience details`}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08170f]/55 via-[#08170f]/45 to-[#08170f]/35" aria-hidden="true" />
-        <div className="relative container-responsive flex min-h-[inherit] items-end py-10 sm:py-14">
-          <div className="max-w-4xl">
-            <p className="inline-flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
-              Uganda experience
-            </p>
-            <h1 className="mt-4 text-fluid-4xl font-black leading-fluid-tight">
-              {experience.name}
-            </h1>
-            <p className="mt-5 max-w-3xl text-fluid-lg leading-fluid-relaxed text-white/82">
-              {experience.summary}
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badgeText="Uganda experience"
+        title={experience.name}
+        intro={experience.summary || ""}
+        backgroundImage={experience.featured_image_url || undefined}
+        ctaPrimary={{
+          label: "Plan My Safari",
+          href: "/request-quote",
+        }}
+        ctaSecondary={{
+          label: "View All Safaris",
+          href: "/safaris",
+        }}
+        ariaLabel={`${experience.name} - Experience details`}
+      />
 
       <Section>
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">

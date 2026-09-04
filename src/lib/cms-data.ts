@@ -220,6 +220,22 @@ export async function getExperienceBySlug(slug: string) {
   return data;
 }
 
+// Fetch published safari packages related to a specific destination by slug.
+// Uses the related_destinations text[] column on safari_packages.
+export async function getSafarisByDestination(destinationSlug: string) {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("safari_packages")
+    .select("*")
+    .eq("status", "published")
+    .contains("related_destinations", [destinationSlug])
+    .order("order_column", { ascending: true });
+
+  return data || [];
+}
+
 // Fetch all gallery media
 export async function getGalleryMedia() {
   unstable_noStore();

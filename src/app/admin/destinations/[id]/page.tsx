@@ -179,6 +179,28 @@ export default async function DestinationEditPage({ params }: Props) {
             placeholder="Elephants"
             emptyRows={2}
           />
+
+          <ListEditor
+            name="how_to_get_there"
+            label="How to Get There"
+            values={destination?.how_to_get_there || []}
+            placeholder="From Kampala: 300 km via Masindi — 6+ hour drive"
+            emptyRows={3}
+          />
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Key Highlights (JSON array)</span>
+            <textarea
+              name="key_highlights"
+              defaultValue={destination?.key_highlights ? JSON.stringify(destination.key_highlights, null, 2) : "[]"}
+              rows={8}
+              placeholder='[{"title":"Gorilla Family Tracking","description":"Spend an hour with mountain gorillas.","image_url":"https://..."}]'
+              className="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Enter an array of objects with title, description, and image_url fields. Each object becomes a highlight card with an image.
+            </p>
+          </label>
         </div>
 
         <SEOFields destination={destination} />
