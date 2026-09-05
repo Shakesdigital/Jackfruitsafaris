@@ -114,8 +114,8 @@ export default async function DestinationDetailPage({ params }: Props) {
       <HeroSection
         badgeText={hero?.badge_text || destination.region || heroFallback?.badgeText}
         title={hero?.title || destination.name || heroFallback?.title}
-        subtitle={hero?.subtitle || undefined}
-        intro={hero?.intro || destination.overview || heroFallback?.intro || ""}
+        subtitle={hero?.subtitle || destination.region || heroFallback?.subtitle}
+        intro={hero?.intro || destination.summary || heroFallback?.intro || ""}
         backgroundImage={hero?.background_image || destination.featured_image_url || heroFallback?.backgroundImage}
         ctaPrimary={{
           label: hero?.cta_primary || "Plan My Safari",
