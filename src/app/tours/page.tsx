@@ -63,7 +63,6 @@ export default async function ToursPage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Choose Proven Route"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Make It Yours"}
         intro={hero?.intro || fallback?.intro || safariIntroFallback.intro}
@@ -76,7 +75,6 @@ export default async function ToursPage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Safari tours"
       />
 

@@ -879,7 +879,6 @@ export const teamMembers: TeamMember[] = [
 ];
 
 export type PageHeroFallback = {
-  badgeText?: string;
   title: string;
   subtitle?: string;
   intro: string;
@@ -887,13 +886,11 @@ export type PageHeroFallback = {
   eyebrow?: string;
   ctaPrimary?: { label: string; href: string };
   ctaSecondary?: { label: string; href: string };
-  quickLinks?: Array<{ label: string; href: string }>;
   content?: Record<string, string>;
 };
 
 export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   "/": {
-    badgeText: "Local safari experts from Jinja",
     title: "Explore Uganda",
     subtitle: "With Local Safari Experts",
     intro:
@@ -903,7 +900,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/about": {
-    badgeText: "About Jackfruit Safaris",
     title: "Local Roots, Practical Planning",
     subtitle: "Warm Guest Care",
     intro:
@@ -923,7 +919,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     },
   },
   "/safaris": {
-    badgeText: "Uganda Safari Packages",
     title: "Choose Proven Route",
     subtitle: "Make It Yours",
     intro:
@@ -933,7 +928,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/destinations": {
-    badgeText: "Destinations",
     title: "Uganda Safari Places",
     subtitle: "Routed With Care",
     intro:
@@ -943,7 +937,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/experiences": {
-    badgeText: "Experiences",
     title: "Choose Your Experience",
     subtitle: "Make It Yours",
     intro:
@@ -953,7 +946,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/reviews": {
-    badgeText: "Guest reviews",
     title: "Hear From Travelers",
     subtitle: "Who Explored Uganda With Jackfruit Safaris",
     intro:
@@ -963,7 +955,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/travel-guide": {
-    badgeText: "Uganda safari travel guide",
     title: "Practical Travel Articles",
     subtitle: "That Answer Your Booking Questions",
     intro:
@@ -973,7 +964,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/contact": {
-    badgeText: "Contact Jackfruit Safaris",
     title: "Plan Your Uganda Safari",
     subtitle: "Send us your travel details",
     intro:
@@ -983,7 +973,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/request-quote": {
-    badgeText: "Request a quote",
     title: "Tell Us What You Want",
     subtitle: "From Uganda",
     intro:
@@ -993,7 +982,6 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
   "/transport/airport-transfers": {
-    badgeText: "Transport",
     title: "Airport Pickups and Transport",
     subtitle: "Reliable, Professional Service",
     intro:

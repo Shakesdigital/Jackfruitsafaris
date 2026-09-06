@@ -59,7 +59,6 @@ export default async function ContactPage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Plan Your Uganda Safari"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Send us your travel details"}
         intro={hero?.intro || fallback?.intro || "Send your travel details and Jackfruit Safaris will help you choose the right safari, activity, transfer, or custom itinerary."}
@@ -72,7 +71,6 @@ export default async function ContactPage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Contact Jackfruit Safaris"
       />
       <Section>

@@ -81,7 +81,6 @@ export default async function ExperienceDetailPage({ params }: Props) {
   return (
     <>
       <HeroSection
-        badgeText="Uganda experience"
         title={experience.name}
         intro={experience.summary || ""}
         backgroundImage={experience.featured_image_url || undefined}

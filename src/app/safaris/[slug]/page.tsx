@@ -90,7 +90,6 @@ export default async function SafariDetailPage({ params }: Props) {
   return (
     <>
       <HeroSection
-        badgeText={displayData.duration}
         title={displayData.title}
         intro={displayData.summary}
         backgroundImage={displayData.image}

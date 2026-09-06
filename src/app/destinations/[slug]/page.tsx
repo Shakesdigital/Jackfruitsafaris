@@ -58,16 +58,14 @@ export default async function DestinationDetailPage({ params }: Props) {
   }
 
   // Fetch the page_heroes row for this destination detail page (CMS-editable
-  // title/subtitle split, badge text, CTAs, quick links, background image).
+  // title/subtitle split, CTAs, background image).
   const heroSlug = `/destinations/${slug}`;
   const hero = await getPageHero(heroSlug);
   const heroFallback = (pageHeroFallbacks[heroSlug] ?? pageHeroFallbacks["/destinations"]) as {
-    badgeText?: string;
     title: string;
     subtitle?: string;
     intro?: string;
     backgroundImage?: string;
-    quickLinks?: Array<{ label: string; href: string }>;
   };
 
   // Fetch editable content sections for this destination detail page
@@ -112,7 +110,6 @@ export default async function DestinationDetailPage({ params }: Props) {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || destination.region || heroFallback?.badgeText}
         title={hero?.title || destination.name || heroFallback?.title}
         subtitle={hero?.subtitle || destination.region || heroFallback?.subtitle}
         intro={hero?.intro || destination.summary || heroFallback?.intro || ""}
@@ -125,7 +122,6 @@ export default async function DestinationDetailPage({ params }: Props) {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || heroFallback?.quickLinks}
         ariaLabel={`${destination.name} - Destination details`}
       />
 
