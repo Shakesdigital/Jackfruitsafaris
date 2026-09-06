@@ -41,12 +41,12 @@ function HeaderInner({
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close menu on route change
+  // Close on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Close menu on Escape
+  // Close on Escape
   useEffect(() => {
     function onKeydown(e: KeyboardEvent) {
       if (e.key === "Escape") setMenuOpen(false);
@@ -87,7 +87,7 @@ function HeaderInner({
             </span>
           )}
           <span className="leading-tight hidden sm:block">
-            <span className="block text-fluid-sm font-black uppercase tracking-[0.18em] text-[var(--foreground)]">
+            <span className="block text-fluid-sm font-black uppercase tracking-[0.18en] text-[var(--foreground)]">
               {settings?.business_name || "Jackfruit"}
             </span>
             <span className="block text-fluid-xs font-semibold text-[var(--brand-muted-text)]">
@@ -129,64 +129,75 @@ function HeaderInner({
           </Link>
         </div>
 
-        {/* Mobile menu toggle */}
+        {/* Mobile menu toggle — clean hamburger/X icon */}
         <button
           type="button"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          className="relative flex size-12 items-center justify-center rounded-full border border-black/10 text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] lg:hidden"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+          className="flex size-12 items-center justify-center rounded-full border border-black/10 text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] lg:hidden"
         >
-          <Menu
-            size={24}
-            aria-hidden={menuOpen}
-            className={`transition-opacity duration-200 ${
-              menuOpen ? "opacity-0" : "opacity-100"
-            }`}
-          />
-          <X
-            size={24}
-            aria-hidden={!menuOpen}
-            className={`absolute transition-opacity duration-200 ${
-              menuOpen ? "opacity-100" : "opacity-0"
-            }`}
-          />
+          <Menu size={24} aria-hidden={!menuOpen} />
         </button>
       </div>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile slide-over drawer */}
       {menuOpen && (
-        <div
-          className="fixed inset-0 z-[50] bg-white/95 backdrop-blur-xl lg:hidden"
-          aria-label="Mobile menu"
-        >
-          <div className="container-responsive flex h-screen flex-col justify-center gap-3 px-4 py-6">
-            {navigation.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`w-full rounded-xl px-6 py-4 text-center text-fluid-xl font-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] ${
-                    isActive
-                      ? "bg-[var(--brand-accent)] text-white"
-                      : "text-[var(--foreground)] hover:bg-[#eef3eb]"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+        <>
+          {/* Semi-transparent backdrop */}
+          <div
+            className="fixed inset-0 z-[50] bg-black/50 backdrop-blur-sm"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer panel — slides in from the right */}
+          <div
+            className="fixed top-0 right-0 z-[51] h-screen w-full max-w-sm overflow-y-auto bg-white p-6 shadow-2xl"
+            aria-label="Mobile menu"
+          >
+            {/* Close button */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+                className="flex size-10 items-center justify-center rounded-full border border-black/10 text-[var(--foreground)] hover:bg-[#eef3eb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Navigation links */}
+            <nav className="mt-6 flex flex-col gap-2" aria-label="Mobile navigation">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block rounded-xl px-4 py-3 text-left text-fluid-base font-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] ${
+                      isActive
+                        ? "bg-[var(--brand-accent)] text-white"
+                        : "text-[var(--foreground)] hover:bg-[#eef3eb]"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Request a Quote — separate accent block */}
             <Link
               href="/request-quote"
               onClick={() => setMenuOpen(false)}
-              className="w-full rounded-xl bg-[var(--brand-primary)] px-6 py-4 text-center text-fluid-xl font-black text-white hover:bg-[#0f2d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+              className="mt-4 block rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-center text-fluid-base font-black text-white hover:bg-[#0f2d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             >
               Request a Quote
             </Link>
           </div>
-        </div>
+        </>
       )}
     </header>
   );
