@@ -21,7 +21,7 @@ export default async function DestinationsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Destinations</h1>
         <Link
           href="/admin/destinations/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 px-4 py-3 text-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           New Destination
         </Link>
@@ -31,16 +31,16 @@ export default async function DestinationsPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Region
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
               </th>
-              <th className="relative px-6 py-3">
+              <th className="relative px-3 sm:px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -48,11 +48,11 @@ export default async function DestinationsPage() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {destinations?.map((d: Destination) => (
               <tr key={d.id}>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                <td className="px-3 sm:px-6 py-4 text-sm font-medium text-gray-900">
                   {d.name}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{d.region}</td>
-                <td className="px-6 py-4 text-sm">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">{d.region}</td>
+                <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                       d.status === "published"
@@ -63,7 +63,7 @@ export default async function DestinationsPage() {
                     {d.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right text-sm font-medium">
+                <td className="px-3 sm:px-6 py-4 text-right text-sm font-medium">
                   <Link
                     href={`/admin/destinations/${d.id}`}
                     className="text-blue-600 hover:underline"

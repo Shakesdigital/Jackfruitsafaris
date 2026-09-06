@@ -41,6 +41,9 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
                 className="logo-responsive rounded-full object-contain"
                 width="96"
                 height="96"
+                loading="lazy"
+                decoding="async"
+                sizes="(max-width: 600px) 48px, 72px"
               />
             ) : (
               <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-3xl font-black text-[var(--foreground)]">
@@ -129,7 +132,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
 
       <div
         className="container-responsive mt-10 border-t pt-6 text-center text-fluid-xs"
-        style={{ borderColor: "#ffffff", opacity: 0.3 }}
+        style={{ borderColor: "var(--footer-muted-text)", opacity: 0.3 }}
       >
         {settings?.footer_copy || (
           <>

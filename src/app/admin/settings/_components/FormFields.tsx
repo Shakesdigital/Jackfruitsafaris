@@ -174,7 +174,14 @@ export function ImageUploadField({ name, fileName, label, currentUrl, className 
         />
         {previewUrl && (
           <div className="flex items-center gap-4">
-            <img src={previewUrl} alt="Preview" className="size-20 rounded-lg object-cover border border-gray-200" />
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="size-20 rounded-lg object-cover border border-gray-200"
+              loading="lazy"
+              decoding="async"
+              sizes="80px"
+            />
             <button
               type="button"
               onClick={handleRemove}

@@ -40,6 +40,7 @@ export async function StickyQuoteCard({
           </a>
           <Link
             href="/request-quote"
+            title="Open full quote request form"
             className="btn-h-responsive inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-4 py-2 text-fluid-sm font-black text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Full quote form

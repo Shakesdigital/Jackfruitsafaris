@@ -26,7 +26,6 @@ import {
   getPublishedSafaris,
   getPublishedExperiences,
   getPublishedReviews,
-  getPublishedQuickLinks,
   getPublishedTrustItems,
   getPublishedFeatures,
   getSiteSettings,
@@ -61,22 +60,12 @@ function truncateBrief(text: string | undefined, maxLen: number = 120): string {
   return text.slice(0, maxLen).trimEnd() + "…";
 }
 
-// Normalize quick links from CMS into QuickLink[] shape
-function normalizeQuickLinks(items: unknown): Array<{ label: string; href: string }> {
-  if (!Array.isArray(items)) return [];
-  return items
-    .filter((item): item is { label?: string; href?: string } => typeof item === "object" && item !== null)
-    .filter((item) => typeof item.label === "string" && typeof item.href === "string")
-    .map((item) => ({ label: item.label!, href: item.href! }));
-}
-
 export default async function Home() {
   // Fetch CMS data
-  const [cmsSafaris, cmsExperiences, cmsTestimonials, quickLinks, trustItems, features, settings, pageSections] = await Promise.all([
+  const [cmsSafaris, cmsExperiences, cmsTestimonials, trustItems, features, settings, pageSections] = await Promise.all([
     getPublishedSafaris(),
     getPublishedExperiences(),
     getPublishedReviews(),
-    getPublishedQuickLinks(),
     getPublishedTrustItems(),
     getPublishedFeatures(),
     getSiteSettings(),
@@ -129,7 +118,6 @@ export default async function Home() {
     <>
       {/* Hero Section */}
       <HeroSection
-        badgeText={getStringValue(settings, "badge_text", pageHeroFallbacks["/"]?.badgeText || "Local safari experts from Jinja")}
         title={getStringValue(settings, "hero_title", pageHeroFallbacks["/"]?.title || "Explore Uganda")}
         subtitle={getStringValue(settings, "hero_subtitle_heading", pageHeroFallbacks["/"]?.subtitle || "With Local Safari Experts")}
         intro={getStringValue(settings, "hero_subtitle", pageHeroFallbacks["/"]?.intro || "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.")}
@@ -142,7 +130,6 @@ export default async function Home() {
           label: getStringValue(settings, "cta_secondary", "View Safari Packages"),
           href: getStringValue(settings, "cta_secondary_href", "/safaris"),
         }}
-        quickLinks={normalizeQuickLinks(quickLinks.length ? quickLinks : undefined) || undefined}
         ariaLabel="Jackfruit Safaris - Hero"
       />
 
@@ -185,6 +172,9 @@ export default async function Home() {
                     src={whyUgandaBgImage}
                     alt="Uganda landscape — why travel with Jackfruit Safaris"
                     className="w-full h-auto object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    sizes="100vw"
                   />
                 </div>
               )}
@@ -266,7 +256,7 @@ export default async function Home() {
         title={getStringValue(reviewsSection, "title", "Confidence before the first road mile")}
         intro={<CmsRichText html={getSectionText(reviewsSection, "intro", "The new inquiry flow puts trust, price guidance, route logic, and WhatsApp access close to every major booking decision.")} />}
       >
-        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
+        <Carousel>
           {testimonials.map((review: any, index: number) => (
             <article key={review.guest_name || index} className="flex flex-col rounded-[var(--brand-radius)] border border-black/10 bg-[var(--background)] p-6">
               <div className="flex items-start gap-3">
@@ -275,6 +265,9 @@ export default async function Home() {
                     src={review.image_url}
                     alt={review.guest_name}
                     className="h-10 w-10 rounded-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    sizes="40px"
                   />
                 ) : (
                   <UserCircle size={40} className="text-[var(--brand-muted-text)]" />
@@ -298,7 +291,7 @@ export default async function Home() {
               </Link>
             </article>
           ))}
-        </div>
+        </Carousel>
       </Section>
 
       {/* CTA Section */}

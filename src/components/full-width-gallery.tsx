@@ -45,6 +45,7 @@ export function FullWidthGallery({ images, title = "Safari photo gallery" }: Ful
                     className="h-36 w-full object-cover sm:h-40"
                     loading="lazy"
                     decoding="async"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   />
                 ) : (
                   <div className="flex h-36 w-full items-center justify-center bg-gray-100 sm:h-40">

@@ -28,7 +28,7 @@ export default async function TravelInsightsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Travel Insights</h1>
         <Link
           href="/admin/travel-insights/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 px-4 py-3 text-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           New Article
         </Link>
@@ -44,22 +44,22 @@ export default async function TravelInsightsPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Title
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Slug
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Category
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Order
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
               </th>
-              <th className="relative px-6 py-3">
+              <th className="relative px-3 sm:px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -67,19 +67,19 @@ export default async function TravelInsightsPage() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {articles?.map((article: any) => (
               <tr key={article.id}>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                <td className="px-3 sm:px-6 py-4 text-sm font-medium text-gray-900">
                   {article.title}
                 </td>
-                <td className="px-6 py-4 font-mono text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 font-mono text-sm text-gray-600">
                   {article.slug}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">
                   {article.category || "-"}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">
                   {article.order_column}
                 </td>
-                <td className="px-6 py-4 text-sm">
+                <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                       article.status === "published"
@@ -90,7 +90,7 @@ export default async function TravelInsightsPage() {
                     {article.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right text-sm font-medium">
+                <td className="px-3 sm:px-6 py-4 text-right text-sm font-medium">
                   <Link
                     href={`/admin/travel-insights/${article.id}`}
                     className="text-blue-600 hover:underline"

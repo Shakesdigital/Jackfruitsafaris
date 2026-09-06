@@ -360,7 +360,7 @@ function LightboxViewer({
         type="button"
         onClick={onClose}
         aria-label="Close preview"
-        className="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+        className="absolute top-3 right-3 flex size-12 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       >
         <X size={20} />
       </button>
@@ -371,7 +371,7 @@ function LightboxViewer({
             type="button"
             onClick={onPrev}
             aria-label="Previous media"
-            className="absolute left-2 top-1/2 -translate-y-1/2 flex size-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="absolute left-2 top-1/2 -translate-y-1/2 flex size-12 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronLeft size={22} />
           </button>
@@ -379,7 +379,7 @@ function LightboxViewer({
             type="button"
             onClick={onNext}
             aria-label="Next media"
-            className="absolute right-2 top-1/2 -translate-y-1/2 flex size-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex size-12 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronRight size={22} />
           </button>
@@ -411,6 +411,8 @@ function LightboxViewer({
             alt={item.alt_text || ""}
             className="max-h-[85vh] max-w-[90vw] rounded-[var(--brand-radius)] object-contain"
             loading="lazy"
+            decoding="async"
+            sizes="(max-width: 640px) 90vw, 90vw"
             draggable={false}
           />
         )}

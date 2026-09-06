@@ -91,7 +91,7 @@ export function RelatedGallery({ images, safariTitle }: RelatedGalleryProps) {
           aria-label={activeImage.alt_text}
         />
         {/* Photo info overlay on hover */}
-        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-100 transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100">
           <div className="p-4">
             {activeImage.caption && (
               <p className="text-fluid-sm font-medium text-white/90">
@@ -114,7 +114,7 @@ export function RelatedGallery({ images, safariTitle }: RelatedGalleryProps) {
                 setActiveIndex((prev) => (prev - 1 + images.length) % images.length)
               }
               aria-label="Previous image"
-              className="absolute top-1/2 left-1 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:left-2 sm:size-10"
+              className="absolute top-1/2 left-1 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:left-2 sm:size-11"
             >
               <ChevronLeft size={18} aria-hidden="true" />
             </button>
@@ -122,7 +122,7 @@ export function RelatedGallery({ images, safariTitle }: RelatedGalleryProps) {
               type="button"
               onClick={() => setActiveIndex((prev) => (prev + 1) % images.length)}
               aria-label="Next image"
-              className="absolute top-1/2 right-1 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:right-2 sm:size-10"
+              className="absolute top-1/2 right-1 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:right-2 sm:size-11"
             >
               <ChevronRight size={18} aria-hidden="true" />
             </button>

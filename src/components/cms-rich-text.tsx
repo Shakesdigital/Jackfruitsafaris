@@ -23,7 +23,7 @@ const voidElements = new Set(["br", "hr", "img"]);
 // Safe attributes allowed per tag — everything else is stripped so that
 // content coming from the admin WYSIWYG editor cannot inject scripts.
 const safeAttributes: Record<string, Set<string>> = {
-  img: new Set(["src", "alt", "width", "height"]),
+  img: new Set(["src", "alt", "width", "height", "loading", "decoding", "sizes"]),
   a: new Set(["href", "target", "rel"]),
 };
 
@@ -57,6 +57,10 @@ function filterAttributes(tagName: string, rawAttrs: string): string {
  * for blog-style content, images (with `src`/`alt`) and links (with `href`).
  * Disallowed tags are unwrapped — their text content is preserved — while any
  * attribute not on the per-tag whitelist is removed.
+ *
+ * Additionally, all `<img>` tags emitted by content authors are enhanced with
+ * `loading="lazy"` and `decoding="async"` (unless they already specify an
+ * explicit loading mode) to improve page load performance.
  */
 function sanitizeCmsHtml(value: string) {
   if (!value) return "";
@@ -73,6 +77,10 @@ function sanitizeCmsHtml(value: string) {
       // Void elements never get a closing tag
       if (voidElements.has(tag)) {
         const safeAttrs = filterAttributes(tag, attrs || "");
+        // Inject lazy-loading attributes into <img> tags that don't already specify them
+        if (tag === "img" && !/loading=/.test(safeAttrs)) {
+          return `<img${safeAttrs} loading="lazy" decoding="async" />`;
+        }
         return `<${tag}${safeAttrs} />`;
       }
 

@@ -53,7 +53,7 @@ export default async function PageContentSectionsPage({ searchParams }: Props) {
         </div>
         <Link
           href={`/admin/pages/content/new${selectedPage ? `?page=${encodeURIComponent(selectedPage)}` : ""}`}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 px-4 py-3 text-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           New Section
         </Link>
@@ -87,22 +87,22 @@ export default async function PageContentSectionsPage({ searchParams }: Props) {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                 Page
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                 Section
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                 Type
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                 Order
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                 Status
               </th>
-              <th className="relative px-6 py-3">
+              <th className="relative px-3 sm:px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -110,10 +110,10 @@ export default async function PageContentSectionsPage({ searchParams }: Props) {
           <tbody className="divide-y divide-gray-200">
             {sections.map((section) => (
               <tr key={section.id}>
-                <td className="px-6 py-4 font-mono text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 font-mono text-sm text-gray-600">
                   {section.page_slug}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 sm:px-6 py-4">
                   <p className="text-sm font-semibold text-gray-900">
                     {section.title || section.section_key}
                   </p>
@@ -124,13 +124,13 @@ export default async function PageContentSectionsPage({ searchParams }: Props) {
                     <p className="mt-1 text-xs text-gray-500">{section.subtitle}</p>
                   )}
                 </td>
-                <td className="px-6 py-4 font-mono text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 font-mono text-sm text-gray-600">
                   {section.section_type}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">
                   {section.order_index}
                 </td>
-                <td className="px-6 py-4 text-sm">
+                <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                       section.status === "published"
@@ -141,7 +141,7 @@ export default async function PageContentSectionsPage({ searchParams }: Props) {
                     {section.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right text-sm font-medium">
+                <td className="px-3 sm:px-6 py-4 text-right text-sm font-medium">
                   <Link
                     href={`/admin/pages/content/${section.id}`}
                     className="text-blue-600 hover:underline"

@@ -44,7 +44,6 @@ export default async function ReviewsPage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Hear From Travelers"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Who Explored Uganda With Jackfruit Safaris"}
         intro={hero?.intro || fallback?.intro || "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason."}
@@ -57,7 +56,6 @@ export default async function ReviewsPage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Guest reviews"
       />
       <Section
@@ -73,6 +71,9 @@ export default async function ReviewsPage() {
                     src={review.image_url}
                     alt={review.guest_name}
                     className="h-10 w-10 rounded-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    sizes="40px"
                   />
                 ) : (
                   <UserCircle size={40} className="text-[var(--brand-muted-text)]" />

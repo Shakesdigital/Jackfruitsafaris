@@ -233,13 +233,13 @@ export default function EditSafariForm({ safari, isNew }: EditSafariFormProps) {
         <div className="flex flex-col gap-3 pt-4 sm:flex-row">
           <Link
             href="/admin/safaris"
-            className="rounded-md border border-gray-300 px-4 py-2.5 text-center text-sm font-medium hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="rounded-md border border-gray-300 px-4 py-3 text-center text-sm font-medium hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Cancel
           </Link>
           <button
             type="submit"
-            className="btn-h-responsive rounded-md bg-blue-600 px-4 py-2.5 text-fluid-sm font-black text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="btn-h-responsive rounded-md bg-blue-600 px-4 py-3 text-fluid-sm font-black text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Save Safari Package
           </button>
@@ -421,9 +421,7 @@ function HighlightsSection({ safari }: { safari: SafariRecord | null }) {
       <button
         type="button"
         onClick={() => setClientRows([...clientRows, { text: "", image_url: null, image_alignment: null }])}
-        className="mt-3 rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
-      >
-        Add Highlight
+        className="mt-3 rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       </button>
     </div>
   );
@@ -529,8 +527,7 @@ function PageSectionsSection({ safari }: { safari: SafariRecord | null }) {
             { key: "", title: "", body: "", image_url: null, image_alignment: null },
           ])
         }
-        className="mt-3 rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
-      >
+        className="mt-3 rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         Add Section
       </button>
     </div>

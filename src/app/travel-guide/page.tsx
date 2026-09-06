@@ -60,7 +60,6 @@ export default async function TravelGuidePage({
     <>
       {/* Hero — left unchanged */}
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Practical Travel Articles"}
         subtitle={hero?.subtitle || fallback?.subtitle || "That Answer Your Booking Questions"}
         intro={hero?.intro || fallback?.intro || "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility."}
@@ -74,7 +73,6 @@ export default async function TravelGuidePage({
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Uganda safari travel guide"
       />
 
@@ -104,6 +102,7 @@ export default async function TravelGuidePage({
                 <Link
                   key={article.id}
                   href={`/travel-guide/${article.slug}`}
+                  title="Read travel guide article"
                   className="group block rounded-[var(--brand-radius)] border border-black/10 bg-white p-6 transition-shadow hover:shadow-lg"
                 >
                   {article.featured_image_url && (
@@ -111,6 +110,9 @@ export default async function TravelGuidePage({
                       src={article.featured_image_url}
                       alt={article.title}
                       className="mb-4 h-40 w-full rounded-[var(--brand-radius)] object-cover ring-1 ring-black/5"
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   )}
                   <h3 className="text-fluid-xl font-black text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
@@ -138,6 +140,7 @@ export default async function TravelGuidePage({
                 {currentPage > 1 && (
                   <Link
                     href={`/travel-guide?page=${currentPage - 1}`}
+                    title="Previous page of travel articles"
                     className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
                     ← Previous
@@ -149,6 +152,7 @@ export default async function TravelGuidePage({
                 {currentPage < totalPages && (
                   <Link
                     href={`/travel-guide?page=${currentPage + 1}`}
+                    title="Next page of travel articles"
                     className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
                     Next →

@@ -50,7 +50,6 @@ export default async function ExperiencesPage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Choose Your Experience"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Make It Yours"}
         intro={hero?.intro || fallback?.intro || "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary."}
@@ -63,7 +62,6 @@ export default async function ExperiencesPage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Uganda safari experiences"
       />
 
@@ -108,6 +106,7 @@ export default async function ExperiencesPage() {
               <Link
                 key={experience.slug}
                 href={`/experiences/${experience.slug}`}
+                title="Explore experience details"
                 className="group overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 <div

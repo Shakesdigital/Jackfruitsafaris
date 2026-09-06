@@ -1,17 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
-
-export type QuickLink = {
-  label: string;
-  href: string;
-};
 
 export type HeroSectionProps = {
   /** Eyebrow text above the title (shown with optional icon) */
   eyebrow?: string;
-  /** Badge pill text displayed above the headline */
-  badgeText?: string;
   /** Main page title (h1) */
   title: string;
   /** Optional subtitle rendered as an h2 between the title and intro */
@@ -26,30 +19,18 @@ export type HeroSectionProps = {
   ctaPrimary?: { label: string; href: string };
   /** Secondary CTA */
   ctaSecondary?: { label: string; href: string };
-  /** Quick links shown below the CTAs */
-  quickLinks?: QuickLink[];
   /** Optional aria-label for the section */
   ariaLabel?: string;
 };
 
-const defaultQuickLinks: QuickLink[] = [
-  { label: "Gorilla Trekking", href: "/experiences/gorilla-trekking" },
-  { label: "Murchison Falls", href: "/safaris/3-days-murchison-falls" },
-  { label: "10 Days Uganda", href: "/safaris/10-days-uganda-safari" },
-  { label: "Jinja Activities", href: "/experiences/jinja-adventures" },
-  { label: "Airport Transfer", href: "/transport/airport-transfers" },
-];
-
 /**
  * Shared hero section component.
  *
- * Mirrors the home page hero structure exactly — badge pill, dual CTA buttons,
- * quick links, content max-width, and gradient overlay — so every landing page
- * renders the same wording layout structure.
+ * Renders a headline, optional subtitle, intro text, dual CTA buttons, and a
+ * full-width background image with a gradient overlay for readability.
  */
 export function HeroSection({
   eyebrow,
-  badgeText,
   title,
   subtitle,
   intro,
@@ -57,7 +38,6 @@ export function HeroSection({
   icon,
   ctaPrimary,
   ctaSecondary,
-  quickLinks = defaultQuickLinks,
   ariaLabel,
 }: HeroSectionProps) {
   const hasImage = Boolean(backgroundImage);
@@ -80,14 +60,8 @@ export function HeroSection({
       )}
       <div className="relative container-responsive flex min-h-[inherit] items-center py-8 sm:py-10 md:py-14 lg:py-16">
         <div className="max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
-          {badgeText && (
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1.5 text-fluid-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20 sm:px-4 sm:py-2">
-              <BadgeCheck size={15} aria-hidden="true" />
-              {badgeText}
-            </p>
-          )}
-          {eyebrow && !badgeText && (
-            <p className="mt-2 inline-flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+          {eyebrow && (
+            <p className="inline-flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               {icon}
               {eyebrow}
             </p>
@@ -120,21 +94,6 @@ export function HeroSection({
                 {ctaSecondary.label}
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
-            </div>
-          )}
-
-          {/* Quick links pills */}
-          {quickLinks && quickLinks.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-1.5 sm:mt-7 sm:gap-2">
-              {quickLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-full bg-white/12 px-3 py-1.5 text-fluid-xs font-bold text-white ring-1 ring-white/18 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:px-4 sm:py-2 sm:text-fluid-sm"
-                >
-                  {item.label}
-                </Link>
-              ))}
             </div>
           )}
         </div>

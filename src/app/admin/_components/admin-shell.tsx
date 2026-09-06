@@ -62,7 +62,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden flex items-center justify-center size-9 rounded-lg border border-gray-300 text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="lg:hidden flex items-center justify-center size-10 rounded-lg border border-gray-300 text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             aria-label="Close navigation"
           >
             <X size={20} />

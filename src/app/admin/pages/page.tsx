@@ -41,19 +41,19 @@ export default async function PagesPage() {
         <div className="flex gap-3">
           <Link
             href="/admin/pages/heroes"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className="rounded-md border border-gray-300 px-4 py-3 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Page Heroes
           </Link>
           <Link
             href="/admin/pages/content"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className="rounded-md border border-gray-300 px-4 py-3 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Page Content
           </Link>
           <Link
             href="/admin/pages/new"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+            className="rounded-md bg-blue-600 px-4 py-3 text-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             New Page
           </Link>
@@ -127,19 +127,19 @@ export default async function PagesPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Title
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Slug
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Updated
               </th>
-              <th className="relative px-6 py-3">
+              <th className="relative px-3 sm:px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -147,13 +147,13 @@ export default async function PagesPage() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {pages?.map((page: Page) => (
               <tr key={page.id}>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                <td className="px-3 sm:px-6 py-4 text-sm font-medium text-gray-900">
                   {page.title}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">
                   /{page.slug}
                 </td>
-                <td className="px-6 py-4 text-sm">
+                <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                       page.status === "published"
@@ -164,10 +164,10 @@ export default async function PagesPage() {
                     {page.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">
                   {new Date(page.updated_at).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 text-right text-sm font-medium">
+                <td className="px-3 sm:px-6 py-4 text-right text-sm font-medium">
                   <Link
                     href={`/admin/pages/${page.id}`}
                     className="text-blue-600 hover:underline"

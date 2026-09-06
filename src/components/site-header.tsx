@@ -77,6 +77,9 @@ function HeaderInner({
               className="logo-responsive rounded-full object-contain"
               width="72"
               height="72"
+              loading="eager"
+              decoding="async"
+              sizes="(max-width: 600px) 48px, 72px"
             />
           ) : (
             <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-xl font-black text-[var(--foreground)]">

@@ -85,7 +85,6 @@ export default async function SafarisPage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Choose Proven Route"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Make It Yours"}
         intro={hero?.intro || fallback?.intro || "Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda's landscapes and wildlife as budget, mid-range, or luxury private trips."}
@@ -98,7 +97,6 @@ export default async function SafarisPage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Safari packages"
       />
 

@@ -74,7 +74,7 @@ export function ListEditor({
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, rowIndex) => rowIndex !== index))}
-              className="w-full sm:w-auto rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50 sm:self-start"
+              className="w-full sm:w-auto rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 sm:self-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               aria-label={`Remove ${label} item ${index + 1}`}
             >
               Remove
@@ -85,7 +85,7 @@ export function ListEditor({
       <button
         type="button"
         onClick={() => setRows([...rows, ""])}
-        className="mt-3 rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+        className="mt-3 rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       >
         Add Item
       </button>
@@ -146,7 +146,7 @@ export function KeyValueEditor({
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, rowIndex) => rowIndex !== index))}
-              className="self-start rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+              className="self-start rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               aria-label={`Remove ${label} row ${index + 1}`}
             >
               Remove
@@ -157,7 +157,7 @@ export function KeyValueEditor({
       <button
         type="button"
         onClick={() => setRows([...rows, { key: "", value: "" }])}
-        className="mt-3 rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+        className="mt-3 rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       >
         Add Row
       </button>
@@ -223,6 +223,9 @@ export function ImageUploadField({
           src={previewUrl}
           alt=""
           className="h-32 w-full rounded-md object-cover"
+          loading="lazy"
+          decoding="async"
+          sizes="128px"
         />
       ) : (
         <div className="flex h-32 items-center justify-center rounded-md bg-gray-100 text-sm text-gray-500">

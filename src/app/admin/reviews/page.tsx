@@ -27,7 +27,7 @@ export default async function ReviewsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Reviews</h1>
         <Link
           href="/admin/reviews/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 px-4 py-3 text-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           New Review
         </Link>
@@ -37,22 +37,22 @@ export default async function ReviewsPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Guest
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Trip Type
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Rating
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Permission
               </th>
-              <th className="relative px-6 py-3">
+              <th className="relative px-3 sm:px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -60,12 +60,12 @@ export default async function ReviewsPage() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {reviews?.map((r: Review) => (
               <tr key={r.id}>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                <td className="px-3 sm:px-6 py-4 text-sm font-medium text-gray-900">
                   {r.guest_name}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{r.trip_type}</td>
-                <td className="px-6 py-4 text-sm">{r.rating}/5</td>
-                <td className="px-6 py-4 text-sm">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">{r.trip_type}</td>
+                <td className="px-3 sm:px-6 py-4 text-sm">{r.rating}/5</td>
+                <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                       r.status === "published"
@@ -76,7 +76,7 @@ export default async function ReviewsPage() {
                     {r.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm">
+                <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                       r.permission_status === "approved"
@@ -87,7 +87,7 @@ export default async function ReviewsPage() {
                     {r.permission_status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right text-sm font-medium">
+                <td className="px-3 sm:px-6 py-4 text-right text-sm font-medium">
                   <Link
                     href={`/admin/reviews/${r.id}`}
                     className="text-blue-600 hover:underline"
@@ -99,7 +99,7 @@ export default async function ReviewsPage() {
             ))}
             {!reviews?.length && (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={6} className="px-3 sm:px-6 py-4 text-center text-sm text-gray-500">
                   No reviews yet.{" "}
                   <Link href="/admin/reviews/new" className="text-blue-600">
                     Add one

@@ -55,7 +55,6 @@ export default async function RequestQuotePage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Tell Us What You Want"}
         subtitle={hero?.subtitle || fallback?.subtitle || "From Uganda"}
         intro={hero?.intro || fallback?.intro || "Dates, group size, budget, activity interests, and comfort level are enough to start a practical route recommendation."}
@@ -68,7 +67,6 @@ export default async function RequestQuotePage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Request a safari quote"
       />
       <Section>

@@ -49,7 +49,6 @@ export default async function AirportTransfersPage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Airport Pickups and Transport"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Reliable, Professional Service"}
         intro={hero?.intro || fallback?.intro || "Reliable airport pickups, hotel transfers, Jinja transfers, and safari transport with professional drivers."}
@@ -63,7 +62,6 @@ export default async function AirportTransfersPage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Airport transfers and transport services"
       />
 

@@ -84,11 +84,56 @@ function settingValue(value: string | null | undefined, fallback: string) {
   return value || fallback;
 }
 
+// Convert a hex color string (e.g. "#10251b") to an {r,g,b} object.
+// Returns null when the input is not a parseable hex color.
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const cleaned = hex.replace("#", "").trim();
+  let r: number, g: number, b: number;
+  if (cleaned.length === 3) {
+    r = parseInt(cleaned[0] + cleaned[0], 16);
+    g = parseInt(cleaned[1] + cleaned[1], 16);
+    b = parseInt(cleaned[2] + cleaned[2], 16);
+  } else if (cleaned.length === 6) {
+    r = parseInt(cleaned.slice(0, 2), 16);
+    g = parseInt(cleaned.slice(2, 4), 16);
+    b = parseInt(cleaned.slice(4, 6), 16);
+  } else {
+    return null;
+  }
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
+  return { r, g, b };
+}
+
+// Calculate the relative luminance of a hex color (0–1 scale).
+// Uses the WCAG 2.0 relative luminance formula so we can pick
+// a readable text color for any footer background.
+function getLuminance(hex: string): number | null {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return null;
+  const a = [rgb.r, rgb.g, rgb.b].map((v) => {
+    v /= 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+}
+
+// Derive a readable text color from a background color.
+// Returns "#ffffff" for dark backgrounds, "#1a1a1a" (the site's dark
+// text color) for light backgrounds. Falls back to white when the
+// background cannot be evaluated.
+function footerTextColorForBackground(bg: string): string {
+  const luminance = getLuminance(bg);
+  if (luminance === null) return "#ffffff";
+  return luminance > 0.5 ? "#1a1a1a" : "#ffffff";
+}
+
 function buildAestheticStyle(settings: PublicSiteSettings | null): AestheticStyle {
   const radiusStyle = settingValue(settings?.border_radius_style, "rounded");
   const buttonStyle = settingValue(settings?.button_style, "pill");
   const sectionSpacing = settingValue(settings?.section_spacing, "comfortable");
   const cardShadow = settingValue(settings?.card_shadow_style, "soft");
+  const footerBg = settingValue(settings?.footer_background_color, "#10251b");
+  const footerTextColor = footerTextColorForBackground(footerBg);
 
   return {
     "--background": settingValue(settings?.brand_background_color, "#fbfaf5"),
@@ -98,9 +143,9 @@ function buildAestheticStyle(settings: PublicSiteSettings | null): AestheticStyl
     "--brand-accent": settingValue(settings?.brand_accent_color, "#f5bf2f"),
     "--brand-surface": settingValue(settings?.brand_surface_color, "#ffffff"),
     "--brand-muted-text": settingValue(settings?.brand_muted_text_color, "#536154"),
-    "--footer-background": settingValue(settings?.footer_background_color, "#10251b"),
-    "--footer-text": "#ffffff",
-    "--footer-muted-text": "#ffffff",
+    "--footer-background": footerBg,
+    "--footer-text": footerTextColor,
+    "--footer-muted-text": footerTextColor,
     "--font-heading": settingValue(settings?.heading_font_family, "var(--font-geist-sans)"),
     "--font-body": settingValue(settings?.body_font_family, "var(--font-geist-sans)"),
     "--base-font-size": settingValue(settings?.base_font_size, "16px"),

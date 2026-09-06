@@ -36,6 +36,7 @@ export function SafariCard({ safari }: { safari: Safari }) {
         <p className="mt-3 text-fluid-lg font-black text-[var(--brand-primary)]">{safari.price}</p>
         <Link
           href={`/safaris/${safari.slug}`}
+          title="View safari itinerary"
           className="mt-4 btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand-accent)] px-4 py-2 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:mt-5"
         >
           View itinerary

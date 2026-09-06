@@ -160,7 +160,6 @@ export default async function AboutPage() {
     <>
       {/* Hero */}
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Local Roots, Practical Planning"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Warm Guest Care"}
         intro={hero?.intro || fallback?.intro || ""}
@@ -174,18 +173,15 @@ export default async function AboutPage() {
           label: hero?.cta_secondary || fallback?.ctaSecondary?.label || "View Safari Packages",
           href: hero?.cta_secondary_href || fallback?.ctaSecondary?.href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="About Jackfruit Safaris"
       />
 
       {/* Founder's story / brief intro — rendered from page_heroes.content.intro_body */}
       <Section>
-        <div className="prose prose-lg max-w-3xl">
-          <CmsRichText
-            className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
-            html={heroContent.intro_body || fallback?.content?.intro_body || ""}
-          />
-        </div>
+        <CmsRichText
+          className="prose prose-lg max-w-3xl text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
+          html={heroContent.intro_body || fallback?.content?.intro_body || ""}
+        />
       </Section>
 
       {/* Intro cards: name, where operates, giving journey */}
@@ -281,6 +277,9 @@ export default async function AboutPage() {
                   src={member.photo_url}
                   alt={member.name}
                   className="mx-auto mb-4 h-24 w-24 rounded-full object-cover ring-2 ring-black/10"
+                  loading="lazy"
+                  decoding="async"
+                  sizes="96px"
                 />
               ) : (
                 <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-[var(--brand-secondary)]/10 text-[var(--brand-secondary)]">

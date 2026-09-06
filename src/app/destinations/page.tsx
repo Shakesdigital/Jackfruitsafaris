@@ -64,7 +64,6 @@ export default async function DestinationsPage() {
   return (
     <>
       <HeroSection
-        badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Uganda Safari Places"}
         subtitle={hero?.subtitle || fallback?.subtitle || "Routed With Care"}
         intro={hero?.intro || fallback?.intro || "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote."}
@@ -77,7 +76,6 @@ export default async function DestinationsPage() {
           label: hero?.cta_secondary || "View Safari Packages",
           href: hero?.cta_secondary_href || "/safaris",
         }}
-        quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Uganda safari destinations"
       />
 
@@ -95,6 +93,7 @@ export default async function DestinationsPage() {
             <Link
               key={destination.slug}
               href={`/destinations/${destination.slug}`}
+              title="View destination details"
               className="group overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             >
               <div

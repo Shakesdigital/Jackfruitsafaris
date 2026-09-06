@@ -74,7 +74,7 @@ export default async function TravelGuideArticlePage({ params }: Props) {
     <>
       {/* Hero strip — uses featured image or solid background */}
       <section
-        className="relative bg-cover bg-center text-white"
+        className="relative hero-h-responsive bg-cover bg-center text-white"
         style={
           article.featured_image_url
             ? {
@@ -120,12 +120,13 @@ export default async function TravelGuideArticlePage({ params }: Props) {
             />
           </div>
 
-          <div className="mt-12 flex items-center justify-between rounded-[var(--brand-radius)] border border-black/10 bg-[#eef3eb] p-6">
+          <div className="mt-12 flex flex-col gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-[#eef3eb] p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
             <p className="text-fluid-sm font-black text-[var(--foreground)]">
               Ready to plan your Uganda safari?
             </p>
             <Link
               href="/request-quote"
+              title="Request a custom quote for your Uganda safari"
               className="rounded-full bg-[var(--brand-primary)] px-6 py-3 text-fluid-sm font-black text-white transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             >
               Request a Custom Quote
@@ -135,6 +136,7 @@ export default async function TravelGuideArticlePage({ params }: Props) {
           <div className="mt-10">
             <Link
               href="/travel-guide"
+              title="Back to travel guide articles"
               className="text-fluid-sm font-medium text-[var(--brand-secondary)] hover:underline"
             >
               ← Back to Travel Insights

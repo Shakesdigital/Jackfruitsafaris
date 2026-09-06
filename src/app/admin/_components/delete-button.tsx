@@ -25,7 +25,7 @@ export function DeleteButton({
       formMethod="post"
       name="delete"
       value={value}
-      className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+      className="rounded-md bg-red-600 px-4 py-3 text-sm text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       onClick={(event) => {
         if (!window.confirm(confirmMessage)) {
           event.preventDefault();

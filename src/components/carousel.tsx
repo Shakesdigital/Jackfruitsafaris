@@ -106,7 +106,7 @@ if (itemCount <= 0) return null;
             onClick={() => scrollByCards(-1)}
             disabled={!canScrollLeft()}
             aria-label="Previous"
-            className="absolute left-1 top-1/2 -translate-y-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="absolute left-1 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronLeft size={20} />
           </button>
@@ -114,7 +114,7 @@ if (itemCount <= 0) return null;
             onClick={() => scrollByCards(1)}
             disabled={!canScrollRight()}
             aria-label="Next"
-            className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="absolute right-1 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronRight size={20} />
           </button>
@@ -131,12 +131,16 @@ if (itemCount <= 0) return null;
               container.scrollLeft = getCardStep() * idx;
             }}
             aria-label={`Go to slide ${idx + 1}`}
-            className={`h-2.5 w-2.5 rounded-full transition-colors ${
-              idx === activeIndex
-                ? "bg-[var(--brand-accent)]"
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
-          />
+            className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+          >
+            <span
+              className={`block h-2.5 w-2.5 rounded-full transition-colors ${
+                idx === activeIndex
+                  ? "bg-[var(--brand-accent)]"
+                  : "bg-gray-300 hover:bg-gray-400"
+              }}`}
+            />
+          </button>
         ))}
       </div>
     </div>

@@ -25,7 +25,7 @@ export default async function ExperiencesPage() {
         <h1 className="text-2xl font-bold text-gray-900">Experiences</h1>
         <Link
           href="/admin/experiences/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 px-4 py-3 text-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           New Experience
         </Link>
@@ -35,16 +35,16 @@ export default async function ExperiencesPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Category
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
               </th>
-              <th className="relative px-6 py-3">
+              <th className="relative px-3 sm:px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -52,11 +52,11 @@ export default async function ExperiencesPage() {
           <tbody className="divide-y divide-gray-200 bg-white">
             {experiences?.map((e: Experience) => (
               <tr key={e.id}>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                <td className="px-3 sm:px-6 py-4 text-sm font-medium text-gray-900">
                   {e.name}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{e.category}</td>
-                <td className="px-6 py-4 text-sm">
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">{e.category}</td>
+                <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                       e.status === "published"
@@ -67,7 +67,7 @@ export default async function ExperiencesPage() {
                     {e.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right text-sm font-medium">
+                <td className="px-3 sm:px-6 py-4 text-right text-sm font-medium">
                   <Link
                     href={`/admin/experiences/${e.id}`}
                     className="text-blue-600 hover:underline"
@@ -79,7 +79,7 @@ export default async function ExperiencesPage() {
             ))}
             {!experiences?.length && (
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={4} className="px-3 sm:px-6 py-4 text-center text-sm text-gray-500">
                   No experiences yet.{" "}
                   <Link href="/admin/experiences/new" className="text-blue-600">
                     Create one

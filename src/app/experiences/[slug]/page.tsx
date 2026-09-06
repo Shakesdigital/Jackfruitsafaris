@@ -122,6 +122,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
               </p>
               <Link
                 href="/request-quote"
+                title="Add this experience to your safari trip"
                 className="mt-5 btn-h-responsive inline-flex rounded-full bg-[var(--brand-primary)] px-5 py-3 text-fluid-sm font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 Add this to my trip

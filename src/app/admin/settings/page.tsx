@@ -451,7 +451,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
 
         <button
           type="submit"
-          className="btn-h-responsive w-full rounded-md bg-blue-600 px-4 py-2.5 text-fluid-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+          className="btn-h-responsive w-full rounded-md bg-blue-600 px-4 py-3 text-fluid-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           Save Settings
         </button>

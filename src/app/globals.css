@@ -301,6 +301,12 @@ button.rounded-full {
   outline-offset: 2px;
 }
 
+/* Ensure all img elements respect container width and maintain aspect ratio.
+   This caps inline width/height attributes and guarantees responsive scaling. */
+img {
+  max-width: 100%;
+}
+
 /* Responsive image heights */
 .img-h-sm { height: var(--card-image-h-sm); }
 .img-h-md { height: var(--card-image-h-md); }

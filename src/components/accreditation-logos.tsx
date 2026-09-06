@@ -59,6 +59,8 @@ function Logo({ className, ...props }: LogoProps) {
     <img
       className={`shrink-0 object-contain ${className ?? ""}`}
       loading="lazy"
+      decoding="async"
+      sizes="(max-width: 640px) 120px, 144px"
       {...props}
     />
   );

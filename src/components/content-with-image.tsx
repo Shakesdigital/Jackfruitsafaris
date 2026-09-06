@@ -56,6 +56,7 @@ export function ContentWithImage({
       className={sharedImgClasses}
       loading="lazy"
       decoding="async"
+      sizes="(max-width: 768px) 100vw, 50vw"
     />
   );
 

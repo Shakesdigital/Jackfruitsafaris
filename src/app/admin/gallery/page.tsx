@@ -110,7 +110,7 @@ export default async function GalleryAdminPage() {
         </div>
         <Link
           href="/admin/gallery/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 px-4 py-3 text-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           Add Image
         </Link>
@@ -218,6 +218,9 @@ function GalleryGroup({
                         src={img.media_url}
                         alt={img.alt_text}
                         className="h-16 w-16 rounded object-cover"
+                        loading="lazy"
+                        decoding="async"
+                        sizes="64px"
                       />
                     ) : (
                       <span className="flex h-16 w-16 items-center justify-center rounded bg-gray-100 text-gray-400">
