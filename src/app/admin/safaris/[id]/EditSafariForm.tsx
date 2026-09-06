@@ -230,16 +230,16 @@ export default function EditSafariForm({ safari, isNew }: EditSafariFormProps) {
 
         <SEOFields safari={safari} />
 
-        <div className="flex gap-3 pt-4">
+        <div className="flex flex-col gap-3 pt-4 sm:flex-row">
           <Link
             href="/admin/safaris"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className="rounded-md border border-gray-300 px-4 py-2.5 text-center text-sm font-medium hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Cancel
           </Link>
           <button
             type="submit"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+            className="btn-h-responsive rounded-md bg-blue-600 px-4 py-2.5 text-fluid-sm font-black text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Save Safari Package
           </button>

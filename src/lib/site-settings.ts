@@ -13,6 +13,7 @@ export type PublicSiteSettings = Record<string, unknown> & {
   nav_items?: Array<{ label: string; href: string }> | null;
   footer_copy?: string | null;
   footer_tagline?: string | null;
+  footer_about?: string | null;
   footer_note?: string | null;
   seo?: Record<string, unknown> | null;
   brand_primary_color?: string | null;

@@ -148,7 +148,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
                   Why go here
                 </h2>
-                <div className="mt-5 grid gap-4 md:grid-cols-3">
+                <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                   {whyGo.map((item: string) => (
                     <div
                       key={item}

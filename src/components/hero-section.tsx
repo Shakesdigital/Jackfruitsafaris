@@ -78,7 +78,7 @@ export function HeroSection({
       ) : (
         <div className="absolute inset-0 bg-[var(--foreground)]" aria-hidden="true" />
       )}
-      <div className="relative container-responsive flex min-h-[inherit] items-center py-6 sm:py-10 md:py-14 lg:py-16">
+      <div className="relative container-responsive flex min-h-[inherit] items-center py-8 sm:py-10 md:py-14 lg:py-16">
         <div className="max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
           {badgeText && (
             <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1.5 text-fluid-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20 sm:px-4 sm:py-2">
@@ -87,41 +87,45 @@ export function HeroSection({
             </p>
           )}
           {eyebrow && !badgeText && (
-            <p className="inline-flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
+            <p className="mt-2 inline-flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.22em] text-[var(--brand-accent)]">
               {icon}
               {eyebrow}
             </p>
           )}
-          <h1 className="mt-5 sm:mt-6 text-fluid-5xl font-black leading-fluid-tight">
+          <h1 className="mt-4 text-fluid-5xl font-black leading-fluid-tight sm:mt-5 sm:text-fluid-6xl md:text-fluid-7xl">
             {title}
           </h1>
           {subtitle && (
-            <h2 className="mt-3 sm:mt-4 text-fluid-4xl font-extrabold leading-fluid-tight text-white/95">
+            <h2 className="mt-3 text-fluid-4xl font-extrabold leading-fluid-tight text-white/95 sm:text-fluid-5xl">
               {subtitle}
             </h2>
           )}
-          <p className="mt-5 sm:mt-6 max-w-xl text-fluid-lg leading-fluid-relaxed text-white/84">
+          <p className="mt-4 max-w-md text-fluid-lg leading-fluid-relaxed text-white/84 sm:max-w-xl sm:mt-5 sm:text-fluid-xl">
             {intro}
           </p>
+
+          {/* Dual CTAs */}
           {ctaPrimary && ctaSecondary && (
-            <div className="mt-6 sm:mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:gap-4">
               <Link
                 href={ctaPrimary.href}
-                className="btn-h-responsive inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-5 sm:px-6 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+                className="btn-h-responsive inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-5 py-2.5 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:px-6"
               >
                 {ctaPrimary.label}
               </Link>
               <Link
                 href={ctaSecondary.href}
-                className="btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-5 sm:px-6 text-fluid-sm font-black text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+                className="btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-5 py-2.5 text-fluid-sm font-black text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:px-6"
               >
                 {ctaSecondary.label}
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
           )}
+
+          {/* Quick links pills */}
           {quickLinks && quickLinks.length > 0 && (
-            <div className="mt-6 sm:mt-8 flex flex-wrap gap-1.5 sm:gap-2">
+            <div className="mt-6 flex flex-wrap gap-1.5 sm:mt-7 sm:gap-2">
               {quickLinks.map((item) => (
                 <Link
                   key={item.href}

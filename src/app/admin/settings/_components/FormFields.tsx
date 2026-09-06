@@ -24,7 +24,7 @@ export function TextField({ name, label, type = "text", placeholder, required, c
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`mt-1 block w-full rounded-md border-gray-300 ${className || ""}`}
+        className={`mt-1 block w-full rounded-md border-gray-300 text-sm ${className || ""}`}
       />
     </label>
   );
@@ -52,7 +52,7 @@ export function TextAreaField({ name, label, placeholder, rows = 3, required, cl
         placeholder={placeholder}
         rows={rows}
         required={required}
-        className={`mt-1 block w-full rounded-md border-gray-300 ${className || ""}`}
+        className={`mt-1 block w-full rounded-md border-gray-300 text-sm ${className || ""}`}
       />
     </label>
   );
@@ -79,7 +79,7 @@ export function SelectField({ name, label, options, fallback, required, classNam
         value={effectiveValue}
         onChange={onChange}
         required={required}
-        className={`mt-1 block w-full rounded-md border-gray-300 ${className || ""}`}
+        className={`mt-1 block w-full rounded-md border-gray-300 text-sm ${className || ""}`}
       >
         {options.map(([optionValue, optionLabel]) => (
           <option key={optionValue} value={optionValue}>
@@ -239,16 +239,16 @@ export function SocialLinkEditor({ name, label, value, className }: SocialLinkEd
   return (
     <label className="block">
       <span className="text-sm font-medium text-gray-700">{label}</span>
-      <div className={`mt-2 space-y-2 ${className || ""}`}>
+      <div className={`mt-2 space-2 ${className || ""}`}>
         {pairs.map((pair) => (
-          <div key={pair.key} className="flex items-center gap-3">
-            <span className="w-36 text-sm text-gray-600">{pair.label}</span>
+          <div key={pair.key} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+            <span className="text-sm text-gray-600 sm:w-40">{pair.label}</span>
             <input
               type="url"
               value={pair.value}
               onChange={(e) => updateValue(pair.key, e.target.value)}
               placeholder="https://..."
-              className="flex-1 rounded-md border-gray-300 text-sm"
+              className="w-full rounded-md border-gray-300 text-sm sm:flex-1"
             />
           </div>
         ))}
@@ -320,25 +320,25 @@ export function KeyValueEditor({ name, label, value, keyPlaceholder, valuePlaceh
         <span className="text-sm font-medium text-gray-700">{label}</span>
         <div className="mt-2 space-y-2">
           {pairs.map((pair, index) => (
-            <div key={index} className="flex gap-2">
+            <div key={index} className="flex flex-col gap-2 sm:flex-row sm:gap-2">
               <input
                 type="text"
                 value={pair.key}
                 onChange={(e) => handleKeyChange(index, e.target.value)}
                 placeholder={keyPlaceholder}
-                className="flex-1 rounded-md border-gray-300"
+                className="w-full rounded-md border-gray-300 text-sm sm:flex-1"
               />
               <input
                 type="text"
                 value={pair.value}
                 onChange={(e) => handleValueChange(index, e.target.value)}
                 placeholder={valuePlaceholder}
-                className="flex-1 rounded-md border-gray-300"
+                className="w-full rounded-md border-gray-300 text-sm sm:flex-1"
               />
               <button
                 type="button"
                 onClick={() => removePair(index)}
-                className="p-2 text-red-600 hover:text-red-800"
+                className="self-start rounded p-2 text-red-600 hover:text-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                 aria-label="Remove"
               >
                 <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

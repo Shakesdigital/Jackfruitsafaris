@@ -101,7 +101,7 @@ export default async function ExperiencesPage() {
         eyebrow={gridSection?.subtitle || undefined}
         title={gridSection?.title || undefined}
       >
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2">
           {displayedExperiences.map((experience: any) => {
             const Icon = iconMap[experience.icon as keyof typeof iconMap] || ArrowRight;
             return (

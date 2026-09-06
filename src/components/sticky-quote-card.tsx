@@ -14,32 +14,33 @@ export async function StickyQuoteCard({
   const settings = await getSiteSettings();
 
   return (
-    <aside className="sidebar-static-mobile space-y-4">
+    <aside className="sidebar-static-mobile w-full space-y-4">
       <QuoteForm
         sourcePage={sourcePage}
         defaultService={defaultService}
         compact
       />
       <div className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5 sm:p-6">
-        <p className="flex items-center gap-2 text-fluid-sm font-black text-[var(--brand-primary)]">
+        <p className="text-center text-fluid-sm font-black text-[var(--brand-primary)] sm:text-left sm:flex sm:items-center sm:gap-2">
           <ShieldCheck size={18} aria-hidden="true" />
           Before you pay
         </p>
-        <p className="mt-2 text-fluid-sm leading-6 text-[var(--brand-muted-text)]">
+        <p className="mt-2 text-center text-fluid-sm leading-6 text-[var(--brand-muted-text)] sm:text-left">
           Gorilla permits, park fees, and lodge availability are checked before
           the final quotation is confirmed.
         </p>
-        <div className="mt-4 grid gap-2">
+        <div className="mt-4 grid gap-2 sm:flex sm:gap-3">
           <a
             href={buildWhatsAppHref(settings)}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--brand-primary)]/20 px-4 py-2 text-fluid-sm font-black text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full border border-[var(--brand-primary)]/20 px-4 py-2 text-fluid-sm font-black text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            aria-label="Contact us on WhatsApp"
           >
             <MessageCircle size={16} aria-hidden="true" />
             WhatsApp now
           </a>
           <Link
             href="/request-quote"
-            className="inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-4 py-2 text-fluid-sm font-black text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="btn-h-responsive inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-4 py-2 text-fluid-sm font-black text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Full quote form
           </Link>

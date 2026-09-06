@@ -114,7 +114,7 @@ export function RelatedGallery({ images, safariTitle }: RelatedGalleryProps) {
                 setActiveIndex((prev) => (prev - 1 + images.length) % images.length)
               }
               aria-label="Previous image"
-              className="absolute top-1/2 -left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)] sm:-left-4"
+              className="absolute top-1/2 left-1 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:left-2 sm:size-10"
             >
               <ChevronLeft size={18} aria-hidden="true" />
             </button>
@@ -122,7 +122,7 @@ export function RelatedGallery({ images, safariTitle }: RelatedGalleryProps) {
               type="button"
               onClick={() => setActiveIndex((prev) => (prev + 1) % images.length)}
               aria-label="Next image"
-              className="absolute top-1/2 -right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus:ring-2 focus:ring-[var(--brand-accent)] sm:-right-4"
+              className="absolute top-1/2 right-1 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white/85 text-[var(--foreground)] opacity-0 shadow-sm transition-all duration-200 hover:bg-white hover:shadow group-hover:opacity-100 focus:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:right-2 sm:size-10"
             >
               <ChevronRight size={18} aria-hidden="true" />
             </button>

@@ -18,8 +18,8 @@ export function SafariCard({ safari }: { safari: Safari }) {
         className="img-h-sm bg-cover bg-center sm:img-h-md"
         style={{ backgroundImage: `url(${safari.image})` }}
       />
-      <div className="p-4 sm:p-5 md:p-6">
-        <div className="flex flex-wrap gap-2 text-fluid-xs font-black uppercase tracking-[0.12em] text-[var(--brand-secondary)]">
+      <div className="p-5 sm:p-6">
+        <div className="flex flex-wrap gap-1.5 text-fluid-xs font-black uppercase tracking-[0.12em] text-[var(--brand-secondary)]">
           <span className="inline-flex items-center gap-1">
             <Clock size={14} aria-hidden="true" />
             {safari.duration}
@@ -29,14 +29,14 @@ export function SafariCard({ safari }: { safari: Safari }) {
             {safari.comfort}
           </span>
         </div>
-        <h3 className="mt-4 text-fluid-xl font-black leading-fluid-tight text-[var(--foreground)]">
+        <h3 className="mt-3 text-fluid-xl font-black leading-fluid-tight text-[var(--foreground)]">
           {safari.title}
         </h3>
         <p className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]">{safari.summary}</p>
-        <p className="mt-4 text-fluid-lg font-black text-[var(--brand-primary)]">{safari.price}</p>
+        <p className="mt-3 text-fluid-lg font-black text-[var(--brand-primary)]">{safari.price}</p>
         <Link
           href={`/safaris/${safari.slug}`}
-          className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--brand-accent)] px-4 py-2 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+          className="mt-4 btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand-accent)] px-4 py-2 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:mt-5"
         >
           View itinerary
           <ArrowRight size={16} aria-hidden="true" />

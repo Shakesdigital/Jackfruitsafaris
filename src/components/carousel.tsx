@@ -81,13 +81,13 @@ export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselPr
     return container.scrollLeft + container.offsetWidth < container.scrollWidth - 10;
   };
 
-  if (itemCount <= 0) return null;
+if (itemCount <= 0) return null;
 
   return (
     <div className="relative">
       <div
         ref={containerRef}
-        className="carousel-container flex gap-4 overflow-x-auto scroll-p-4 scroll-smooth"
+        className="carousel-container flex gap-3 overflow-x-auto scroll-p-4 scroll-smooth [-webkit-scrollbar:_] sm:gap-4"
       >
         {children.map((child, idx) => (
           <div
@@ -106,7 +106,7 @@ export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselPr
             onClick={() => scrollByCards(-1)}
             disabled={!canScrollLeft()}
             aria-label="Previous"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="absolute left-1 top-1/2 -translate-y-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronLeft size={20} />
           </button>
@@ -114,7 +114,7 @@ export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselPr
             onClick={() => scrollByCards(1)}
             disabled={!canScrollRight()}
             aria-label="Next"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronRight size={20} />
           </button>
@@ -131,7 +131,7 @@ export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselPr
               container.scrollLeft = getCardStep() * idx;
             }}
             aria-label={`Go to slide ${idx + 1}`}
-            className={`h-2 w-2 rounded-full transition-colors ${
+            className={`h-2.5 w-2.5 rounded-full transition-colors ${
               idx === activeIndex
                 ? "bg-[var(--brand-accent)]"
                 : "bg-gray-300 hover:bg-gray-400"

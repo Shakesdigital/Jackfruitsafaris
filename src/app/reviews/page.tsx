@@ -64,7 +64,7 @@ export default async function ReviewsPage() {
         eyebrow={gridSection?.subtitle || undefined}
         title={gridSection?.title || undefined}
       >
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (
             <article key={review.guest_name + index} className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
               <div className="flex items-start gap-3">

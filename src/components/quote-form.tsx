@@ -15,7 +15,7 @@ export function QuoteForm({
   return (
     <form
       action={createInquiry}
-      className="grid gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 sm:p-6 shadow-sm"
+      className="grid gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 shadow-sm sm:p-6"
     >
       <input type="hidden" name="source_page" value={sourcePage} />
       <div>
@@ -109,7 +109,7 @@ export function QuoteForm({
           required
           name="message"
           rows={compact ? 4 : 5}
-          className="input-h-responsive rounded-xl border border-black/10 px-3 py-3 font-medium outline-none focus:border-[var(--brand-secondary)] resize-y min-h-[100px]"
+          className="rounded-xl border border-black/10 px-3 py-3 font-medium outline-none focus:border-[var(--brand-secondary)] resize-y min-h-[100px]"
         />
       </label>
       <button className="btn-h-responsive rounded-full bg-[var(--brand-primary)] px-5 py-3 text-fluid-sm font-black text-white transition hover:bg-[#0f2d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">

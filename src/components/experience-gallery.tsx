@@ -191,7 +191,7 @@ function SidebarPreview({
         </span>
       </header>
 
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:gap-3">
         {media.slice(0, PREVIEW_COUNT).map((item, index) => {
           const video = isVideo(item);
           const isMoreTile = hasMore && index === visible.length - 1;
@@ -208,7 +208,7 @@ function SidebarPreview({
                       ? `View video ${index + 1} of ${media.length}`
                       : `View photo ${index + 1} of ${media.length}`
                 }
-                className="group relative aspect-square overflow-hidden rounded-[var(--brand-radius)] border border-black/5 bg-cover bg-center align-top transition-all duration-200 hover:scale-105 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)]"
+                className="group relative aspect-square overflow-hidden rounded-[var(--brand-radius)] border border-black/5 bg-cover bg-center align-top transition-all duration-200 hover:scale-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
                 style={{
                   backgroundImage: video
                     ? undefined
@@ -360,7 +360,7 @@ function LightboxViewer({
         type="button"
         onClick={onClose}
         aria-label="Close preview"
-        className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)]"
+        className="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       >
         <X size={20} />
       </button>
@@ -371,7 +371,7 @@ function LightboxViewer({
             type="button"
             onClick={onPrev}
             aria-label="Previous media"
-            className="absolute left-4 top-1/2 -translate-y-1/2 flex size-11 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)]"
+            className="absolute left-2 top-1/2 -translate-y-1/2 flex size-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronLeft size={22} />
           </button>
@@ -379,7 +379,7 @@ function LightboxViewer({
             type="button"
             onClick={onNext}
             aria-label="Next media"
-            className="absolute right-4 top-1/2 -translate-y-1/2 flex size-11 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)]"
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex size-10 items-center justify-center rounded-full border border-white/20 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <ChevronRight size={22} />
           </button>

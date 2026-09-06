@@ -60,7 +60,7 @@ export function ListEditor({
       <input type="hidden" name={name} value={jsonValue} />
       <div className="mt-2 space-y-2">
         {rows.map((row, index) => (
-          <div key={index} className="flex gap-2">
+          <div key={index} className="flex flex-col gap-2 sm:flex-row sm:gap-2">
             <input
               value={row}
               onChange={(event) => {
@@ -69,12 +69,12 @@ export function ListEditor({
                 setRows(next);
               }}
               placeholder={placeholder}
-              className="block w-full rounded-md border-gray-300 text-sm"
+              className="block w-full rounded-md border-gray-300 text-sm sm:flex-1"
             />
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, rowIndex) => rowIndex !== index))}
-              className="rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50"
+              className="w-full sm:w-auto rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50 sm:self-start"
               aria-label={`Remove ${label} item ${index + 1}`}
             >
               Remove
@@ -122,7 +122,7 @@ export function KeyValueEditor({
       <input type="hidden" name={name} value={jsonValue} />
       <div className="mt-2 space-y-2">
         {rows.map((row, index) => (
-          <div key={index} className="grid gap-2 sm:grid-cols-[0.5fr_1fr_auto]">
+          <div key={index} className="flex flex-col gap-2 sm:grid sm:grid-cols-[0.5fr_1fr_auto] sm:gap-2">
             <input
               value={row.key}
               onChange={(event) => {
@@ -146,7 +146,7 @@ export function KeyValueEditor({
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, rowIndex) => rowIndex !== index))}
-              className="rounded-md border border-gray-300 px-3 text-sm hover:bg-gray-50"
+              className="self-start rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
               aria-label={`Remove ${label} row ${index + 1}`}
             >
               Remove
@@ -178,7 +178,7 @@ export function ImageUploadField({
   );
 
   return (
-    <div className="grid gap-3 rounded-md border border-gray-200 p-4 sm:grid-cols-[1fr_180px]">
+    <div className="grid gap-3 rounded-md border border-gray-200 p-4 sm:grid-cols-[1fr_160px]">
       <label className="block">
         <span className="text-sm font-medium text-gray-700">{label}</span>
         <input
@@ -191,7 +191,7 @@ export function ImageUploadField({
             setFileStatus(event.target.value ? "Previewing image URL." : "No image selected yet.");
           }}
           placeholder="https://..."
-          className="mt-1 block w-full rounded-md border-gray-300"
+          className="mt-1 block w-full rounded-md border-gray-300 text-sm"
         />
         <span className="mt-3 block text-sm font-medium text-gray-700">
           Upload from computer
@@ -212,7 +212,7 @@ export function ImageUploadField({
             setPreviewUrl(objectUrl);
             setFileStatus(`${file.name} selected and ready to upload when you save.`);
           }}
-          className="mt-1 block w-full text-sm text-gray-700"
+          className="mt-1 block w-full text-sm text-gray-700 file:mr-3 file:my-1 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
         />
         <span className="mt-2 block rounded-md bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">
           {fileStatus}
@@ -351,7 +351,7 @@ export function WysiwygEditor({
       <span className="text-sm font-medium text-gray-700">{label}</span>
       <input type="hidden" name={name} value={html} />
       <div className="mt-1 rounded-md border border-gray-300 bg-white">
-        <div className="flex flex-wrap items-center gap-0.5 border-b border-gray-200 bg-gray-50 p-1.5">
+        <div className="flex items-center gap-0.5 overflow-x-auto border-b border-gray-200 bg-gray-50 px-1.5 py-1.5 scrollbar-thin scrollbar-thumb-gray-300">
           {FORMAT_COMMANDS.map((cmd) => (
             <button
               key={cmd.command + (cmd.value || "")}
@@ -361,7 +361,7 @@ export function WysiwygEditor({
                 execCommand(cmd.command, cmd.value);
               }}
               title={cmd.title}
-              className="rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+              className="shrink-0 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-700 whitespace-nowrap hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             >
               {cmd.label}
             </button>
@@ -477,8 +477,8 @@ export function SocialLinkEditor({
       <input type="hidden" name={name} value={jsonValue} />
       <div className="mt-2 space-y-2">
         {rows.map((row, index) => (
-          <div key={row.key} className="flex items-center gap-3">
-            <span className="w-32 text-sm text-gray-600">{row.label}</span>
+          <div key={row.key} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+            <span className="text-sm text-gray-600 sm:w-36">{row.label}</span>
             <input
               type="url"
               value={row.value}
@@ -488,7 +488,7 @@ export function SocialLinkEditor({
                 setRows(next);
               }}
               placeholder="https://..."
-              className="block w-full rounded-md border-gray-300 text-sm"
+              className="w-full rounded-md border-gray-300 text-sm sm:flex-1"
             />
           </div>
         ))}

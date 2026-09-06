@@ -409,6 +409,12 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
               rows={2}
               placeholder="Prices are shown as planning guidance..."
             />
+            <TextAreaField
+              name="footer_about"
+              label="Footer About Text"
+              rows={3}
+              placeholder="Jackfruit Safaris designs private, tailor-made Uganda safaris — from gorilla trekking in Bwindi to Nile adventures and cultural encounters — planned locally from our base in Jinja."
+            />
           </div>
           <TextAreaField
             name="footer_copy"
@@ -445,7 +451,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
 
         <button
           type="submit"
-          className="btn-h-responsive rounded-md bg-blue-600 px-4 py-2 text-fluid-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+          className="btn-h-responsive w-full rounded-md bg-blue-600 px-4 py-2.5 text-fluid-sm text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           Save Settings
         </button>

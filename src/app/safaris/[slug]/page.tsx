@@ -167,11 +167,11 @@ export default async function SafariDetailPage({ params }: Props) {
                 <CalendarDays size={17} aria-hidden="true" />
                 Day by day
               </p>
-              <div className="mt-6 grid gap-5">
+              <div className="mt-6 space-y-4">
                 {displayData.itinerary.map((day: SafariDayWithImage) => (
                   <div
                     key={`${day.day}-${day.title}`}
-                    className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-5"
+                    className="space-y-3 rounded-[var(--brand-radius)] border border-black/10 bg-white p-4 sm:p-5"
                   >
                     <p className="text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                       {day.day}
@@ -215,7 +215,7 @@ export default async function SafariDetailPage({ params }: Props) {
               )}
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
                   Included
@@ -248,7 +248,7 @@ export default async function SafariDetailPage({ params }: Props) {
               <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">
                 Accommodation options
               </h2>
-              <div className="mt-5 grid gap-4 md:grid-cols-3">
+              <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {displayData.accommodations.map((item: { tier: string; options: string }) => (
                   <div
                     key={item.tier}

@@ -18,7 +18,7 @@ export function DestinationHighlight({
         style={{ backgroundImage: `url(${image_url || ""})` }}
         aria-label={title}
       />
-      <div className="p-4 sm:p-5 md:p-6">
+      <div className="p-5 sm:p-6">
         <h3 className="text-fluid-xl font-black text-[var(--foreground)]">
           {title}
         </h3>
