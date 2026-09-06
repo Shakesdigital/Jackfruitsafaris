@@ -65,7 +65,7 @@ export default async function NavigationPage({ searchParams }: { searchParams: P
         <h1 className="text-2xl font-bold text-gray-900">Navigation Management</h1>
         <Link
           href="/admin/navigation/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 min-h-[44px] px-4 py-3 text-sm text-white hover:bg-blue-700 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           Create New Menu
         </Link>

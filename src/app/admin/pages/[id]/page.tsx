@@ -126,13 +126,13 @@ export default async function PageEditPage({ params }: Props) {
         <div className="flex gap-3 pt-4">
           <Link
             href="/admin/pages"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className="rounded-md border border-gray-300 min-h-[44px] px-4 py-3 text-sm hover:bg-gray-50 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Cancel
           </Link>
           <button
             type="submit"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+            className="rounded-md bg-blue-600 min-h-[44px] px-4 py-3 text-sm text-white hover:bg-blue-700 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Save Page
           </button>

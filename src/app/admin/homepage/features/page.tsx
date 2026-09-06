@@ -35,7 +35,7 @@ export default async function FeaturesPage() {
         <h1 className="text-2xl font-bold text-gray-900">Why Uganda Features</h1>
         <Link
           href="/admin/homepage/features/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 min-h-[44px] px-4 py-3 text-sm text-white hover:bg-blue-700 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           New Feature
         </Link>

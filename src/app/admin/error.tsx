@@ -34,7 +34,7 @@ export default function AdminError({
       <button
         type="button"
         onClick={reset}
-        className="mt-5 rounded-md bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800"
+        className="mt-5 min-h-[44px] rounded-md bg-red-700 px-4 py-3 text-sm font-medium text-white hover:bg-red-800 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       >
         Try again
       </button>

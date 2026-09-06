@@ -116,10 +116,10 @@ export default async function EditMenuItemPage({ params, searchParams }: EditMen
           </label>
         </div>
         <div className="flex gap-4">
-          <button type="submit" className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+          <button type="submit" className="rounded-md bg-blue-600 min-h-[44px] px-4 py-3 text-sm text-white hover:bg-blue-700 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
             Save Changes
           </button>
-          <Link href={`/admin/navigation/${menuId}/edit`} className="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+          <Link href={`/admin/navigation/${menuId}/edit`} className="rounded-md border border-gray-300 min-h-[44px] px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
             Cancel
           </Link>
         </div>

@@ -62,7 +62,7 @@ export default async function PageContentSectionsPage({ searchParams }: Props) {
       <div className="mb-6 flex flex-wrap gap-2">
         <Link
           href="/admin/pages/content"
-          className={`rounded-full px-4 py-2 text-sm font-medium ${
+          className={`rounded-full min-h-[44px] px-4 py-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] ${
             selectedPage ? "bg-white text-gray-700 ring-1 ring-gray-200" : "bg-gray-900 text-white"
           }`}
         >
@@ -72,7 +72,7 @@ export default async function PageContentSectionsPage({ searchParams }: Props) {
           <Link
             key={landingPage.slug}
             href={`/admin/pages/content?page=${encodeURIComponent(landingPage.slug)}`}
-            className={`rounded-full px-4 py-2 text-sm font-medium ${
+            className={`rounded-full min-h-[44px] px-4 py-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] ${
               selectedPage === landingPage.slug
                 ? "bg-gray-900 text-white"
                 : "bg-white text-gray-700 ring-1 ring-gray-200"

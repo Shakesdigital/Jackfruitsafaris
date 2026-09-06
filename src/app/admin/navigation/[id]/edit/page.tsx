@@ -101,7 +101,7 @@ export default async function MenuEditPage({ params, searchParams }: MenuPagePro
             </select>
           </label>
         </div>
-        <button type="submit" className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+        <button type="submit" className="rounded-md bg-blue-600 min-h-[44px] px-4 py-3 text-sm text-white hover:bg-blue-700 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
           Save Menu Details
         </button>
       </form>

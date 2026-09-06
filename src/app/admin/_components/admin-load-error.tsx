@@ -31,7 +31,7 @@ export function AdminLoadError({
       </p>
       <Link
         href={backHref}
-        className="mt-5 inline-flex rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-100"
+        className="mt-5 inline-flex min-h-[44px] rounded-md border border-red-300 bg-white px-4 py-3 text-sm font-medium text-red-800 hover:bg-red-100 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
       >
         {backLabel}
       </Link>
