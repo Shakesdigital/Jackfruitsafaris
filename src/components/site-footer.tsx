@@ -31,7 +31,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
         <div>
           <Link
             href="/"
-            className="mb-5 inline-flex"
+            className="mb-2 inline-flex"
             aria-label={`${settings?.business_name || "Jackfruit Safaris"} - Home`}
           >
             {settings?.logo_url ? (
@@ -48,18 +48,14 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
               </span>
             )}
           </Link>
-          <p className="mt-4 text-center text-fluid-sm leading-7 sm:text-left" style={{ color: "var(--footer-muted-text)" }}>
+          <p className="mt-2 text-center text-fluid-sm leading-7 sm:text-left" style={{ color: "var(--footer-muted-text)" }}>
             {settings?.footer_about ||
               "Jackfruit Safaris is a Jinja-based tour operator crafting private Uganda safaris, gorilla trekking, Nile adventures, cultural experiences, and reliable transport — planned from the heart of East Africa."}
           </p>
           <p
-            className="mt-3 text-center text-fluid-xs font-black uppercase tracking-[0.24em] text-[var(--brand-accent)] sm:mt-0 sm:text-left"
+            className="mt-2 text-center text-fluid-xs font-black uppercase tracking-[0.24em] text-[var(--brand-accent)] sm:mt-0 sm:text-left"
           >
             {settings?.business_name || "Jackfruit Safaris"}
-          </p>
-          <p className="mt-4 text-center text-fluid-2xl font-black leading-fluid-tight max-w-xs sm:max-w-xl sm:text-left">
-            {settings?.footer_tagline ||
-              "Private Uganda safaris, gorilla trekking, Nile adventures, culture, and reliable transport planned from Jinja."}
           </p>
 
         </div>
@@ -135,8 +131,20 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
         className="container-responsive mt-10 border-t pt-6 text-center text-fluid-xs"
         style={{ borderColor: "var(--footer-muted-text)", opacity: 0.3 }}
       >
-        {settings?.footer_copy ||
-          `© ${new Date().getFullYear()} Jackfruit Safaris Ltd. Built for CMS-managed safari planning.`}
+        {settings?.footer_copy || (
+          <>
+            © {new Date().getFullYear()} Jackfruit Safaris Ltd. All Rights Reserved. Designed and powered by{" "}
+            <a
+              href="https://shakesdigital.com/"
+              target="_blank"
+              rel="noreferrer"
+              className="underline hover:text-[var(--brand-accent)]"
+            >
+              Shakes Digital
+            </a>
+            .
+          </>
+        )}
       </div>
     </footer>
   );

@@ -401,15 +401,18 @@ button.rounded-full {
 }
 
 /* Accreditation logos: continuous horizontal slide animation */
-.accreditation-section .accreditation-track {
-  scrollbar-width: none;
-}
-.accreditation-section .accreditation-track::-webkit-scrollbar {
-  display: none;
-}
+/*
+ * The outer .accreditation-track clips overflow and pauses the animation on hover.
+ * The inner .accreditation-logos is duplicated (2x logos) and slides from 0 → -50%
+ * of its total width, producing a seamless infinite loop.
+ */
 @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
   .accreditation-section .accreditation-logos {
     animation: slide-logos 30s linear infinite;
+    width: max-content;
+  }
+  .accreditation-section .accreditation-track:hover .accreditation-logos {
+    animation-play-state: paused;
   }
 }
 @keyframes slide-logos {

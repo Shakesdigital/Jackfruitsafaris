@@ -1,7 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type ComponentPropsWithoutRef, type RefObject, useRef } from "react";
 
 const accreditationLogos = [
   { src: "/images/tripadvisor-logo.png", alt: "Tripadvisor Travelers' Choice Award" },
@@ -12,36 +11,19 @@ const accreditationLogos = [
   { src: "/images/friend-a-gorilla.png", alt: "Friend a Gorilla" },
 ];
 
+/**
+ * AccreditationLogos — a horizontal, continuously-sliding carousel of
+ * accreditation / partnership badges with a transparent background that
+ * blends seamlessly into the section behind it.
+ *
+ * The logos slide horizontally via a CSS keyframe animation (no external
+ * dependencies). The animation pauses on hover and is disabled entirely
+ * under prefers-reduced-motion.
+ */
 export function AccreditationLogos() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [showArrows, setShowArrows] = useState(false);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  // Duplicate the logos so the animation can loop seamlessly
+  // Duplicate the set so the animation loops seamlessly end-to-end.
   const allLogos = [...accreditationLogos, ...accreditationLogos];
-
-  useEffect(() => {
-    const container = trackRef.current?.parentElement;
-    if (!container) return;
-
-    const update = () => {
-      setCanScrollLeft(container.scrollLeft > 8);
-      setCanScrollRight(
-        container.scrollLeft + container.offsetWidth < container.scrollWidth - 8
-      );
-    };
-
-    update();
-    container.addEventListener("scroll", update);
-    return () => container.removeEventListener("scroll", update);
-  }, []);
-
-  const scrollBy = (distance: number) => {
-    const container = trackRef.current?.parentElement;
-    if (!container) return;
-    container.scrollBy({ left: distance, behavior: "smooth" });
-  };
+  const trackRef = useRef<HTMLDivElement>(null);
 
   return (
     <section className="accreditation-section bg-white py-10 sm:py-12">
@@ -51,47 +33,33 @@ export function AccreditationLogos() {
         </p>
 
         <div
-          className="accreditation-track relative mt-6 flex items-center gap-6 overflow-x-auto scroll-smooth [-webkit-scrollbar:_] sm:gap-8 md:gap-10"
-          onMouseEnter={() => setShowArrows(true)}
-          onMouseLeave={() => setShowArrows(false)}
+          ref={trackRef as RefObject<HTMLDivElement>}
+          className="accreditation-track relative mt-6 flex items-center gap-6 sm:gap-8 md:gap-10"
         >
-          <button
-            onClick={() => scrollBy(-120)}
-            disabled={!canScrollLeft}
-            aria-label="Scroll left"
-            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md opacity-0 transition-opacity hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-            style={{ opacity: showArrows ? 1 : 0 }}
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          <div ref={trackRef} className="accreditation-logos flex items-center gap-6 sm:gap-8 md:gap-10">
+          <div className="accreditation-logos flex items-center gap-6 sm:gap-8 md:gap-10">
             {allLogos.map((logo, index) => (
-              <div
+              <Logo
                 key={`${logo.alt}-${index}`}
-                className="accreditation-logo flex h-16 w-auto shrink-0 items-center justify-center"
-              >
-                <img
-                  src={logo.src}
-                  alt={logo.alt}
-                  className="h-full w-auto object-contain opacity-75 grayscale transition-all duration-300 hover:grayscale-0 hover:opacity-100"
-                  loading="lazy"
-                />
-              </div>
+                src={logo.src}
+                alt={logo.alt}
+                className="h-14 w-auto opacity-80 transition-opacity duration-300 hover:opacity-100 sm:h-16"
+              />
             ))}
           </div>
-
-          <button
-            onClick={() => scrollBy(120)}
-            disabled={!canScrollRight}
-            aria-label="Scroll right"
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 text-[var(--foreground)] shadow-md opacity-0 transition-opacity hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-            style={{ opacity: showArrows ? 1 : 0 }}
-          >
-            <ChevronRight size={20} />
-          </button>
         </div>
       </div>
     </section>
+  );
+}
+
+type LogoProps = ComponentPropsWithoutRef<"img">;
+
+function Logo({ className, ...props }: LogoProps) {
+  return (
+    <img
+      className={`shrink-0 object-contain ${className ?? ""}`}
+      loading="lazy"
+      {...props}
+    />
   );
 }
