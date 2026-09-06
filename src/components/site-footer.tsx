@@ -28,7 +28,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
     >
       <div className="container-responsive grid gap-8 md:gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
         {/* Brand + tagline block */}
-        <div>
+        <div className="flex flex-col items-center text-center">
           <Link
             href="/"
             className="mb-2 inline-flex"
@@ -39,21 +39,21 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
                 src={settings.logo_url}
                 alt={`${settings?.business_name || "Jackfruit Safaris"} logo`}
                 className="logo-responsive rounded-full object-contain"
-                width="72"
-                height="72"
+                width="96"
+                height="96"
               />
             ) : (
-              <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-xl font-black text-[var(--foreground)]">
+              <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-3xl font-black text-[var(--foreground)]">
                 J
               </span>
             )}
           </Link>
-          <p className="mt-2 text-center text-fluid-sm leading-7 sm:text-left" style={{ color: "var(--footer-muted-text)" }}>
+          <p className="mt-2 text-center text-fluid-sm leading-7" style={{ color: "var(--footer-muted-text)" }}>
             {settings?.footer_about ||
               "Jackfruit Safaris is a Jinja-based tour operator crafting private Uganda safaris, gorilla trekking, Nile adventures, cultural experiences, and reliable transport — planned from the heart of East Africa."}
           </p>
           <p
-            className="mt-2 text-center text-fluid-xs font-black uppercase tracking-[0.24em] text-[var(--brand-accent)] sm:mt-0 sm:text-left"
+            className="mt-2 text-center text-fluid-xs font-black uppercase tracking-[0.24em] text-[var(--brand-accent)]"
           >
             {settings?.business_name || "Jackfruit Safaris"}
           </p>
@@ -61,19 +61,19 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
         </div>
 
         {/* Quick Links */}
-        <div>
+        <div className="flex flex-col items-center text-center">
           <h2
-            className="text-center text-fluid-sm font-black uppercase tracking-[0.18em] text-[var(--footer-muted-text)] sm:text-left"
+            className="text-center text-fluid-sm font-black uppercase tracking-[0.18em] text-[var(--footer-muted-text)]"
             style={{ color: "var(--footer-muted-text)" }}
           >
             Quick Links
           </h2>
-          <div className="mt-4 grid gap-2.5 sm:gap-3">
+          <div className="mt-4 grid w-full max-w-xs gap-2.5">
             {mainNavigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="block text-center text-fluid-base font-medium hover:underline transition-colors sm:text-left"
+                className="block text-center text-fluid-base font-medium hover:underline transition-colors"
                 style={{ color: "var(--footer-text)" }}
               >
                 {item.label}
@@ -83,32 +83,32 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
         </div>
 
         {/* Contact */}
-        <div>
+        <div className="flex flex-col items-center text-center">
           <h2
-            className="text-center text-fluid-sm font-black uppercase tracking-[0.18em] sm:text-left"
+            className="text-center text-fluid-sm font-black uppercase tracking-[0.18em]"
             style={{ color: "var(--footer-muted-text)" }}
           >
             Contact
           </h2>
-          <div className="mt-4 space-y-3 text-fluid-sm" style={{ color: "var(--footer-muted-text)" }}>
-            <p className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
+          <div className="mt-4 flex flex-col items-center gap-3 text-fluid-sm" style={{ color: "var(--footer-muted-text)" }}>
+            <p className="flex items-center gap-2">
               <Phone className="shrink-0" size={17} aria-hidden="true" />
-              <span className="sm:mt-0">
+              <span>
                 {settings?.phone || "+256 772 550 268"}
                 {settings?.alternate_phone ? ` / ${settings.alternate_phone}` : ""}
               </span>
             </p>
-            <p className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
+            <p className="flex items-center gap-2">
               <Mail className="shrink-0" size={17} aria-hidden="true" />
               <span>{settings?.contact_email || "jackfruitsafarisuganda@gmail.com"}</span>
             </p>
-            <p className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
+            <p className="flex items-center gap-2">
               <MapPin className="shrink-0" size={17} aria-hidden="true" />
               <span>{settings?.address || "Craft Village, Jinja, Uganda"}</span>
             </p>
             {settings?.operating_hours && <p>{settings.operating_hours}</p>}
             {settings?.social_links && (
-              <div className="flex flex-wrap gap-3 pt-1">
+              <div className="flex flex-wrap justify-center gap-3 pt-1">
                 {Object.entries(settings.social_links).map(([label, href]) => (
                   <a
                     key={label}
