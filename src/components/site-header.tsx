@@ -144,12 +144,12 @@ function HeaderInner({
 
           {/* Overlay + drawer panel (visible when checked) */}
           <div
-            className="pointer-events-none fixed inset-0 z-40 hidden bg-black/50 opacity-0 transition-opacity peer-checked:pointer-events-auto peer-checked:opacity-100"
+            className="pointer-events-none fixed inset-0 z-40 flex bg-black/50 opacity-0 transition-opacity peer-checked:pointer-events-auto peer-checked:opacity-100"
             aria-hidden="true"
           />
           <div
             data-mobile-nav="open"
-            className="absolute top-full right-0 z-50 mt-2 hidden w-[calc(100vw-2rem)] max-w-xs -translate-y-2 translate-y-0 space-y-2 rounded-2xl border border-black/10 bg-white p-4 shadow-2xl opacity-0 transition-all duration-200 peer-checked:translate-y-0 peer-checked:opacity-100 lg:hidden"
+            className="absolute top-full right-0 z-50 mt-2 flex w-[calc(100vw-2rem)] max-w-xs -translate-y-2 space-y-2 rounded-2xl border border-black/10 bg-white p-4 shadow-2xl opacity-0 transition-all duration-200 peer-checked:translate-y-0 peer-checked:opacity-100 lg:hidden"
           >
             <nav aria-label="Mobile navigation">
               <div className="flex flex-col gap-1.5">
