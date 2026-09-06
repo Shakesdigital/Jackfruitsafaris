@@ -7,7 +7,7 @@ import { QuoteForm } from "@/components/quote-form";
 import { Section } from "@/components/section";
 import { SafariCard } from "@/components/safari-card";
 import { Carousel } from "@/components/carousel";
-import { DestinationHighlightCard } from "@/components/destination-highlight-card";
+import { DestinationHighlight } from "@/components/destination-highlight-card";
 import {
   getDestinationBySlug,
   getPublishedSafaris,
@@ -226,7 +226,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 </h2>
                 <div className="mt-6 grid gap-6 md:grid-cols-2">
                   {keyHighlights.map((highlight: any, index: number) => (
-                    <DestinationHighlightCard
+                    <DestinationHighlight
                       key={index}
                       highlight={{
                         title: highlight.title || "",
