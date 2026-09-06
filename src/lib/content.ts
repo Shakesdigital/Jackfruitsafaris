@@ -884,6 +884,7 @@ export type PageHeroFallback = {
   intro: string;
   backgroundImage?: string;
   eyebrow?: string;
+  badgeText?: string;
   ctaPrimary?: { label: string; href: string };
   ctaSecondary?: { label: string; href: string };
   content?: Record<string, string>;

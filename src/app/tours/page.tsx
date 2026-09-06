@@ -79,7 +79,7 @@ export default async function ToursPage() {
       />
 
       <Section
-        eyebrow={hero?.badge_text || fallback?.badgeText}
+        eyebrow={hero?.badge_text}
         title={hero?.title || fallback?.title || "Tour Packages We Curate"}
         intro={
           <p className="max-w-3xl text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]">
