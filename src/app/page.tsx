@@ -256,7 +256,7 @@ export default async function Home() {
         title={getStringValue(reviewsSection, "title", "Confidence before the first road mile")}
         intro={<CmsRichText html={getSectionText(reviewsSection, "intro", "The new inquiry flow puts trust, price guidance, route logic, and WhatsApp access close to every major booking decision.")} />}
       >
-        <Carousel>
+        <Carousel loop>
           {testimonials.map((review: any, index: number) => (
             <article key={review.guest_name || index} className="flex flex-col rounded-[var(--brand-radius)] border border-black/10 bg-[var(--background)] p-6">
               <div className="flex items-start gap-3">

@@ -13,12 +13,32 @@ type CarouselProps = {
    * xl(4)/lg(3) split. Omit to preserve the original responsive behavior.
    */
   desktopCount?: number;
+  /**
+   * When true, the carousel loops infinitely: the children are duplicated
+   * so the user can scroll seamlessly from the last item back to the first.
+   * Navigation arrows and pagination dots are always shown (when itemCount > 1).
+   */
+  loop?: boolean;
 };
 
-export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselProps) {
+export function Carousel({ children, mobileCount = 1, desktopCount, loop = false }: CarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const itemCount = children.length;
+  const isLooping = loop && itemCount > 1;
+
+  /** Render each child wrapped in a fixed-width snap snap-point. */
+  function renderSlides(items: React.ReactNode[]) {
+    return items.map((child, idx) => (
+      <div
+        key={idx}
+        className="scroll-snap-start flex-shrink-0"
+        style={{ width: `${100 / visibleCount}%` }}
+      >
+        {child}
+      </div>
+    ));
+  }
 
   // Determine how many cards are visible based on viewport width
   function getVisibleCount() {
@@ -49,14 +69,32 @@ export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselPr
 
     const updateActive = () => {
       const cardWidth = container.offsetWidth / visibleCount;
-      const index = Math.round(container.scrollLeft / cardWidth);
-      setActiveIndex(Math.max(0, Math.min(index, itemCount - 1)));
+      if (cardWidth <= 0) return;
+
+      // --- Infinite loop wrap on manual scroll ---
+      if (isLooping) {
+        const setWidth = cardWidth * itemCount;
+        if (container.scrollLeft >= setWidth) {
+          container.scrollLeft -= setWidth;
+        } else if (container.scrollLeft < 0) {
+          container.scrollLeft += setWidth;
+        }
+      }
+
+      const rawIndex = Math.round(container.scrollLeft / cardWidth);
+      if (isLooping) {
+        // Map the raw (possibly overscrolled) index into 0..itemCount-1
+        const normalized = ((rawIndex % itemCount) + itemCount) % itemCount;
+        setActiveIndex(normalized);
+      } else {
+        setActiveIndex(Math.max(0, Math.min(rawIndex, itemCount - 1)));
+      }
     };
 
     container.addEventListener("scroll", updateActive);
     updateActive();
     return () => container.removeEventListener("scroll", updateActive);
-  }, [itemCount, visibleCount]);
+  }, [itemCount, visibleCount, isLooping]);
 
   function getCardStep() {
     const container = containerRef.current;
@@ -67,21 +105,38 @@ export function Carousel({ children, mobileCount = 1, desktopCount }: CarouselPr
   function scrollByCards(cards: number) {
     const container = containerRef.current;
     if (!container) return;
-    container.scrollBy({ left: getCardStep() * cards, behavior: "smooth" });
+    const cardStep = getCardStep();
+
+    if (isLooping) {
+      const setWidth = cardStep * itemCount;
+      let target = container.scrollLeft + cardStep * cards;
+      if (target >= setWidth) target -= setWidth;
+      if (target < 0) target += setWidth;
+      container.scrollTo({ left: target, behavior: "smooth" });
+    } else {
+      container.scrollBy({ left: cardStep * cards, behavior: "smooth" });
+    }
   }
 
   const canScrollLeft = () => {
+    if (isLooping) return true;
     const container = containerRef.current;
     return container ? container.scrollLeft > 10 : false;
   };
 
   const canScrollRight = () => {
+    if (isLooping) return true;
     const container = containerRef.current;
     if (!container) return false;
     return container.scrollLeft + container.offsetWidth < container.scrollWidth - 10;
   };
 
-if (itemCount <= 0) return null;
+  const showNav = isLooping ? itemCount > 1 : itemCount > visibleCount;
+
+  if (itemCount <= 0) return null;
+
+  // When looping, duplicate the children so the animation wraps seamlessly.
+  const renderedChildren = isLooping ? [...children, ...children] : children;
 
   return (
     <div className="relative">
@@ -89,18 +144,10 @@ if (itemCount <= 0) return null;
         ref={containerRef}
         className="carousel-container flex gap-3 overflow-x-auto scroll-p-4 scroll-smooth [-webkit-scrollbar:_] sm:gap-4"
       >
-        {children.map((child, idx) => (
-          <div
-            key={idx}
-            className="scroll-snap-start flex-shrink-0"
-            style={{ width: `${100 / visibleCount}%` }}
-          >
-            {child}
-          </div>
-        ))}
+        {renderSlides(renderedChildren)}
       </div>
 
-      {itemCount > visibleCount && (
+      {showNav && (
         <>
           <button
             onClick={() => scrollByCards(-1)}
@@ -128,6 +175,14 @@ if (itemCount <= 0) return null;
             onClick={() => {
               const container = containerRef.current;
               if (!container) return;
+              // When looping, ensure we're in the first set before jumping
+              if (isLooping) {
+                const cardStep = getCardStep();
+                const setWidth = cardStep * itemCount;
+                if (container.scrollLeft >= setWidth) {
+                  container.scrollLeft -= setWidth;
+                }
+              }
               container.scrollLeft = getCardStep() * idx;
             }}
             aria-label={`Go to slide ${idx + 1}`}
@@ -138,7 +193,7 @@ if (itemCount <= 0) return null;
                 idx === activeIndex
                   ? "bg-[var(--brand-accent)]"
                   : "bg-gray-300 hover:bg-gray-400"
-              }}`}
+              }`}
             />
           </button>
         ))}
