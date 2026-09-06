@@ -19,6 +19,7 @@ const cmsPaths = [
   "/experiences/[slug]",
   "/reviews",
   "/travel-guide",
+  "/travel-guide/[slug]",
   "/request-quote",
 ];
 

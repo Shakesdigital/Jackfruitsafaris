@@ -584,6 +584,117 @@ export async function getAdminGuideArticles() {
   return data || [];
 }
 
+// ---------------------------------------------------------------------------
+// Travel Guide Insights — public fetch + admin fetch
+// ---------------------------------------------------------------------------
+
+export type TravelGuideArticle = {
+  id: string;
+  slug: string;
+  title: string;
+  category?: string | null;
+  author?: string | null;
+  excerpt?: string | null;
+  content?: string | null;
+  featured_image_url?: string | null;
+  related_tours?: string[] | null;
+  status: "draft" | "published" | "archived";
+  order_column: number;
+  published_at?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_image_url?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+/**
+ * Fetch a paginated list of published Travel Guide articles for the public
+ * listing page.  Ordering is by `order_column` then `published_at` descending
+ * so that newly published articles with the same order still appear in a
+ * sensible position.
+ */
+export async function getPublishedTravelGuideArticles(params?: {
+  limit?: number;
+  offset?: number;
+}) {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  const limit = params?.limit ?? 12;
+  const offset = params?.offset ?? 0;
+
+  const { data, error } = await supabase
+    .from("travel_guide_articles")
+    .select("*")
+    .eq("status", "published")
+    .order("order_column", { ascending: true })
+    .order("published_at", { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) {
+    console.error("Public travel guide articles fetch error:", error);
+    return [];
+  }
+
+  return (data || []) as TravelGuideArticle[];
+}
+
+/** Count the total number of published articles (used for pagination UI). */
+export async function getPublishedTravelGuideArticleCount() {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  const { count, error } = await supabase
+    .from("travel_guide_articles")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "published");
+
+  if (error) {
+    console.error("Travel guide article count error:", error);
+    return 0;
+  }
+
+  return count ?? 0;
+}
+
+/** Fetch a single published article by slug for the detail page. */
+export async function getPublishedTravelGuideArticleBySlug(slug: string) {
+  unstable_noStore();
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("travel_guide_articles")
+    .select("*")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  return (data || null) as TravelGuideArticle | null;
+}
+
+/** Admin fetch — uses service role key to bypass RLS. */
+export async function getAdminTravelGuideArticles() {
+  const supabase = await createAdminClient();
+
+  const { data } = await supabase
+    .from("travel_guide_articles")
+    .select("*")
+    .order("order_column", { ascending: true })
+    .order("published_at", { ascending: false });
+
+  return (data || []) as TravelGuideArticle[];
+}
+
+export async function getAdminTravelGuideArticleByIdResult(id: string) {
+  return getAdminRecordById("travel_guide_articles", id);
+}
+
+export async function getAdminTravelGuideArticleById(id: string) {
+  const result = await getAdminTravelGuideArticleByIdResult(id);
+  return result.data;
+}
+
 // Fetch page hero content — selects the full hero record including
 // badge, dual CTA, and quick_links fields so every landing page can
 // render the home-page-style hero.

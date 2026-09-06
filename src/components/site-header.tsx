@@ -74,7 +74,8 @@ export async function SiteHeader({ settings }: { settings?: PublicSiteSettings |
           <summary className="flex size-12 cursor-pointer list-none items-center justify-center rounded-full border border-black/10 text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]" aria-label="Open menu">
             <Menu size={24} aria-hidden="true" />
           </summary>
-          <div className="absolute right-0 mt-3 w-full max-w-[320px] rounded-2xl border border-black/10 bg-white p-4 shadow-2xl">
+          {/* Mobile menu dropdown - full-width on small screens, max-width on larger */}
+          <div className="absolute top-full right-0 mt-2 w-[calc(100vw-2rem)] max-w-[320px] rounded-2xl border border-black/10 bg-white p-3 shadow-2xl sm:w-full">
             {navigation.map((item) => (
               <Link
                 key={item.href}

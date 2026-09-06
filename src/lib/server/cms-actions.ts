@@ -107,6 +107,7 @@ const sitewideCmsPaths = [
   "/experiences/[slug]",
   "/reviews",
   "/travel-guide",
+  "/travel-guide/[slug]",
   "/request-quote",
   "/contact",
   "/transport/airport-transfers",
@@ -998,9 +999,17 @@ export async function deleteEntity(table: string, id: string) {
     pages: ["/", "/contact", "/request-quote", "/transport/airport-transfers"],
     gallery_media: ["/", "/safaris", "/safaris/[slug]"],
     team_members: ["/", "/about"],
+    travel_guide_articles: ["/", "/travel-guide", "/travel-guide/[slug]"],
   };
   revalidateCmsRoutes(...(publicPathsByTable[table] || ["/"]));
-  redirect(`/admin/${table === "safari_packages" ? "safaris" : table === "inquiry_leads" ? "leads" : table === "gallery_media" ? "gallery" : table === "team_members" ? "team" : table}`);
+  const adminListSlug: Record<string, string> = {
+    safari_packages: "safaris",
+    inquiry_leads: "leads",
+    gallery_media: "gallery",
+    team_members: "team",
+    travel_guide_articles: "travel-insights",
+  };
+  redirect(`/admin/${adminListSlug[table] ?? table}`);
 }
 // Page Actions
 const pageSchema = z.object({
@@ -1339,6 +1348,102 @@ export async function upsertGuideArticle(formData: FormData) {
 
   revalidateCmsRoutes("/", "/travel-guide");
   redirect("/admin/homepage/guide-articles");
+}
+
+// ---------------------------------------------------------------------------
+// Travel Guide Article Actions
+// ---------------------------------------------------------------------------
+
+const travelGuideArticleSchema = z.object({
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  category: z.string().optional(),
+  author: z.string().optional(),
+  excerpt: z.string().optional(),
+  content: z.string().optional(),
+  featured_image_url: z.string().url().optional().or(z.literal("")),
+  meta_title: z.string().optional(),
+  meta_description: z.string().optional(),
+  meta_image_url: z.string().url().optional().or(z.literal("")),
+  order_column: z.number().int().default(0),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
+});
+
+export async function upsertTravelGuideArticle(formData: FormData) {
+  const anonClient = await getSupabase();
+  const { data: { user } } = await anonClient.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  const supabase = await getAdminSupabase();
+  const id = formData.get("id") as string;
+  const isNew = !id;
+
+  // Upload featured image if a file was provided
+  const featuredImageUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "featured_image_file",
+      `media/travel_guide_articles/${id || "new"}`,
+      `/admin/travel-insights/${id || "new"}`,
+    )) ||
+    formData.get("featured_image_url") ||
+    undefined;
+
+  const metaImageUrl =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "meta_image_file",
+      `media/travel_guide_articles/${id || "new"}/seo`,
+      `/admin/travel-insights/${id || "new"}`,
+    )) ||
+    formData.get("meta_image_url") ||
+    undefined;
+
+  const parsed = travelGuideArticleSchema.safeParse({
+    slug: formData.get("slug"),
+    title: formData.get("title"),
+    category: formData.get("category") || undefined,
+    author: formData.get("author") || undefined,
+    excerpt: formData.get("excerpt") || undefined,
+    content: formData.get("content") || undefined,
+    featured_image_url: featuredImageUrl,
+    meta_title: formData.get("meta_title") || undefined,
+    meta_description: formData.get("meta_description") || undefined,
+    meta_image_url: metaImageUrl,
+    order_column: parseInt(formData.get("order_column") as string) || 0,
+    status: formData.get("status") || "draft",
+  });
+
+  if (!parsed.success) {
+    redirectOnValidationError(
+      parsed.error,
+      `/admin/travel-insights/${id || "new"}`,
+      "Travel guide article save",
+    );
+  }
+
+  const { error } = await supabase.from("travel_guide_articles").upsert({
+    id: isNew ? undefined : id,
+    ...parsed.data,
+    published_at:
+      parsed.data.status === "published"
+        ? (formData.get("published_at") as string | null) ||
+          new Date().toISOString()
+        : null,
+    updated_at: new Date().toISOString(),
+    ...(isNew ? { created_at: new Date().toISOString() } : {}),
+  });
+
+  redirectOnMutationError(
+    error,
+    `/admin/travel-insights/${id || "new"}`,
+    "Travel guide article save",
+  );
+
+  revalidateCmsRoutes("/", "/travel-guide", "/travel-guide/[slug]");
+  redirect("/admin/travel-insights");
 }
 
 // Page Hero Actions

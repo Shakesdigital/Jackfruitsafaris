@@ -14,7 +14,7 @@ export async function StickyQuoteCard({
   const settings = await getSiteSettings();
 
   return (
-    <aside className="sticky top-24 space-y-4">
+    <aside className="sidebar-static-mobile space-y-4">
       <QuoteForm
         sourcePage={sourcePage}
         defaultService={defaultService}

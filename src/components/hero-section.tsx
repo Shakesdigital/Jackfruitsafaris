@@ -78,11 +78,11 @@ export function HeroSection({
       ) : (
         <div className="absolute inset-0 bg-[var(--foreground)]" aria-hidden="true" />
       )}
-      <div className="relative container-responsive flex min-h-[inherit] items-center py-10 sm:py-16">
-        <div className="max-w-3xl">
+      <div className="relative container-responsive flex min-h-[inherit] items-center py-6 sm:py-10 md:py-14 lg:py-16">
+        <div className="max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
           {badgeText && (
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-fluid-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20">
-              <BadgeCheck size={17} aria-hidden="true" />
+            <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1.5 text-fluid-sm font-black uppercase tracking-[0.2em] text-[var(--brand-accent)] ring-1 ring-white/20 sm:px-4 sm:py-2">
+              <BadgeCheck size={15} aria-hidden="true" />
               {badgeText}
             </p>
           )}
@@ -92,41 +92,41 @@ export function HeroSection({
               {eyebrow}
             </p>
           )}
-          <h1 className="mt-6 text-fluid-5xl font-black leading-fluid-tight">
+          <h1 className="mt-5 sm:mt-6 text-fluid-5xl font-black leading-fluid-tight">
             {title}
           </h1>
           {subtitle && (
-            <h2 className="mt-4 text-fluid-4xl font-extrabold leading-fluid-tight text-white/95">
+            <h2 className="mt-3 sm:mt-4 text-fluid-4xl font-extrabold leading-fluid-tight text-white/95">
               {subtitle}
             </h2>
           )}
-          <p className="mt-6 max-w-2xl text-fluid-lg leading-fluid-relaxed text-white/84">
+          <p className="mt-5 sm:mt-6 max-w-xl text-fluid-lg leading-fluid-relaxed text-white/84">
             {intro}
           </p>
           {ctaPrimary && ctaSecondary && (
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 sm:mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href={ctaPrimary.href}
-                className="btn-h-responsive inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-6 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+                className="btn-h-responsive inline-flex items-center justify-center rounded-full bg-[var(--brand-accent)] px-5 sm:px-6 text-fluid-sm font-black text-[var(--foreground)] transition hover:bg-[#e5ad17] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 {ctaPrimary.label}
               </Link>
               <Link
                 href={ctaSecondary.href}
-                className="btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-6 text-fluid-sm font-black text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+                className="btn-h-responsive inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-5 sm:px-6 text-fluid-sm font-black text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 {ctaSecondary.label}
-                <ArrowRight size={17} aria-hidden="true" />
+                <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
           )}
           {quickLinks && quickLinks.length > 0 && (
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="mt-6 sm:mt-8 flex flex-wrap gap-1.5 sm:gap-2">
               {quickLinks.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-full bg-white/12 px-4 py-2 text-fluid-sm font-bold text-white ring-1 ring-white/18 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+                  className="rounded-full bg-white/12 px-3 py-1.5 text-fluid-xs font-bold text-white ring-1 ring-white/18 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] sm:px-4 sm:py-2 sm:text-fluid-sm"
                 >
                   {item.label}
                 </Link>

@@ -15,10 +15,10 @@ export function SafariCard({ safari }: { safari: Safari }) {
   return (
     <article className="overflow-hidden rounded-[var(--brand-radius)] border border-black/10 bg-white shadow-sm">
       <div
-        className="img-h-sm bg-cover bg-center"
+        className="img-h-sm bg-cover bg-center sm:img-h-md"
         style={{ backgroundImage: `url(${safari.image})` }}
       />
-      <div className="p-5 sm:p-6">
+      <div className="p-4 sm:p-5 md:p-6">
         <div className="flex flex-wrap gap-2 text-fluid-xs font-black uppercase tracking-[0.12em] text-[var(--brand-secondary)]">
           <span className="inline-flex items-center gap-1">
             <Clock size={14} aria-hidden="true" />

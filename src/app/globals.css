@@ -213,7 +213,43 @@ button.rounded-full {
   }
 }
 
-/* Responsive grid utilities */
+/* Responsive max-width content wrapper (caps readable line length on large screens) */
+.max-w-content {
+  max-width: 60rem; /* 960px */
+}
+
+@media (min-width: 640px) {
+  .max-w-content-sm {
+    max-width: 36rem; /* 576px — tighter for mobile headings */
+  }
+}
+
+/* Responsive container max-widths by breakpoint — mobile-first */
+.container-max-mobile {
+  max-width: 40rem; /* 640px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding-mobile);
+  padding-right: var(--container-padding-mobile);
+}
+
+@media (min-width: 640px) {
+  .container-max-mobile {
+    max-width: 48rem; /* 768px */
+    padding-left: var(--container-padding-tablet);
+    padding-right: var(--container-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-max-mobile {
+    max-width: 60rem; /* 960px */
+    padding-left: var(--container-padding-desktop);
+    padding-right: var(--container-padding-desktop);
+  }
+}
+
+/* Responsive grid utilities — mobile first, progressive enhancement */
 .grid-responsive-1 { display: grid; gap: var(--gap-md); grid-template-columns: 1fr; }
 .grid-responsive-2 { display: grid; gap: var(--gap-md); grid-template-columns: 1fr; }
 .grid-responsive-3 { display: grid; gap: var(--gap-md); grid-template-columns: 1fr; }
@@ -330,6 +366,12 @@ button.rounded-full {
 .hidden-desktop { display: block; }
 @media (min-width: 1024px) { .hidden-desktop { display: none; } }
 
+/* Show only on specific breakpoints */
+.show-tablet { display: none; }
+@media (min-width: 640px) and (max-width: 1023px) { .show-tablet { display: block; } }
+.show-desktop { display: none; }
+@media (min-width: 1024px) { .show-desktop { display: block; } }
+
 /* Logo sizing - professional standards */
 .logo-responsive {
   width: clamp(48px, 6vw + 30px, 72px);
@@ -356,4 +398,60 @@ button.rounded-full {
 }
 .carousel-container .scroll-snap-start {
   scroll-snap-align: start;
+}
+
+/* Responsive sidebar — static on mobile, sticky on desktop */
+.sidebar-static-mobile {
+  position: static;
+}
+@media (min-width: 1024px) {
+  .sidebar-static-mobile {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+/* Mobile drawer overlay for admin navigation */
+.mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Admin sidebar responsive — static on mobile, sticky on desktop */
+.admin-sidebar {
+  width: 100%;
+  max-width: 16rem;
+}
+
+@media (max-width: 1023px) {
+  .admin-sidebar {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .admin-sidebar-open {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  .admin-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-main {
+    margin-left: 16rem;
+  }
 }

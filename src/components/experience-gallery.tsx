@@ -191,7 +191,7 @@ function SidebarPreview({
         </span>
       </header>
 
-      <ul className="grid grid-cols-3 gap-2">
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         {media.slice(0, PREVIEW_COUNT).map((item, index) => {
           const video = isVideo(item);
           const isMoreTile = hasMore && index === visible.length - 1;

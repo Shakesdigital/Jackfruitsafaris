@@ -76,7 +76,7 @@ export function ContentWithImage({
 
   return (
     <div
-      className={`grid gap-8 items-start lg:grid-cols-2 ${className}`}
+      className={`grid gap-6 sm:gap-8 items-start lg:grid-cols-2 ${className}`}
     >
       {isLeft && imgElement}
       {bodyCol}

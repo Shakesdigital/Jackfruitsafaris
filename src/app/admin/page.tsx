@@ -69,6 +69,16 @@ export default function AdminDashboard() {
             View and manage customer inquiries
           </p>
         </Link>
+
+        <Link
+          href="/admin/travel-insights"
+          className="rounded-lg border border-gray-200 bg-white p-6 hover:shadow-md transition-shadow"
+        >
+          <h2 className="text-lg font-semibold text-gray-900">Travel Insights</h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Write and manage blog articles about travel in Uganda
+          </p>
+        </Link>
       </div>
     </div>
   );

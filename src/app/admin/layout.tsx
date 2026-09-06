@@ -132,6 +132,14 @@ export default async function AdminLayout({
                 Inquiry Leads
               </Link>
             </li>
+              <li>
+              <Link
+                href="/admin/travel-insights"
+                className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+              >
+                Travel Insights
+              </Link>
+            </li>
             <li>
               <Link
                 href="/admin/navigation"

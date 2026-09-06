@@ -42,12 +42,12 @@ export function FullWidthGallery({ images, title = "Safari photo gallery" }: Ful
                   <img
                     src={image.media_url}
                     alt=""
-                    className="h-40 w-full object-cover"
+                    className="h-36 w-full object-cover sm:h-40"
                     loading="lazy"
                     decoding="async"
                   />
                 ) : (
-                  <div className="flex h-40 w-full items-center justify-center bg-gray-100">
+                  <div className="flex h-36 w-full items-center justify-center bg-gray-100 sm:h-40">
                     <Camera size={28} className="text-gray-400" aria-hidden="true" />
                   </div>
                 )}

@@ -1,54 +1,64 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, PenLine } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { CmsRichText } from "@/components/cms-rich-text";
 import { HeroSection } from "@/components/hero-section";
 import { Section } from "@/components/section";
 import {
-  getHomepageGuideArticles,
+  getPublishedTravelGuideArticles,
+  getPublishedTravelGuideArticleCount,
   getPageHero,
-  getPublishedPageContentSections,
 } from "@/lib/cms-data";
-import {
-  getPageSection,
-  getSectionLink,
-  getSectionStringList,
-  getSectionText,
-} from "@/lib/cms-page-content";
 import { pageHeroFallbacks } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 
-export default async function TravelGuidePage() {
-  const [guideArticles, hero, pageSections] = await Promise.all([
-    getHomepageGuideArticles(),
+export const metadata: Metadata = {
+  title: "Travel Guide — Articles & Insights on Uganda Safaris",
+  description:
+    "Practical insights, articles, and blogs about traveling in Uganda, from gorilla trekking to the best time to visit and what to pack.",
+};
+
+const ARTICLES_PER_PAGE = 9;
+
+type TravelGuideArticle = {
+  id: string;
+  slug: string;
+  title: string;
+  category?: string | null;
+  author?: string | null;
+  excerpt?: string | null;
+  content?: string | null;
+  featured_image_url?: string | null;
+  status: string;
+  order_column: number;
+  published_at?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+};
+
+export default async function TravelGuidePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam || "1", 10) || 1);
+  const offset = (currentPage - 1) * ARTICLES_PER_PAGE;
+
+  // Fetch hero (left as-is) and paginated articles in parallel
+  const [hero, articles, totalCount] = await Promise.all([
     getPageHero("/travel-guide"),
-    getPublishedPageContentSections("/travel-guide"),
+    getPublishedTravelGuideArticles({ limit: ARTICLES_PER_PAGE, offset }),
+    getPublishedTravelGuideArticleCount(),
   ]);
+
   const fallback = pageHeroFallbacks["/travel-guide"];
-  const gridSection = getPageSection(pageSections, "guide_topic_grid");
-  const quoteCtaSection = getPageSection(pageSections, "quote_cta");
-
-  // Default articles if none in CMS
-  const defaultArticles = [
-    "Best Time to Visit Uganda for Safari and Gorilla Trekking",
-    "Gorilla Trekking Permit Guide",
-    "What to Pack for a Uganda Safari",
-    "How Many Days Do You Need in Uganda?",
-    "Murchison Falls Safari Guide",
-    "Jinja Adventure Guide",
-  ];
-
-  const articles = guideArticles.length
-    ? guideArticles
-    : getSectionStringList(
-        gridSection,
-        "fallback_articles",
-        defaultArticles,
-      );
+  const totalPages = Math.ceil(totalCount / ARTICLES_PER_PAGE);
 
   return (
     <>
+      {/* Hero — left unchanged */}
       <HeroSection
         badgeText={hero?.badge_text || fallback?.badgeText}
         title={hero?.title || fallback?.title || "Practical Travel Articles"}
@@ -67,33 +77,92 @@ export default async function TravelGuidePage() {
         quickLinks={hero?.quick_links || fallback?.quickLinks}
         ariaLabel="Uganda safari travel guide"
       />
-      <Section
-        eyebrow={gridSection?.subtitle || undefined}
-        title={gridSection?.title || undefined}
-      >
-        <div className="grid gap-5 md:grid-cols-2">
-          {articles.map((article: any) => (
-            <article
-              key={article.id || article}
-              className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6"
-            >
-              <PenLine className="text-[var(--brand-secondary)]" size={22} aria-hidden="true" />
-              <h2 className="mt-4 text-fluid-xl font-black text-[var(--foreground)]">
-                {article.title || article}
-              </h2>
-              <CmsRichText
-                className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]"
-                html={getSectionText(gridSection, "card_body", "Draft this guide from the CMS with practical route advice, transparent cost notes, permit verification reminders, FAQs, and a quote CTA.")}
-              />
-            </article>
-          ))}
+
+      {/* Travel Insight intro — small heading + brief paragraph */}
+      <Section>
+        <div className="mb-10 max-w-3xl">
+          <h2 className="text-fluid-3xl font-black leading-fluid-tight text-[var(--foreground)]">
+            Travel Insight
+          </h2>
+          <p className="mt-4 max-w-2xl text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]">
+            The Travel Insight space is where Jackfruit Safaris shares articles
+            and blogs about travel in Uganda — from gorilla trekking tips and
+            permit guidance to the best time to visit, what to pack, and how
+            much a safari costs. Browse the latest articles below, read the full
+            story on each detail page, and reach out when you're ready to plan
+            your own Ugandan adventure.
+          </p>
         </div>
-        <Link
-          href={getSectionLink(quoteCtaSection, "href", "/request-quote")}
-          className="mt-8 btn-h-responsive inline-flex rounded-full bg-[var(--brand-primary)] px-6 py-3 text-fluid-sm font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-        >
-          {quoteCtaSection?.title || "Ask us to plan your route"}
-        </Link>
+      </Section>
+
+      {/* Article cards — 3 per row, paginated */}
+      <Section className="-mt-6">
+        {articles.length > 0 ? (
+          <>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {articles.map((article: TravelGuideArticle) => (
+                <Link
+                  key={article.id}
+                  href={`/travel-guide/${article.slug}`}
+                  className="group block rounded-[var(--brand-radius)] border border-black/10 bg-white p-6 transition-shadow hover:shadow-lg"
+                >
+                  {article.featured_image_url && (
+                    <img
+                      src={article.featured_image_url}
+                      alt={article.title}
+                      className="mb-4 h-40 w-full rounded-[var(--brand-radius)] object-cover ring-1 ring-black/5"
+                    />
+                  )}
+                  <h3 className="text-fluid-xl font-black text-[var(--foreground)] group-hover:text-[var(--brand-primary)] transition-colors">
+                    {article.title}
+                  </h3>
+                  {article.excerpt && (
+                    <CmsRichText
+                      className="mt-3 text-fluid-sm leading-6 text-[var(--brand-muted-text)]"
+                      html={article.excerpt}
+                    />
+                  )}
+                  <p className="mt-4 text-xs font-medium uppercase tracking-wide text-[var(--brand-secondary)]">
+                    Read the full story →
+                  </p>
+                </Link>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <nav
+                className="mt-10 flex items-center justify-center gap-2"
+                aria-label="Travel Insight pagination"
+              >
+                {currentPage > 1 && (
+                  <Link
+                    href={`/travel-guide?page=${currentPage - 1}`}
+                    className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    ← Previous
+                  </Link>
+                )}
+                <span className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+                {currentPage < totalPages && (
+                  <Link
+                    href={`/travel-guide?page=${currentPage + 1}`}
+                    className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    Next →
+                  </Link>
+                )}
+              </nav>
+            )}
+          </>
+        ) : (
+          <p className="text-fluid-sm text-[var(--brand-muted-text)]">
+            No articles have been published yet. Check back soon for Travel
+            Insights from Jackfruit Safaris.
+          </p>
+        )}
       </Section>
     </>
   );
