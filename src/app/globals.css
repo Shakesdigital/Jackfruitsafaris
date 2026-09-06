@@ -406,19 +406,34 @@ img {
   scroll-snap-align: start;
 }
 
-/* Accreditation logos: continuous horizontal slide animation */
+/* Accreditation logos: continuous horizontal slide animation (mobile-first) */
 /*
- * The outer .accreditation-track clips overflow and pauses the animation on hover.
- * The inner .accreditation-logos is duplicated (2x logos) and slides from 0 → -50%
- * of its total width, producing a seamless infinite loop.
+ * The outer .accreditation-track clips overflow (overflow: hidden) and pauses
+ * the animation on hover. The inner .accreditation-logos is duplicated (2x
+ * logos) and slides from 0 → -50% of its total width, producing a seamless
+ * infinite loop.
+ *
+ * This animation runs on ALL screen sizes. On mobile fewer logos are visible
+ * at once, so the duration is longer (32s) to keep the perceived sliding
+ * speed comfortable. On tablet+ more logos are visible, so we speed up (24s).
  */
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
+  .accreditation-section .accreditation-track {
+    overflow: hidden;
+  }
   .accreditation-section .accreditation-logos {
-    animation: slide-logos 30s linear infinite;
+    animation: slide-logos 32s linear infinite;
     width: max-content;
   }
   .accreditation-section .accreditation-track:hover .accreditation-logos {
     animation-play-state: paused;
+  }
+}
+
+/* On tablet+, speed up slightly since more logos are visible at once */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .accreditation-section .accreditation-logos {
+    animation-duration: 24s;
   }
 }
 @keyframes slide-logos {

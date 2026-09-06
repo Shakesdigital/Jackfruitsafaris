@@ -17,8 +17,12 @@ const accreditationLogos = [
  * blends seamlessly into the section behind it.
  *
  * The logos slide horizontally via a CSS keyframe animation (no external
- * dependencies). The animation pauses on hover and is disabled entirely
- * under prefers-reduced-motion.
+ * dependencies). The animation runs on all screen sizes and is disabled
+ * entirely under prefers-reduced-motion. It pauses on hover.
+ *
+ * The logo set is duplicated (2×) so the animation loops seamlessly
+ * end-to-end. On mobile fewer badges are visible at once, but the
+ * continuous sliding ensures the full set is discoverable.
  */
 export function AccreditationLogos() {
   // Duplicate the set so the animation loops seamlessly end-to-end.
@@ -32,17 +36,21 @@ export function AccreditationLogos() {
           Trusted by leading Ugandan tourism bodies
         </p>
 
+        {/*
+          overflow-hidden clips the sliding animation on every breakpoint.
+          On mobile the badges still move but are contained within the track.
+        */}
         <div
           ref={trackRef as RefObject<HTMLDivElement>}
-          className="accreditation-track relative mt-6 flex items-center gap-6 sm:gap-8 md:gap-10"
+          className="accreditation-track relative mt-6 flex items-center gap-4 overflow-hidden sm:gap-6 md:gap-8"
         >
-          <div className="accreditation-logos flex items-center gap-6 sm:gap-8 md:gap-10">
+          <div className="accreditation-logos flex items-center gap-4 sm:gap-6 md:gap-8">
             {allLogos.map((logo, index) => (
               <Logo
                 key={`${logo.alt}-${index}`}
                 src={logo.src}
                 alt={logo.alt}
-                className="h-14 w-auto opacity-80 transition-opacity duration-300 hover:opacity-100 sm:h-16"
+                className="h-10 w-auto opacity-80 transition-opacity duration-300 hover:opacity-100 sm:h-12 md:h-14"
               />
             ))}
           </div>
@@ -60,7 +68,7 @@ function Logo({ className, ...props }: LogoProps) {
       className={`shrink-0 object-contain ${className ?? ""}`}
       loading="lazy"
       decoding="async"
-      sizes="(max-width: 640px) 120px, 144px"
+      sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 144px"
       {...props}
     />
   );
