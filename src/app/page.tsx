@@ -11,6 +11,7 @@ import { CmsRichText } from "@/components/cms-rich-text";
 import { HeroSection } from "@/components/hero-section";
 import { SafariCard } from "@/components/safari-card";
 import { Carousel } from "@/components/carousel";
+import { AccreditationLogos } from "@/components/accreditation-logos";
 import { Section } from "@/components/section";
 import {
   experiences as hardcodedExperiences,
@@ -327,6 +328,9 @@ export default async function Home() {
           </div>
         </div>
       </Section>
+
+      {/* Accreditation Logos */}
+      <AccreditationLogos />
     </>
   );
 }

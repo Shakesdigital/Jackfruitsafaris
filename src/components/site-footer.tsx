@@ -61,13 +61,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
             {settings?.footer_tagline ||
               "Private Uganda safaris, gorilla trekking, Nile adventures, culture, and reliable transport planned from Jinja."}
           </p>
-          <p
-            className="mt-5 max-w-xl text-center text-fluid-sm leading-7 sm:text-left"
-            style={{ color: "var(--footer-muted-text)" }}
-          >
-            {settings?.footer_note ||
-              "Prices are shown as planning guidance and remain subject to permit, park fee, lodge, and vehicle availability at the time of quotation."}
-          </p>
+
         </div>
 
         {/* Quick Links */}

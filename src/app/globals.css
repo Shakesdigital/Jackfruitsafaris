@@ -400,6 +400,23 @@ button.rounded-full {
   scroll-snap-align: start;
 }
 
+/* Accreditation logos: continuous horizontal slide animation */
+.accreditation-section .accreditation-track {
+  scrollbar-width: none;
+}
+.accreditation-section .accreditation-track::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .accreditation-section .accreditation-logos {
+    animation: slide-logos 30s linear infinite;
+  }
+}
+@keyframes slide-logos {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* Responsive sidebar — static on mobile, sticky on desktop */
 .sidebar-static-mobile {
   position: static;
