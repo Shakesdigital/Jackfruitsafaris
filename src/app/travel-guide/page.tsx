@@ -141,19 +141,19 @@ export default async function TravelGuidePage({
                   <Link
                     href={`/travel-guide?page=${currentPage - 1}`}
                     title="Previous page of travel articles"
-                    className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="rounded-full border border-gray-300 px-4 py-2 text-fluid-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
                   >
                     ← Previous
                   </Link>
                 )}
-                <span className="text-sm text-gray-600">
+                <span className="text-fluid-sm text-gray-600">
                   Page {currentPage} of {totalPages}
                 </span>
                 {currentPage < totalPages && (
                   <Link
                     href={`/travel-guide?page=${currentPage + 1}`}
                     title="Next page of travel articles"
-                    className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="rounded-full border border-gray-300 px-4 py-2 text-fluid-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
                   >
                     Next →
                   </Link>

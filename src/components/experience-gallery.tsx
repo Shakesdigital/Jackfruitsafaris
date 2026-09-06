@@ -278,7 +278,7 @@ function GridModal({ media, experienceTitle, onClose, onOpenViewer }: GridModalP
             type="button"
             onClick={onClose}
             aria-label="Close gallery"
-            className="flex size-9 items-center justify-center rounded-full border border-black/10 bg-white text-[var(--foreground)] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)]"
+            className="flex size-10 items-center justify-center rounded-full border border-black/10 bg-white text-[var(--foreground)] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)]"
           >
             <X size={18} />
           </button>

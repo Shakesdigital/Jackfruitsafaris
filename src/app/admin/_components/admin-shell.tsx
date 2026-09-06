@@ -79,7 +79,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 <Link
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className="block px-4 py-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+                  className="block min-h-[44px] px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
                 >
                   {item.label}
                 </Link>

@@ -132,7 +132,7 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
 
       <div
         className="container-responsive mt-10 border-t pt-6 text-center text-fluid-xs"
-        style={{ borderColor: "var(--footer-muted-text)", opacity: 0.3 }}
+        style={{ borderColor: "#ffffff", opacity: 0.3 }}
       >
         {settings?.footer_copy || (
           <>
@@ -141,7 +141,8 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
               href="https://shakesdigital.com/"
               target="_blank"
               rel="noreferrer"
-              className="underline hover:text-[var(--brand-accent)]"
+              className="underline decoration-white/50 hover:decoration-white hover:text-[var(--brand-accent)]"
+              style={{ color: "var(--footer-text)" }}
             >
               Shakes Digital
             </a>

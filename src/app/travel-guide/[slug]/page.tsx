@@ -94,7 +94,7 @@ export default async function TravelGuideArticlePage({ params }: Props) {
               {article.title}
             </h1>
             {(formattedDate || article.author) && (
-              <p className="mt-4 text-sm text-white/70">
+              <p className="mt-4 text-fluid-sm text-white/70">
                 {formattedDate && <time dateTime={article.published_at || undefined}>{formattedDate}</time>}
                 {article.author && formattedDate && " · "}
                 {article.author && <span>{article.author}</span>}

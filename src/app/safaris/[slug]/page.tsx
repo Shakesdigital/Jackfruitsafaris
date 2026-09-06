@@ -310,6 +310,7 @@ export default async function SafariDetailPage({ params }: Props) {
               </p>
               <Link
                 href="/request-quote"
+                title="Request a custom safari quote for this itinerary"
                 className="mt-5 btn-h-responsive inline-flex rounded-full bg-[var(--brand-accent)] px-5 py-3 text-fluid-sm font-black text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
                 Customize this itinerary

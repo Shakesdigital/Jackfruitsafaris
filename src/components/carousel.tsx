@@ -131,10 +131,10 @@ if (itemCount <= 0) return null;
               container.scrollLeft = getCardStep() * idx;
             }}
             aria-label={`Go to slide ${idx + 1}`}
-            className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="flex h-12 w-12 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <span
-              className={`block h-2.5 w-2.5 rounded-full transition-colors ${
+              className={`block h-3 w-3 rounded-full transition-colors ${
                 idx === activeIndex
                   ? "bg-[var(--brand-accent)]"
                   : "bg-gray-300 hover:bg-gray-400"

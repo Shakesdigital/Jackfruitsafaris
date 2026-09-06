@@ -421,7 +421,9 @@ function HighlightsSection({ safari }: { safari: SafariRecord | null }) {
       <button
         type="button"
         onClick={() => setClientRows([...clientRows, { text: "", image_url: null, image_alignment: null }])}
-        className="mt-3 rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+        className="mt-3 min-h-[44px] rounded-md border border-gray-300 px-3 py-3 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+      >
+        Add Row
       </button>
     </div>
   );
@@ -527,7 +529,8 @@ function PageSectionsSection({ safari }: { safari: SafariRecord | null }) {
             { key: "", title: "", body: "", image_url: null, image_alignment: null },
           ])
         }
-        className="mt-3 rounded-md border border-gray-300 px-3 py-2.5 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+        className="mt-3 min-h-[44px] rounded-md border border-gray-300 px-3 py-3 text-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+      >
         Add Section
       </button>
     </div>

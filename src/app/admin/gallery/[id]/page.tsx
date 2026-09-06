@@ -69,7 +69,7 @@ export default async function GalleryEditPage({ params, searchParams }: Props) {
         <p className="mt-3 text-sm leading-6 text-red-900">{result.error}</p>
         <Link
           href="/admin/gallery"
-          className="mt-5 inline-flex rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-100"
+          className="mt-5 inline-flex min-h-[44px] rounded-md border border-red-300 bg-white px-4 py-3 text-sm font-medium text-red-800 hover:bg-red-100 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         >
           Back to gallery
         </Link>
@@ -257,13 +257,13 @@ export default async function GalleryEditPage({ params, searchParams }: Props) {
         <div className="flex gap-3 pt-4">
           <Link
             href="/admin/gallery"
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className="rounded-md border border-gray-300 min-h-[44px] px-4 py-3 text-sm hover:bg-gray-50 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Cancel
           </Link>
           <button
             type="submit"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+            className="rounded-md bg-blue-600 min-h-[44px] px-4 py-3 text-sm text-white hover:bg-blue-700 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             {isNew ? "Create gallery image" : "Save gallery image"}
           </button>
