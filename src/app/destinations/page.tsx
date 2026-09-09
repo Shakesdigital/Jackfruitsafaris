@@ -87,6 +87,7 @@ export default async function DestinationsPage() {
             {introText}
           </p>
         }
+        introImage={hero?.intro_image || fallback?.introImage}
       >
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {displayedDestinations.map((destination: any) => (

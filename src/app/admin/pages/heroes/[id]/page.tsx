@@ -20,6 +20,7 @@ type PageHero = {
   subtitle?: string | null;
   intro?: string | null;
   background_image?: string | null;
+  intro_image?: string | null;
   cta_primary?: string | null;
   cta_secondary?: string | null;
   cta_primary_href?: string | null;
@@ -179,6 +180,13 @@ export default async function PageHeroEdit({ params, searchParams }: Props) {
           fileName="background_image_file"
           label="Background Image"
           currentUrl={hero?.background_image}
+        />
+
+        <ImageUploadField
+          name="intro_image"
+          fileName="intro_image_file"
+          label="Intro Image (right side of hero)"
+          currentUrl={hero?.intro_image}
         />
 
         {pageSlug === "/about" && (

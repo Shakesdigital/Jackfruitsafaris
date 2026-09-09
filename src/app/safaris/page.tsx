@@ -104,6 +104,7 @@ export default async function SafarisPage() {
         <Section
           eyebrow={safariIntroSection?.subtitle || undefined}
           title={safariIntroSection?.title || undefined}
+          introImage={hero?.intro_image || fallback?.introImage}
         >
           <CmsRichText
             className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
@@ -118,6 +119,7 @@ export default async function SafarisPage() {
         <Section
           eyebrow={safariIntroFallback.subtitle}
           title={safariIntroFallback.title}
+          introImage={hero?.intro_image || fallback?.introImage}
         >
           <CmsRichText
             className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"

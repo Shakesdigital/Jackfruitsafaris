@@ -153,6 +153,12 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
               label="Homepage Hero Image"
               currentUrl={initialSettings.hero_image as string | null}
             />
+            <ImageUploadField
+              name="hero_intro_image"
+              fileName="hero_intro_image_file"
+              label="Homepage Intro Image (right side)"
+              currentUrl={initialSettings.hero_intro_image as string | null}
+            />
           </div>
         </div>
 

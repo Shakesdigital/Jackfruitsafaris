@@ -883,6 +883,7 @@ export type PageHeroFallback = {
   subtitle?: string;
   intro: string;
   backgroundImage?: string;
+  introImage?: string;
   eyebrow?: string;
   badgeText?: string;
   ctaPrimary?: { label: string; href: string };
@@ -897,6 +898,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     intro:
       "Private Uganda safaris, gorilla trekking, Jinja adventures, cultural experiences, and reliable airport transfers planned by Jackfruit Safaris from Jinja.",
     backgroundImage: images.hero,
+    introImage: "/images/Home page inro.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
@@ -906,6 +908,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     intro:
       "Jackfruit Safaris is a registered Ugandan tour company born from a simple idea: tourism should support the communities that call Uganda home.",
     backgroundImage: images.gorilla,
+    introImage: "/images/About us page intro.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
     content: {
@@ -925,6 +928,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     intro:
       "Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda's landscapes and wildlife as budget, mid-range, or luxury private trips.",
     backgroundImage: images.savannah,
+    introImage: "/images/Safaris Intro.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
@@ -934,6 +938,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     intro:
       "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote.",
     backgroundImage: images.falls,
+    introImage: "/images/Destinations.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
@@ -943,6 +948,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     intro:
       "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary.",
     backgroundImage: images.forest,
+    introImage: "/images/Experiences intro best.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
@@ -952,6 +958,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     intro:
       "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason.",
     backgroundImage: images.nile,
+    introImage: "/images/Reviews.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },
@@ -961,6 +968,7 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     intro:
       "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility.",
     backgroundImage: images.culture,
+    introImage: "/images/Travel guide intro best.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
   },

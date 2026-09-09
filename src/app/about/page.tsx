@@ -177,7 +177,7 @@ export default async function AboutPage() {
       />
 
       {/* Founder's story / brief intro — rendered from page_heroes.content.intro_body */}
-      <Section>
+      <Section introImage={hero?.intro_image || fallback?.introImage}>
         <CmsRichText
           className="prose prose-lg max-w-3xl text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
           html={heroContent.intro_body || fallback?.content?.intro_body || ""}

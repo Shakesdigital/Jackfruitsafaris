@@ -69,6 +69,7 @@ export default async function ExperiencesPage() {
         <Section
           eyebrow={introSection?.subtitle || undefined}
           title={introSection?.title || undefined}
+          introImage={hero?.intro_image || fallback?.introImage}
         >
           <CmsRichText
             className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"
@@ -83,6 +84,7 @@ export default async function ExperiencesPage() {
         <Section
           eyebrow={experienceIntroFallback.subtitle}
           title={experienceIntroFallback.title}
+          introImage={hero?.intro_image || fallback?.introImage}
         >
           <CmsRichText
             className="text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]"

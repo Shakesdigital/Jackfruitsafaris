@@ -61,6 +61,7 @@ export default async function ReviewsPage() {
       <Section
         eyebrow={gridSection?.subtitle || undefined}
         title={gridSection?.title || undefined}
+        introImage={hero?.intro_image || fallback?.introImage}
       >
         <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (

@@ -157,6 +157,7 @@ export default async function Home() {
         eyebrow={getStringValue(whyUgandaSection, "subtitle", getStringValue(settings, "why_uganda_eyebrow", "Why Uganda"))}
         title={getStringValue(whyUgandaSection, "title", getStringValue(settings, "why_uganda_title", "One compact country, many safari worlds"))}
         intro={<CmsRichText html={getSectionText(whyUgandaSection, "intro", getStringValue(settings, "why_uganda_intro", "Uganda can take you from the River Nile to open savannah, roaring waterfalls, crater lakes, rainforest chimpanzees, and mountain gorillas in one carefully routed journey."))} />}
+        introImage={getStringValue(settings, "hero_intro_image", pageHeroFallbacks["/"]?.introImage || "")}
       >
         {(() => {
           const whyUgandaBgImage = getSectionText(whyUgandaSection, "background_image", "");

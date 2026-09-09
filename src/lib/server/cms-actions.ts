@@ -260,6 +260,7 @@ const siteSettingsSchema = z.object({
   cta_intro: z.string().optional(),
   cta_button: z.string().optional(),
   hero_image: z.string().url().optional().or(z.literal("")),
+  hero_intro_image: z.string().url().optional().or(z.literal("")),
   brand_primary_color: z.string().optional(),
   brand_secondary_color: z.string().optional(),
   brand_accent_color: z.string().optional(),
@@ -302,6 +303,10 @@ export async function upsertSiteSettings(formData: FormData) {
     (await uploadImageFromForm(supabase, formData, "hero_image_file", "branding/heroes", "/admin/settings")) ||
     formData.get("hero_image") ||
     undefined;
+  const heroIntroImage =
+    (await uploadImageFromForm(supabase, formData, "hero_intro_image_file", "branding/heroes", "/admin/settings")) ||
+    formData.get("hero_intro_image") ||
+    undefined;
 
   const parsed = siteSettingsSchema.safeParse({
     business_name: formData.get("business_name"),
@@ -336,6 +341,7 @@ export async function upsertSiteSettings(formData: FormData) {
     cta_intro: formData.get("cta_intro") || undefined,
     cta_button: formData.get("cta_button") || undefined,
     hero_image: heroImage,
+    hero_intro_image: heroIntroImage,
     brand_primary_color: formData.get("brand_primary_color") || undefined,
     brand_secondary_color: formData.get("brand_secondary_color") || undefined,
     brand_accent_color: formData.get("brand_accent_color") || undefined,
@@ -1457,6 +1463,7 @@ const pageHeroSchema = z.object({
   subtitle: z.string().optional(),
   intro: z.string().optional(),
   background_image: z.string().url().optional().or(z.literal("")),
+  intro_image: z.string().url().optional().or(z.literal("")),
   cta_primary: z.string().optional(),
   cta_secondary: z.string().optional(),
   cta_primary_href: z.string().optional(),
@@ -1486,6 +1493,17 @@ export async function upsertPageHero(formData: FormData) {
       `/admin/pages/heroes/${formData.get("id") || "new"}`,
     )) ||
     formData.get("background_image") ||
+    undefined;
+
+  const introImage =
+    (await uploadImageFromForm(
+      supabase,
+      formData,
+      "intro_image_file",
+      `media/page_heroes/${String(formData.get("page_slug") || "page").replace(/[^a-zA-Z0-9-]/g, "_")}`,
+      `/admin/pages/heroes/${formData.get("id") || "new"}`,
+    )) ||
+    formData.get("intro_image") ||
     undefined;
 
   const detailContent = Object.fromEntries(
@@ -1518,6 +1536,7 @@ export async function upsertPageHero(formData: FormData) {
     subtitle: formData.get("subtitle") || undefined,
     intro: formData.get("intro") || undefined,
     background_image: backgroundImage,
+    intro_image: introImage,
     cta_primary: formData.get("cta_primary") || undefined,
     cta_secondary: formData.get("cta_secondary") || undefined,
     cta_primary_href: formData.get("cta_primary_href") || undefined,

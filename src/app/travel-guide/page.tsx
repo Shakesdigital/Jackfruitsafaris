@@ -77,7 +77,7 @@ export default async function TravelGuidePage({
       />
 
       {/* Travel Insight intro — small heading + brief paragraph */}
-      <Section>
+      <Section introImage={hero?.intro_image || fallback?.introImage}>
         <div className="mb-10 max-w-3xl">
           <h2 className="text-fluid-3xl font-black leading-fluid-tight text-[var(--foreground)]">
             Travel Insight
