@@ -6,7 +6,7 @@ type SectionProps = {
   intro?: ReactNode;
   /** Optional image rendered on the right side of the intro text on desktop */
   introImage?: string;
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
 };
 
@@ -50,10 +50,10 @@ export function Section({
             <img
               src={introImage}
               alt=""
-              className="aspect-[4/3] w-full max-w-sm rounded-[var(--brand-radius)] object-cover shadow-lg"
+              className="aspect-[3/4] w-full max-w-sm rounded-[var(--brand-radius)] object-cover object-top shadow-lg"
               loading="lazy"
               decoding="async"
-              sizes="(max-width: 1024px) 100vw, 40vw"
+              sizes="(max-width: 1024px) 100vw, 30vw"
             />
           </div>
         ) : (

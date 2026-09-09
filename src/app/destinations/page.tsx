@@ -79,6 +79,7 @@ export default async function DestinationsPage() {
         ariaLabel="Uganda safari destinations"
       />
 
+      {/* Introduction section with right-side image */}
       <Section
         eyebrow={gridSection?.subtitle || undefined}
         title={getSectionText(gridSection, "fallback_title", "Uganda's premier adventure destinations")}
@@ -88,7 +89,10 @@ export default async function DestinationsPage() {
           </p>
         }
         introImage={hero?.intro_image || fallback?.introImage}
-      >
+      />
+
+      {/* Destination grid — separate row below the intro */}
+      <Section className="pt-0">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {displayedDestinations.map((destination: any) => (
             <Link
@@ -111,7 +115,7 @@ export default async function DestinationsPage() {
                   {destination.name}
                 </h2>
                 <p className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]">
-                  {destination.overview}
+                  {destination.overview || destination.summary}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-fluid-sm font-black text-[var(--brand-primary)]">
                   View destination

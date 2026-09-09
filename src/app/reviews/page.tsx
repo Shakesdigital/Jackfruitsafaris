@@ -58,11 +58,20 @@ export default async function ReviewsPage() {
         }}
         ariaLabel="Guest reviews"
       />
+      {/* Introduction section with right-side image */}
       <Section
-        eyebrow={gridSection?.subtitle || undefined}
-        title={gridSection?.title || undefined}
+        eyebrow={gridSection?.subtitle || "Guest reviews"}
+        title={gridSection?.title || "Hear from travelers"}
+        intro={
+          <p className="max-w-2xl text-fluid-lg leading-fluid-relaxed text-[var(--brand-muted-text)]">
+            {hero?.intro || fallback?.intro || "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason."}
+          </p>
+        }
         introImage={hero?.intro_image || fallback?.introImage}
-      >
+      />
+
+      {/* Review cards — separate row below the intro */}
+      <Section className="pt-0">
         <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
           {testimonials.map((review: any, index: number) => (
             <article key={review.guest_name + index} className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
