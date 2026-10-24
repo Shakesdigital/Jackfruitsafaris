@@ -394,8 +394,8 @@ export async function getAdminExperiences() {
   const supabase = await createAdminClient();
   const { data } = await supabase
     .from("experiences")
-    .select("id, slug, name, category, status, updated_at")
-    .order("updated_at", { ascending: false });
+    .select("id, slug, name, category, duration, order_column, status, updated_at")
+    .order("order_column", { ascending: true });
   return data || [];
 }
 

@@ -8,6 +8,8 @@ type Experience = {
   slug: string;
   name: string;
   category: string | null;
+  duration: string | null;
+  order_column: number;
   status: string;
   updated_at: string;
 };
@@ -42,6 +44,12 @@ export default async function ExperiencesPage() {
                 Category
               </th>
               <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Duration
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Order
+              </th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
               </th>
               <th className="relative px-3 sm:px-6 py-3">
@@ -56,6 +64,8 @@ export default async function ExperiencesPage() {
                   {e.name}
                 </td>
                 <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">{e.category}</td>
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">{e.duration || "—"}</td>
+                <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">{e.order_column}</td>
                 <td className="px-3 sm:px-6 py-4 text-sm">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
@@ -79,7 +89,7 @@ export default async function ExperiencesPage() {
             ))}
             {!experiences?.length && (
               <tr>
-                <td colSpan={4} className="px-3 sm:px-6 py-4 text-center text-sm text-gray-500">
+                <td colSpan={6} className="px-3 sm:px-6 py-4 text-center text-sm text-gray-500">
                   No experiences yet.{" "}
                   <Link href="/admin/experiences/new" className="text-blue-600">
                     Create one

@@ -119,12 +119,95 @@ export default async function ExperienceEditPage({ params }: Props) {
           </label>
         </div>
 
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Duration</span>
+            <input
+              name="duration"
+              defaultValue={experience?.duration}
+              placeholder="e.g. 3 days, Half-day"
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Price From (USD)</span>
+            <input
+              type="number"
+              name="price_from"
+              defaultValue={experience?.price_from ?? ""}
+              placeholder="e.g. 150"
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">CTA Label</span>
+            <input
+              name="cta_label"
+              defaultValue={experience?.cta_label}
+              placeholder="e.g. Book Now"
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">CTA URL</span>
+            <input
+              name="cta_url"
+              defaultValue={experience?.cta_url}
+              placeholder="/request-quote"
+              className="mt-1 block w-full rounded-md border-gray-300 font-mono"
+            />
+          </label>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Location</span>
+            <input
+              name="location"
+              defaultValue={experience?.location}
+              placeholder="Bwindi Impenetrable National Park"
+              className="mt-1 block w-full rounded-md border-gray-300"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Icon</span>
+            <select
+              name="icon"
+              defaultValue={experience?.icon || ""}
+              className="mt-1 block w-full rounded-md border-gray-300 text-sm"
+            >
+              <option value="">— Default (from content) —</option>
+              <option value="binoculars">Binoculars</option>
+              <option value="calendar">Calendar</option>
+              <option value="camera">Camera</option>
+              <option value="car">Car</option>
+              <option value="cash">Cash</option>
+              <option value="compass">Compass</option>
+              <option value="heart">Heart</option>
+              <option value="map">Map</option>
+              <option value="message">Message</option>
+              <option value="mountain">Mountain</option>
+              <option value="shield">Shield</option>
+              <option value="sparkles">Sparkles</option>
+              <option value="star">Star</option>
+              <option value="trees">Trees</option>
+              <option value="waves">Waves</option>
+            </select>
+          </label>
+        </div>
+
         <label className="block">
-          <span className="text-sm font-medium text-gray-700">Location</span>
+          <span className="text-sm font-medium text-gray-700">Order Column</span>
           <input
-            name="location"
-            defaultValue={experience?.location}
-            placeholder="Bwindi Impenetrable National Park"
+            type="number"
+            name="order_column"
+            defaultValue={experience?.order_column ?? 0}
             className="mt-1 block w-full rounded-md border-gray-300"
           />
         </label>
@@ -149,6 +232,17 @@ export default async function ExperienceEditPage({ params }: Props) {
           />
         </label>
 
+        <label className="block">
+          <span className="text-sm font-medium text-gray-700">Safety Notes</span>
+          <textarea
+            name="safety_notes"
+            defaultValue={experience?.safety_notes}
+            rows={3}
+            placeholder="e.g. Gorilla trekking requires fitness for 2-7 hour hikes at altitude..."
+            className="mt-1 block w-full rounded-md border-gray-300"
+          />
+        </label>
+
         <ImageUploadField
           name="featured_image_url"
           fileName="featured_image_file"
@@ -158,10 +252,18 @@ export default async function ExperienceEditPage({ params }: Props) {
 
         <ListEditor
           name="bullets"
-          label="Bullet Points"
+          label="Included (Bullet Points)"
           values={experience?.included || []}
           placeholder="Permit guidance and route planning"
           emptyRows={4}
+        />
+
+        <ListEditor
+          name="excluded"
+          label="Excluded"
+          values={experience?.excluded || []}
+          placeholder="e.g. International flights, Travel insurance"
+          emptyRows={2}
         />
 
         <SEOFields experience={experience} />

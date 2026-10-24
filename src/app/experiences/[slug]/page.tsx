@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
@@ -32,8 +32,15 @@ type Experience = {
   slug: string;
   name: string;
   summary: string | null;
+  description: string | null;
+  duration: string | null;
+  price_from: number | null;
   featured_image_url: string | null;
   included: string[];
+  excluded: string[];
+  safety_notes: string | null;
+  cta_label: string | null;
+  cta_url: string | null;
 };
 
 export const dynamic = "force-dynamic";
@@ -76,7 +83,11 @@ export default async function ExperienceDetailPage({ params }: Props) {
     image: s.featured_image_url || "",
   }));
 
-  const bullets = experience.included || experience.bullets || [];
+  const includedItems = experience.included || experience.bullets || [];
+  const excludedItems = experience.excluded || [];
+
+  const ctaLabel = experience.cta_label || "Plan My Safari";
+  const ctaHref = experience.cta_url || "/request-quote";
 
   return (
     <>
@@ -85,8 +96,8 @@ export default async function ExperienceDetailPage({ params }: Props) {
         intro={experience.summary || ""}
         backgroundImage={experience.featured_image_url || undefined}
         ctaPrimary={{
-          label: "Plan My Safari",
-          href: "/request-quote",
+          label: ctaLabel,
+          href: ctaHref,
         }}
         ctaSecondary={{
           label: "View All Safaris",
@@ -98,8 +109,25 @@ export default async function ExperienceDetailPage({ params }: Props) {
       <Section>
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
           <article className="space-y-10">
+            {(experience.duration || experience.price_from) && (
+              <div className="flex flex-wrap gap-4 text-fluid-sm font-bold">
+                {experience.duration && (
+                  <span className="inline-flex items-center gap-1 text-[var(--brand-secondary)]">
+                    <span className="text-xs uppercase tracking-wider">Duration:</span>
+                    {experience.duration}
+                  </span>
+                )}
+                {experience.price_from && (
+                  <span className="inline-flex items-center gap-1 text-[var(--brand-secondary)]">
+                    <span className="text-xs uppercase tracking-wider">From:</span>
+                    USD {experience.price_from.toLocaleString()} per person
+                  </span>
+                )}
+              </div>
+            )}
+
             <div className="grid gap-4 sm:grid-cols-2">
-              {bullets.map((item: string) => (
+              {includedItems.map((item: string) => (
                 <p
                   key={item}
                   className="flex gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4 text-fluid-sm font-bold leading-6 text-[var(--foreground)]"
@@ -109,6 +137,48 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 </p>
               ))}
             </div>
+
+            {excludedItems.length > 0 && (
+              <div className="space-y-3">
+                <h2 className="text-fluid-xl font-black text-[var(--foreground)]">
+                  What's Not Included
+                </h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {excludedItems.map((item: string) => (
+                    <p
+                      key={item}
+                      className="flex gap-3 rounded-[var(--brand-radius)] bg-gray-50 p-4 text-fluid-sm font-bold leading-6 text-[var(--brand-muted-text)]"
+                    >
+                      <XCircle className="mt-0.5 shrink-0 text-red-500" size={18} aria-hidden="true" />
+                      {item}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {experience.safety_notes && (
+              <div className="rounded-[var(--brand-radius)] border border-amber-200 bg-amber-50 p-6">
+                <h2 className="text-fluid-xl font-black text-[var(--foreground)]">
+                  Safety Notes
+                </h2>
+                <p className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]">
+                  {experience.safety_notes}
+                </p>
+              </div>
+            )}
+
+            {experience.description && (
+              <div className="space-y-4">
+                <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
+                  About This Experience
+                </h2>
+                <p className="text-fluid-base leading-8 text-[var(--brand-muted-text)]">
+                  {experience.description}
+                </p>
+              </div>
+            )}
+
             <div className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
               <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">
                 How Jackfruit Safaris plans this
@@ -120,13 +190,14 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 or park and permit rules.
               </p>
               <Link
-                href="/request-quote"
-                title="Add this experience to your safari trip"
+                href={ctaHref}
+                title={ctaLabel}
                 className="mt-5 btn-h-responsive inline-flex rounded-full bg-[var(--brand-primary)] px-5 py-3 text-fluid-sm font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
               >
-                Add this to my trip
+                {ctaLabel === "Plan My Safari" ? "Add this to my trip" : ctaLabel}
               </Link>
             </div>
+
             <div>
               <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">
                 Recommended safaris

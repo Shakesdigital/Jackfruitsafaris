@@ -737,6 +737,11 @@ export async function upsertDestination(formData: FormData) {
 }
 
 // Experience Actions
+const iconName = z.enum([
+  "binoculars","calendar","camera","car","cash","compass","heart","map",
+  "message","mountain","shield","sparkles","star","trees","waves",
+]);
+
 const experienceSchema = z.object({
   slug: z.string().min(1),
   name: z.string().min(1),
@@ -745,6 +750,14 @@ const experienceSchema = z.object({
   description: z.string().optional(),
   duration: z.string().optional(),
   location: z.string().optional(),
+  price_from: z.number().optional(),
+  safety_notes: z.string().optional(),
+  included: z.array(z.string()).optional(),
+  excluded: z.array(z.string()).optional(),
+  cta_label: z.string().optional(),
+  cta_url: z.string().optional(),
+  icon: iconName.optional(),
+  order_column: z.number().int().default(0),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
   meta_title: z.string().optional(),
   meta_description: z.string().optional(),
@@ -779,6 +792,18 @@ export async function upsertExperience(formData: FormData) {
     description: formData.get("description") || undefined,
     duration: formData.get("duration") || undefined,
     location: formData.get("location") || undefined,
+    price_from: formData.get("price_from")
+      ? parseFloat(formData.get("price_from") as string)
+      : undefined,
+    safety_notes: formData.get("safety_notes") || undefined,
+    included: parseJsonField(formData.get("bullets"), []),
+    excluded: parseJsonField(formData.get("excluded"), []),
+    cta_label: formData.get("cta_label") || undefined,
+    cta_url: formData.get("cta_url") || undefined,
+    icon: (formData.get("icon") as string) || undefined,
+    order_column: formData.get("order_column")
+      ? parseInt(formData.get("order_column") as string)
+      : 0,
     status: formData.get("status") || "draft",
     meta_title: formData.get("meta_title") || undefined,
     meta_description: formData.get("meta_description") || undefined,
@@ -793,12 +818,9 @@ export async function upsertExperience(formData: FormData) {
     );
   }
 
-  const bullets = parseJsonField(formData.get("bullets"), []);
-
   const { error } = await supabase.from("experiences").upsert({
     id: id || undefined,
     ...parsed.data,
-    included: bullets,
     updated_at: new Date().toISOString(),
   });
   redirectOnMutationError(error, `/admin/experiences/${id || "new"}`, "Experience save");
@@ -883,6 +905,7 @@ const teamMemberSchema = z.object({
   social_links: z.record(z.string(), z.any()).optional(),
   display_order: z.number().int().default(0),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
+  photo_url: z.string().url().optional().or(z.literal("")),
   meta_title: z.string().optional(),
   meta_description: z.string().optional(),
   meta_image_url: z.string().url().optional().or(z.literal("")),
@@ -919,6 +942,7 @@ export async function upsertTeamMember(formData: FormData) {
     status: formData.get("status") || "draft",
     meta_title: formData.get("meta_title") || undefined,
     meta_description: formData.get("meta_description") || undefined,
+    photo_url: photoUrl,
     meta_image_url: photoUrl,
   });
 
