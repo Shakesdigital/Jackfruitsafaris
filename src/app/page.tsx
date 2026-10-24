@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
+  BookOpen,
   MapPin,
   MessageCircle,
   ShieldCheck,
@@ -15,6 +16,7 @@ import { AccreditationLogos } from "@/components/accreditation-logos";
 import { Section } from "@/components/section";
 import {
   experiences as hardcodedExperiences,
+  guideArticles,
   iconMap,
   safaris as hardcodedSafaris,
   testimonials as hardcodedTestimonials,
@@ -78,6 +80,8 @@ export default async function Home() {
   const experiencesSection = getPageSection(pageSections, "experiences");
   const reviewsSection = getPageSection(pageSections, "reviews");
   const quoteCtaSection = getPageSection(pageSections, "quote_cta");
+  const quickNavSection = getPageSection(pageSections, "quick_nav");
+  const travelGuideSection = getPageSection(pageSections, "travel_guide");
 
   // Use hardcoded data as fallbacks when CMS returns empty
   const safaris = cmsSafaris.length ? cmsSafaris : hardcodedSafaris.map(s => ({
@@ -250,6 +254,101 @@ export default async function Home() {
         </Carousel>
       </Section>
 
+      {/* Quick Navigation Links */}
+      <Section
+        className="bg-[#f8faf8]"
+        eyebrow={getStringValue(quickNavSection, "subtitle", "Plan with confidence")}
+        title={getStringValue(quickNavSection, "title", "Quick links")}
+        intro={<CmsRichText html={getSectionText(quickNavSection, "intro", "Jump to the pieces you need fast — our most trusted routes, real traveler questions, and direct ways to reach us.")} />}
+      >
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+          <Link
+            href="/safaris"
+            className="group flex items-center gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 transition-shadow hover:shadow-lg"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand-secondary)]/10 text-[var(--brand-secondary)]">
+              <MapPin size={22} aria-hidden="true" />
+            </div>
+            <div className="flex-1">
+              <p className="text-fluid-sm font-black text-[var(--foreground)] group-hover:text-[var(--brand-primary)]">
+                Safari packages
+              </p>
+              <p className="text-fluid-xs text-[var(--brand-muted-text)]">
+                Proven routes from 3 to 10 days
+              </p>
+            </div>
+            <ArrowRight
+              size={16}
+              className="text-[var(--brand-secondary)] transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </Link>
+          <Link
+            href="/destinations"
+            className="group flex items-center gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 transition-shadow hover:shadow-lg"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]">
+              <BadgeCheck size={22} aria-hidden="true" />
+            </div>
+            <div className="flex-1">
+              <p className="text-fluid-sm font-black text-[var(--foreground)] group-hover:text-[var(--brand-primary)]">
+                Destinations
+              </p>
+              <p className="text-fluid-xs text-[var(--brand-muted-text)]">
+                Park guides, best times, and stays
+              </p>
+            </div>
+            <ArrowRight
+              size={16}
+              className="text-[var(--brand-primary)] transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </Link>
+          <Link
+            href="/experiences/gorilla-trekking"
+            className="group flex items-center gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 transition-shadow hover:shadow-lg"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand-accent)]/10 text-[var(--brand-accent)]">
+              <BadgeCheck size={22} aria-hidden="true" />
+            </div>
+            <div className="flex-1">
+              <p className="text-fluid-sm font-black text-[var(--foreground)] group-hover:text-[var(--brand-primary)]">
+                Experiences
+              </p>
+              <p className="text-fluid-xs text-[var(--brand-muted-text)]">
+                Gorillas, Nile, culture, and more
+              </p>
+            </div>
+            <ArrowRight
+              size={16}
+              className="text-[var(--brand-accent)] transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </Link>
+          <Link
+            href="/request-quote"
+            className="group flex items-center gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 transition-shadow hover:shadow-lg"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand-secondary)]/10 text-[var(--brand-secondary)]">
+              <MessageCircle size={22} aria-hidden="true" />
+            </div>
+            <div className="flex-1">
+              <p className="text-fluid-sm font-black text-[var(--foreground)] group-hover:text-[var(--brand-primary)]">
+                Request a quote
+              </p>
+              <p className="text-fluid-xs text-[var(--brand-muted-text)]">
+                Share dates and get a tailored plan
+              </p>
+            </div>
+            <ArrowRight
+              size={16}
+              className="text-[var(--brand-secondary)] transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
+      </Section>
+
       {/* Reviews Section */}
       <Section
         className="bg-white"
@@ -320,6 +419,41 @@ export default async function Home() {
               {getSectionText(quoteCtaSection, "secondary_label", "WhatsApp Jackfruit")}
             </a>
           </div>
+        </div>
+      </Section>
+
+      {/* Travel Guide Articles */}
+      <Section
+        className="bg-[#f8faf8]"
+        eyebrow={getStringValue(travelGuideSection, "subtitle", "Travel advice")}
+        title={getStringValue(travelGuideSection, "title", "Travel guide")}
+        intro={<CmsRichText html={getSectionText(travelGuideSection, "intro", "Practical answers to help you plan with confidence — from best times to packing, permits to prices.")} />}
+      >
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {guideArticles.map((article, index) => (
+            <Link
+              key={article}
+              href={`/travel-guide#${article.toLowerCase().replace(/\s+/g, "-")}`}
+              className="group flex items-start gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 transition-shadow hover:shadow-lg"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]">
+                <BookOpen size={20} aria-hidden="true" />
+              </div>
+              <div className="flex-1">
+                <p className="text-fluid-sm font-black text-[var(--foreground)] group-hover:text-[var(--brand-primary)]">
+                  {article}
+                </p>
+                <p className="mt-1 text-fluid-xs text-[var(--brand-muted-text)]">
+                  {truncateBrief(article, 70)}
+                </p>
+              </div>
+              <ArrowRight
+                size={14}
+                className="text-[var(--brand-muted-text)] transition-transform group-hover:translate-x-1 group-hover:text-[var(--brand-primary)]"
+                aria-hidden="true"
+              />
+            </Link>
+          ))}
         </div>
       </Section>
 

@@ -1,0 +1,3 @@
+- [AccreditationLogos Mobile Analysis](accreditation-logos-mobile-analysis.md) — root cause: missing overflow-hidden + animation gated at 768px; FIXED: mobile-first animation loop on all breakpoints, overflow-hidden on track, smaller logos/gaps on mobile
+- [Homepage Mobile Overflow Audit](homepage-mobile-overflow-audit.md) — audit
+- [Site Header Mobile Check](site-header-mobile-check.md) — check

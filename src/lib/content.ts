@@ -174,7 +174,7 @@ export const safaris: Safari[] = [
     route: "Entebbe/Kampala - Bwindi - Entebbe/Kampala",
     startEnd: "Starts in Entebbe, Kampala, or by request from Jinja",
     summary:
-      "A focused Bwindi journey for travelers who want one unforgettable hour with mountain gorillas, supported by a private driver-guide, permit planning, and lodge options.",
+      "A focused Bwindi journey for travelers short on time but big on wonder. Track endangered mountain gorillas in the mist-shrouded forests of Bwindi, supported by a private driver-guide, expert permit planning, handpicked lodge options, and the local knowledge that turns a trek into a memory that lasts a lifetime.",
     price: "from USD 1,250 per person",
     comfort: "Budget, mid-range, or luxury",
     bestFor: "Gorilla trekking travelers with limited time",
@@ -260,7 +260,7 @@ export const safaris: Safari[] = [
     route: "Kampala/Entebbe - Ziwa - Murchison Falls - Kampala/Entebbe",
     startEnd: "Starts in Kampala or Entebbe",
     summary:
-      "A classic short Uganda wildlife safari with Ziwa rhinos, savannah game drives, a Nile boat cruise, and the dramatic top of Murchison Falls.",
+      "A classic short Uganda wildlife safari that packs the best of the north into three unforgettable days. Track rhinos at Ziwa, drive the savannah of Murchison Falls National Park, cruise the Nile in search of hippos and crocodiles, then witness the raw power of the falls plunging through the gorge. Perfect for first-time safari travelers and those with limited time.",
     price: "from USD 850 per person",
     comfort: "Budget, mid-range, or luxury",
     bestFor: "First-time safari travelers and short stays",
@@ -338,7 +338,7 @@ export const safaris: Safari[] = [
       "Entebbe - Lake Mburo - Kibale - Queen Elizabeth - Ishasha - Bwindi - Lake Bunyonyi - Entebbe",
     startEnd: "Starts and ends in Entebbe",
     summary:
-      "Jackfruit Safaris' complete Uganda circuit, combining savannah wildlife, chimpanzees, gorillas, boat cruises, crater landscapes, and lakeside rest.",
+      "Jackfruit Safaris' signature 10-day Uganda circuit — the ultimate introduction to the Pearl of Africa. From the rolling hills of Lake Mburo to the misty canopy of Bwindi's gorilla forests, you'll track chimpanzees in Kibale, cruise the Kazinga Channel, search for tree-climbing lions in Ishasha, and unwind by the terraced shores of Lake Bunyonyi. Every stop is chosen to show you Uganda's wild heart and resilient spirit.",
     price: "from USD 2,950 per person",
     comfort: "Comfortable mid-range, with upgrades available",
     bestFor: "Travelers wanting Uganda's strongest first-time circuit",
@@ -471,7 +471,7 @@ export const safaris: Safari[] = [
     route: "Built around your dates, pace, interests, and budget",
     startEnd: "Flexible starts from Entebbe, Kampala, Jinja, or by request",
     summary:
-      "A tailored planning service for gorilla trekking, wildlife, photography, culture, Jinja adventure, family travel, group transport, and smooth Uganda logistics.",
+      "Not a package, but a promise: we craft a private Uganda safari built entirely around your dates, budget, comfort level, and travel style. Whether you dream of intimate gorilla encounters, thrilling Nile rapids, cultural immersion in remote villages, or a seamless family adventure, Jackfruit Safaris designs the route, secures the permits, and handles every detail so you can simply show up and explore.",
     price: "quoted after dates and preferences",
     comfort: "Budget to luxury",
     bestFor: "Families, couples, groups, solo travelers, NGOs, and agents",
@@ -545,7 +545,7 @@ export const experiences = [
     icon: "trees" as IconName,
     image: images.gorilla,
     summary:
-      "Plan a safe, well-supported trek to see mountain gorillas in Bwindi or Mgahinga with permit guidance, lodge advice, and local transport.",
+      "Stand an arm's length from humanity's closest living relatives in the misty forests of Bwindi and Mgahinga. With expert permit guidance, sector-aware lodge planning, fitness advice, and local transport, Jackfruit Safaris makes gorilla trekking — one of the world's most profound wildlife experiences — feel effortless and deeply meaningful.",
     bullets: [
       "Bwindi and Mgahinga permit guidance",
       "Fitness, packing, and trekking expectations",
@@ -559,7 +559,7 @@ export const experiences = [
     icon: "waves" as IconName,
     image: images.nile,
     summary:
-      "Make the most of Uganda's adventure capital with cycling, rafting, horse riding, ziplining, bungee jumping, Source of the Nile visits, and local experiences.",
+      "Uganda's adventure capital calls from the shores of Lake Victoria, where the Nile rivers out into legend. From world-class white-water rafting and bungee jumping to cycling through village paths and horseback rides along the lake, there's an adrenaline rush for every appetite — plus crafts, culture, and local flavors to ground the excitement in real Ugandan connection.",
     bullets: [
       "White water rafting and kayaking on the Nile",
       "Cycling tours through villages and plantations",
@@ -573,7 +573,7 @@ export const experiences = [
     icon: "heart" as IconName,
     image: images.culture,
     summary:
-      "Add meaning to your safari through local food, community visits, crafts, storytelling, village life, and respectful cultural encounters.",
+      "Go beyond the game drive — add meaning to your safari through local food, community visits, crafts, storytelling, village life, and respectful cultural encounters. Jackfruit Safaris connects you with the people behind the places, so you leave not just with photos, but with stories that change how you see Uganda.",
     bullets: [
       "Community walks near Bwindi",
       "Batwa cultural experiences where appropriate",
@@ -587,7 +587,7 @@ export const experiences = [
     icon: "binoculars" as IconName,
     image: images.savannah,
     summary:
-      "Explore Murchison Falls, Queen Elizabeth, Lake Mburo, and other wildlife regions with private game drives, boat cruises, and local guides.",
+      "From the thunder of Murchison Falls to the quiet hush of Lake Mburo's acacia groves, Jackfruit Safaris' wildlife experiences cover Uganda's diverse parks with private game drives, boat safaris, rhino tracking at Ziwa, and local guides who know where the animals gather. Every day is crafted to your pace, interests, and comfort level — budget, mid-range, or luxury.",
     bullets: [
       "Savannah game drives and boat safaris",
       "Rhino tracking at Ziwa on northern routes",
@@ -604,7 +604,7 @@ export const destinations = [
     region: "Southwestern Uganda",
     image: images.gorilla,
     summary:
-      "Uganda's iconic mountain gorilla trekking destination, with forest trails, sector-sensitive lodge choices, community visits, and powerful conservation value.",
+      "Uganda's most iconic safari destination — home to nearly half the world's mountain gorillas. Trek through mist-shrouded montane forest, stay in lodges chosen by sector to minimize travel time, and connect with local communities whose livelihoods depend on protecting these gentle giants.",
     overview:
       "Bwindi Impenetrable National Park protects the mist-shrouded montane forest home to roughly half the world's remaining mountain gorillas. A UNESCO World Heritage Site, the park covers 331 km² of dense jungle on Uganda's southwestern border, where ancient trees, orchids, and over 300 bird species create a pristine safari wilderness.",
     whyGo: ["Mountain gorillas", "Rainforest trekking", "Batwa and community experiences"],
@@ -632,7 +632,7 @@ export const destinations = [
     summary:
       "A strong short-safari choice with Nile boat cruises, big game, giraffes, elephants, hippos, crocodiles, and the dramatic Top of the Falls.",
     overview:
-      "Murchison Falls National Park is Uganda's largest protected area at 3,840 km², spanning savannah, woodland, and wetlands along the Victoria Nile. The park's centerpiece is the dramatic Murchison Falls, where the Nile squeezes through a 7-meter gorge before thundering into a spectacular cascade.",
+      "Murchison Falls National Park is Uganda's largest protected area at 3,840 km², spanning savannah, woodland, and wetlands along the Victoria Nile. The park's centerpiece is the dramatic Murchison Falls, where the Nile squeezes through a 7-meter gorge before thundering into a spectacular cascade. Home to lions, leopards, elephants, buffalo, and over 300 bird species, the park pairs perfectly with the Ziwa Rhino Sanctuary for a complete northern Uganda wildlife experience.",
     whyGo: ["Nile boat cruise", "Game drives", "Ziwa rhino pairing"],
     howToGetThere: [
       "From Kampala: 300 km via Masindi — 6+ hour drive (roads now paved)",
@@ -658,7 +658,7 @@ export const destinations = [
     summary:
       "A varied park for game drives, Kazinga Channel cruises, crater scenery, and Ishasha tree-climbing lion searches.",
     overview:
-      "Queen Elizabeth National Park spans 1,978 km² at the intersection of the Albertine Rift and the Great Lakes, offering Uganda's most diverse safari experiences. The park is home to all the Big Five except rhino and is famous for tree-climbing lions in Ishasha and the Kazinga Channel boat cruise.",
+      "Queen Elizabeth National Park spans 1,978 km² at the intersection of the Albertine Rift and the Great Lakes, offering Uganda's most diverse safari experiences. The park is home to all the Big Five except rhino and is famous for tree-climbing lions in Ishasha and the Kazinga Channel boat cruise. Whether you're watching the sunset over crater lakes or spotting elephants along the park's winding tracks, every moment here tells the story of Uganda's wild resilience.",
     whyGo: ["Kazinga Channel", "Ishasha sector", "Crater landscapes"],
     howToGetThere: [
       "From Kampala: 380 km via Mbarara — 6–7 hour drive",
@@ -684,7 +684,7 @@ export const destinations = [
     summary:
       "Uganda's leading chimpanzee tracking forest, often paired with Bigodi Wetland and Queen Elizabeth National Park.",
     overview:
-      "Kibale National Park protects 795 km² of regenerating and primary Afrotropical rainforest, home to the world's largest population of chimpanzees and over 13 primate species. The park sits between the Rwenzori foothills and the Fort Portal plateau, offering cool temperatures, misty mornings, and dense forest trails.",
+      "Kibale National Park protects 795 km² of regenerating and primary Afrotropical rainforest, home to the world's largest population of chimpanzees and over 13 primate species. The park sits between the Rwenzori foothills and the Fort Portal plateau, offering cool temperatures, misty mornings, and dense forest trails where every step reveals something new — from chattering colobus monkeys to rare orchids blooming on ancient trees.",
     whyGo: ["Chimpanzee tracking", "Bigodi Wetland", "Forest birding"],
     howToGetThere: [
       "From Kampala: 310 km via Mbarara — 5–6 hour drive",
@@ -710,7 +710,7 @@ export const destinations = [
     summary:
       "A compact park with zebras, impala, giraffes, nature walks, boat trips, and useful routing between Entebbe and the southwest.",
     overview:
-      "Lake Mburo National Park is Uganda's smallest protected area at 370 km², but one of its most accessible — just 3 to 4 hours from Kampala. Unlike Uganda's forest parks, Lake Mburo features open acacia woodland and savannah, supporting unique species like the rare impala and large herds of Burchell's zebra.",
+      "Lake Mburo National Park is Uganda's smallest protected area at 370 km², but one of its most accessible — just 3 to 4 hours from Kampala. Unlike Uganda's forest parks, Lake Mburo features open acacia woodland and savannah, supporting unique species like the rare impala and large herds of Burchell's zebra. It's a gentle introduction to Ugandan wildlife and a perfect route-breaker between the forested parks of the southwest.",
     whyGo: ["Short safaris", "Nature walks", "Route breaker"],
     howToGetThere: [
       "From Kampala: 250 km — 3–4 hour drive via Masaka",
@@ -736,7 +736,7 @@ export const destinations = [
     summary:
       "A scenic, restful lake often used after gorilla trekking for canoe rides, views, and a slower final night.",
     overview:
-      "Lake Bunyonyi, meaning 'a place of many little birds,' sits at 6,308 feet above sea level in southwestern Uganda, making it one of the highest lakes in the region. The scenic lake stretches 29 km through misty hills, dotted with 29 small islands connected by traditional dugout canoes and guided canoe safaris.",
+      "Lake Bunyonyi, meaning 'a place of many little birds,' sits at 6,308 feet above sea level in southwestern Uganda, making it one of the highest lakes in the region. The scenic lake stretches 29 km through misty hills, dotted with 29 small islands connected by traditional dugout canoes and guided canoe safaris. Once a place of exile in local lore, today it's a haven of calm where you can unwind after gorilla trekking or simply soak in some of Africa's most dramatic lakeside views.",
     whyGo: ["Relaxation", "Canoeing", "Post-trek scenery"],
     howToGetThere: [
       "From Kampala: 400 km via Mbarara — 7–8 hour drive",
@@ -763,7 +763,7 @@ export const destinations = [
     summary:
       "Jackfruit Safaris' home base and Uganda's adventure hub for rafting, cycling, horse riding, craft visits, Nile views, and transfers.",
     overview:
-      "Jinja sits on the northern shore of Lake Victoria where the Nile River begins its 6,650-kilometer journey to the Mediterranean. As Uganda's adventure capital and the historic source of the Nile, Jinja offers world-class white-water rafting, bungee jumping, quad biking, cycling tours, and boat excursions to the famous source point.",
+      "Jinja sits on the northern shore of Lake Victoria where the Nile River begins its 6,650-kilometer journey to the Mediterranean. As Uganda's adventure capital and the historic source of the Nile, Jinja offers world-class white-water rafting, bungee jumping, quad biking, cycling tours, and boat excursions to the famous source point. It's also the home of Jackfruit Safaris — where local knowledge meets global-standard adventure.",
     whyGo: ["Source of the Nile", "Rafting and cycling", "Local Jackfruit base"],
     howToGetThere: [
       "From Kampala: 80 km — 1.5–2 hour drive via the New Jinja Bridge",
@@ -852,7 +852,7 @@ export const teamMembers: TeamMember[] = [
     slug: "elvis-tumwebaze",
     name: "Elvis Tumwebaze",
     position: "Founder & Managing Director",
-    bio: "Raised as an orphan in Jinja, Elvis was introduced to tourism and travel by his father at a young age. When his father passed away, he saw firsthand the challenges orphaned and vulnerable children face across Uganda. That experience became the heart of Jackfruit Safaris: a portion of every safari profit is channelled back into education, healthcare, and community programs for orphaned and vulnerable children. Elvis built Jackfruit on the belief that authentic travel should lift up the communities it touches.",
+    bio: "Elvis Tumwebaze grew up in Jinja's orphanages, learning early that tourism could be a bridge between communities. Introduced to the travel world by his father before he passed, Elvis witnessed firsthand the challenges orphaned and vulnerable children face across Uganda. That experience became the heart of Jackfruit Safaris: a portion of every safari profit is channeled back into education, healthcare, and community programs for orphaned and vulnerable children. Elvis built Jackfruit on the belief that authentic travel should lift up the communities it touches.",
     photo_url: null,
   },
   {
@@ -913,13 +913,13 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     ctaSecondary: { label: "View Safari Packages", href: "/safaris" },
     content: {
       intro_body:
-        "Born from a story of loss and giving back, Jackfruit Safaris was founded by Elvis — a former orphan from Jinja who was introduced to the travel world by his father before he passed. Seeing the challenges orphaned and vulnerable children face, Elvis built Jackfruit to ensure that every safari adventure directly supports those children through education, healthcare, and community programs. Today, Jackfruit connects travelers with Uganda's extraordinary wildlife and culture while channeling a portion of every booking into meaningful change.",
+        "Born from loss and a commitment to give back, Jackfruit Safaris was founded by Elvis Tumwebaze — who grew up in Jinja's orphanages and learned early that tourism could be a force for good. After losing his father, Elvis saw firsthand the challenges orphaned and vulnerable children face across Uganda. He built Jackfruit on a simple idea: every safari should leave a positive mark. Today, we connect travelers with Uganda's extraordinary wildlife and culture through private, flexible trips planned with local expertise — and a portion of every booking directly supports orphaned and vulnerable children through education, healthcare, and community programs. This is more than a safari company; it is a promise that your adventure helps build a better Uganda.",
       mission:
-        "To create authentic, locally-rooted safari experiences that connect travelers with Uganda's wildlife and culture while reinvesting in orphaned and vulnerable children.",
+        "To craft authentic, locally-rooted safari experiences that connect travelers with Uganda's wildlife and culture while ensuring that every booking reinvests in orphaned and vulnerable children through education, healthcare, and community programs.",
       vision:
-        "A Uganda where tourism empowers local communities and every child has the chance to thrive.",
+        "A Uganda where responsible tourism empowers local communities, protects wildlife, and ensures every child — especially the orphaned and vulnerable — has the chance to grow up healthy, educated, and hopeful.",
       give_back:
-        "A portion of every safari profit supports orphaned and vulnerable children across Uganda through education, healthcare, and community programs.",
+        "A portion of every safari profit is channeled directly into orphaned and vulnerable children across Uganda, supporting school fees, healthcare, clean water initiatives, and mentorship programs. When you travel with Jackfruit, your adventure becomes a contribution to stronger communities at home.",
     },
   },
   "/safaris": {

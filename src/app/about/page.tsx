@@ -184,6 +184,35 @@ export default async function AboutPage() {
         />
       </Section>
 
+      {/* Mission / Vision / Give Back — rendered from content JSONB */}
+      <Section>
+        <div className="grid gap-8 md:grid-cols-3">
+          {["mission", "vision", "give_back"].map((key) => {
+            const text = heroContent[key] || fallback?.content?.[key] || "";
+            if (!text) return null;
+            const titles: Record<string, string> = {
+              mission: "Our Mission",
+              vision: "Our Vision",
+              give_back: "How We Give Back",
+            };
+            return (
+              <article
+                key={key}
+                className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6"
+              >
+                <h2 className="text-fluid-lg font-black text-[var(--foreground)]">
+                  {titles[key]}
+                </h2>
+                <CmsRichText
+                  className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]"
+                  html={text}
+                />
+              </article>
+            );
+          })}
+        </div>
+      </Section>
+
       {/* Intro cards: name, where operates, giving journey */}
       <Section
         eyebrow={introCardsSection?.subtitle || undefined}
