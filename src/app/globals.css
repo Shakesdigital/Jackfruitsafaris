@@ -105,6 +105,8 @@ body {
   font-size: var(--base-font-size);
   font-weight: var(--body-weight);
   letter-spacing: var(--body-letter-spacing);
+  overflow-x: hidden;
+  width: 100%;
   line-height: var(--body-line-height);
 }
 
@@ -155,6 +157,7 @@ h6 {
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 ::selection {

@@ -402,7 +402,7 @@ function LightboxViewer({
             title={item.alt_text || "Video"}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            className="h-[60vh] w-[90vw] max-w-3xl rounded-[var(--brand-radius)]"
+            className="h-[60vh] w-full max-w-3xl rounded-[var(--brand-radius)]"
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element

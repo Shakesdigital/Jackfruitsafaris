@@ -130,7 +130,7 @@ export default async function DestinationDetailPage({ params }: Props) {
       />
 
       <Section>
-        <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
+        <div className="grid gap-10 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px]">
           <article className="space-y-10">
             {/* Destination Overview */}
             <div>

@@ -37,7 +37,7 @@ export function Carousel({ children, mobileCount = 1, tabletCount, desktopCount,
       <div
         key={idx}
         className="scroll-snap-start flex-shrink-0"
-        style={{ width: `${100 / visibleCount}%` }}
+        style={{ width: `${100 / visibleCount}%`, maxWidth: `${100 / visibleCount}%` }}
       >
         {child}
       </div>
@@ -67,7 +67,7 @@ export function Carousel({ children, mobileCount = 1, tabletCount, desktopCount,
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [mobileCount]);
+  }, [mobileCount, desktopCount, tabletCount]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -136,7 +136,7 @@ export function Carousel({ children, mobileCount = 1, tabletCount, desktopCount,
     <div className="relative">
       <div
         ref={containerRef}
-        className="carousel-container flex gap-3 overflow-x-auto scroll-p-4 scroll-smooth [-webkit-scrollbar:_] sm:gap-4"
+        className="carousel-container relative flex gap-3 overflow-x-auto scroll-p-4 scroll-smooth [-webkit-scrollbar:_] sm:gap-4"
       >
         {renderSlides(renderedChildren)}
       </div>

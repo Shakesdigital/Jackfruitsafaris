@@ -125,7 +125,7 @@ export default async function SafariDetailPage({ params }: Props) {
       </section>
 
       <Section>
-        <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
+        <div className="grid gap-10 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px]">
           <article className="space-y-12">
             <div>
               <p className="flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
