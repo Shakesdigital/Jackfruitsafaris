@@ -194,7 +194,6 @@ export default async function ExperienceEditPage({ params }: Props) {
               <option value="message">Message</option>
               <option value="mountain">Mountain</option>
               <option value="shield">Shield</option>
-              <option value="sparkles">Sparkles</option>
               <option value="star">Star</option>
               <option value="trees">Trees</option>
               <option value="waves">Waves</option>

@@ -739,7 +739,7 @@ export async function upsertDestination(formData: FormData) {
 // Experience Actions
 const iconName = z.enum([
   "binoculars","calendar","camera","car","cash","compass","heart","map",
-  "message","mountain","shield","sparkles","star","trees","waves",
+  "message","mountain","shield","star","trees","waves",
 ]);
 
 const experienceSchema = z.object({

@@ -26,7 +26,6 @@ const ICON_OPTIONS = [
   { value: "message", label: "Message" },
   { value: "mountain", label: "Mountain" },
   { value: "shield", label: "Shield" },
-  { value: "sparkles", label: "Sparkles" },
   { value: "star", label: "Star" },
   { value: "trees", label: "Trees" },
   { value: "waves", label: "Waves" },

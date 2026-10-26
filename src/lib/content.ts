@@ -10,7 +10,6 @@ import {
   MessageCircle,
   Mountain,
   ShieldCheck,
-  Sparkles,
   Star,
   Trees,
   Waves,
@@ -28,7 +27,6 @@ export type IconName =
   | "message"
   | "mountain"
   | "shield"
-  | "sparkles"
   | "star"
   | "trees"
   | "waves";
@@ -45,7 +43,6 @@ export const iconMap = {
   message: MessageCircle,
   mountain: Mountain,
   shield: ShieldCheck,
-  sparkles: Sparkles,
   star: Star,
   trees: Trees,
   waves: Waves,

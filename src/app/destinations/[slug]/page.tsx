@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CalendarCheck, MapPin, Sparkles } from "lucide-react";
+import { CalendarCheck, MapPin, Star } from "lucide-react";
 import { HeroSection } from "@/components/hero-section";
 import { QuoteForm } from "@/components/quote-form";
 import { Section } from "@/components/section";
@@ -154,7 +154,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                       key={item}
                       className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5"
                     >
-                      <Sparkles
+                      <Star
                         className="text-[var(--brand-secondary)]"
                         size={22}
                         aria-hidden="true"
