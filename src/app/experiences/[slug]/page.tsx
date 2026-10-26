@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, MapPin, XCircle } from "lucide-react";
 import { QuoteForm } from "@/components/quote-form";
 import { SafariCard } from "@/components/safari-card";
 import { Section } from "@/components/section";
 import { HeroSection } from "@/components/hero-section";
+import { CmsRichText } from "@/components/cms-rich-text";
 import { ExperienceGallery } from "@/components/experience-gallery";
 import {
   getExperienceBySlug,
@@ -41,7 +42,25 @@ type Experience = {
   safety_notes: string | null;
   cta_label: string | null;
   cta_url: string | null;
+  category: string | null;
+  location: string | null;
+  wildlife: string | null;
 };
+
+/** Returns a contextual "what to expect" description based on the experience slug. */
+function getExperienceExpectations(slug: string): string {
+  const expectations: Record<string, string> = {
+    "gorilla-trekking":
+      "<p>Mountain gorilla trekking is a physically demanding but profoundly rewarding experience. Treks typically last 2–6 hours depending on the gorilla family's location. You'll be guided by experienced Uganda Wildlife Authority rangers and local trackers. Once the gorillas are located, you spend up to one hour observing them in their natural habitat. Jackfruit Safaris provides fitness preparation tips, packing guidance, and sector-aware lodge planning to make your encounter seamless.</p>",
+    "jinja-adventures":
+      "<p>Jinja adventures offer a range of adrenaline-pumping activities on the Nile. White-water rafting trips run from half-day to full-day excursions through Class III–V rapids. Quad biking, cycling, horseback riding, and the famous Source of the Nile boat tour are also available. All activities are led by certified local operators with full safety equipment. Morning departures are typical, with transport arrangements from Kampala, Entebbe, or your safari lodge.</p>",
+    "cultural-experiences":
+      "<p>Cultural experiences in Uganda connect you with local communities through authentic, respectful encounters. Activities include village walks, traditional cooking sessions, craft workshops, music and dance performances, and storytelling with local elders. Visits are community-led and contribute directly to local income. Jackfruit Safaris ensures all interactions follow ethical tourism principles and benefit the communities directly.</p>",
+    "wildlife-safaris":
+      "<p>Uganda's wildlife safaris span from the savannah of Murchison Falls to the misty forests of Bwindi. Morning game drives offer the best wildlife viewing, while afternoon boat safaris provide unique perspectives along rivers and lakes. Rhino tracking at Ziwa Sanctuary, chimpanzee tracking in Kibale, and forest walks in Lake Mburo showcase Uganda's incredible biodiversity. Private 4x4 vehicles with pop-up roofs ensure optimal wildlife photography and comfort.</p>",
+  };
+  return expectations[slug] || "<p>Jackfruit Safaris matches activities to your available time, transfer point, safety needs, and comfort level. Our local guides provide on-ground expertise and ensure you have a safe, memorable experience.</p>";
+}
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -117,6 +136,18 @@ export default async function ExperienceDetailPage({ params }: Props) {
                     {experience.duration}
                   </span>
                 )}
+                {experience.category && (
+                  <span className="inline-flex items-center gap-1 text-[var(--brand-secondary)]">
+                    <span className="text-xs uppercase tracking-wider">Category:</span>
+                    {experience.category}
+                  </span>
+                )}
+                {experience.location && (
+                  <span className="inline-flex items-center gap-1 text-[var(--brand-secondary)]">
+                    <MapPin size={16} aria-hidden="true" />
+                    {experience.location}
+                  </span>
+                )}
                 {experience.price_from && (
                   <span className="inline-flex items-center gap-1 text-[var(--brand-secondary)]">
                     <span className="text-xs uppercase tracking-wider">From:</span>
@@ -178,6 +209,41 @@ export default async function ExperienceDetailPage({ params }: Props) {
                 </p>
               </div>
             )}
+
+            {experience.location && (
+              <div>
+                <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
+                  Where This Takes Place
+                </h2>
+                <div className="mt-4 rounded-[var(--brand-radius)] bg-[#eef7f0] p-5">
+                  <p className="text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
+                    {experience.location}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {experience.wildlife && (
+              <div>
+                <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
+                  Wildlife & Highlights
+                </h2>
+                <CmsRichText
+                  className="mt-4 text-fluid-base leading-8 text-[var(--brand-muted-text)]"
+                  html={experience.wildlife}
+                />
+              </div>
+            )}
+
+            <div>
+              <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
+                What to Expect
+              </h2>
+              <CmsRichText
+                className="mt-4 text-fluid-base leading-8 text-[var(--brand-muted-text)]"
+                html={getExperienceExpectations(experience.slug)}
+              />
+            </div>
 
             <div className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
               <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">

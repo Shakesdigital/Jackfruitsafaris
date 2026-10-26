@@ -16,14 +16,13 @@ type CarouselProps = {
   /**
    * When true, the carousel loops infinitely: the children are duplicated
    * so the user can scroll seamlessly from the last item back to the first.
-   * Navigation arrows and pagination dots are always shown (when itemCount > 1).
+   * Navigation arrows are always shown when itemCount > 1.
    */
   loop?: boolean;
 };
 
 export function Carousel({ children, mobileCount = 1, desktopCount, loop = false }: CarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const itemCount = children.length;
   const isLooping = loop && itemCount > 1;
 
@@ -67,33 +66,21 @@ export function Carousel({ children, mobileCount = 1, desktopCount, loop = false
     const container = containerRef.current;
     if (!container) return;
 
-    const updateActive = () => {
-      const cardWidth = container.offsetWidth / visibleCount;
-      if (cardWidth <= 0) return;
-
-      // --- Infinite loop wrap on manual scroll ---
-      if (isLooping) {
+    // --- Infinite loop wrap on manual scroll ---
+    if (isLooping) {
+      const handleScroll = () => {
+        const cardWidth = container.offsetWidth / visibleCount;
+        if (cardWidth <= 0) return;
         const setWidth = cardWidth * itemCount;
         if (container.scrollLeft >= setWidth) {
           container.scrollLeft -= setWidth;
         } else if (container.scrollLeft < 0) {
           container.scrollLeft += setWidth;
         }
-      }
-
-      const rawIndex = Math.round(container.scrollLeft / cardWidth);
-      if (isLooping) {
-        // Map the raw (possibly overscrolled) index into 0..itemCount-1
-        const normalized = ((rawIndex % itemCount) + itemCount) % itemCount;
-        setActiveIndex(normalized);
-      } else {
-        setActiveIndex(Math.max(0, Math.min(rawIndex, itemCount - 1)));
-      }
-    };
-
-    container.addEventListener("scroll", updateActive);
-    updateActive();
-    return () => container.removeEventListener("scroll", updateActive);
+      };
+      container.addEventListener("scroll", handleScroll);
+      return () => container.removeEventListener("scroll", handleScroll);
+    }
   }, [itemCount, visibleCount, isLooping]);
 
   function getCardStep() {
@@ -153,51 +140,20 @@ export function Carousel({ children, mobileCount = 1, desktopCount, loop = false
             onClick={() => scrollByCards(-1)}
             disabled={!canScrollLeft()}
             aria-label="Previous"
-            className="absolute left-1 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-white/95 text-[var(--foreground)] shadow-lg backdrop-blur-sm transition-all hover:scale-105 hover:bg-white hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={24} className="text-[var(--brand-accent)]" aria-hidden="true" />
           </button>
           <button
             onClick={() => scrollByCards(1)}
             disabled={!canScrollRight()}
             aria-label="Next"
-            className="absolute right-1 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-[var(--foreground)] shadow-md transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-white/95 text-[var(--foreground)] shadow-lg backdrop-blur-sm transition-all hover:scale-105 hover:bg-white hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={24} className="text-[var(--brand-accent)]" aria-hidden="true" />
           </button>
         </>
       )}
-
-      <div className="mt-4 flex justify-center gap-1">
-        {children.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => {
-              const container = containerRef.current;
-              if (!container) return;
-              // When looping, ensure we're in the first set before jumping
-              if (isLooping) {
-                const cardStep = getCardStep();
-                const setWidth = cardStep * itemCount;
-                if (container.scrollLeft >= setWidth) {
-                  container.scrollLeft -= setWidth;
-                }
-              }
-              container.scrollLeft = getCardStep() * idx;
-            }}
-            aria-label={`Go to slide ${idx + 1}`}
-            className="flex h-12 w-12 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
-          >
-            <span
-              className={`block h-3 w-3 rounded-full transition-colors ${
-                idx === activeIndex
-                  ? "bg-[var(--brand-accent)]"
-                  : "bg-gray-300 hover:bg-gray-400"
-              }`}
-            />
-          </button>
-        ))}
-      </div>
     </div>
   );
 }

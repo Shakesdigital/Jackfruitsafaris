@@ -90,12 +90,16 @@ export default async function DestinationDetailPage({ params }: Props) {
     image: s.featured_image_url || "",
   }));
 
-  // Ensure arrays and objects have safe defaults
+          // Ensure arrays and objects have safe defaults
   const overview = destination.overview || destination.summary || "";
   const whyGo = Array.isArray(destination.why_go) ? destination.why_go : [];
   const howToGetThere = Array.isArray(destination.how_to_get_there)
     ? destination.how_to_get_there
     : [];
+  const topExperiences = Array.isArray(destination.top_experiences)
+    ? destination.top_experiences
+    : [];
+  const wildlife = Array.isArray(destination.wildlife) ? destination.wildlife : [];
   const bestTime = destination.best_time || "";
   const recommendedNights = destination.recommended_nights || "";
   const keyHighlights = Array.isArray(destination.key_highlights)
@@ -192,6 +196,66 @@ export default async function DestinationDetailPage({ params }: Props) {
               </div>
             )}
 
+            {/* Wildlife Spotting */}
+            {wildlife.length > 0 && (
+              <div>
+                <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
+                  Wildlife spotting
+                </h2>
+                <div className="mt-5 grid gap-3">
+                  {wildlife.map((item: string, index: number) => (
+                    <div
+                      key={index}
+                      className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-4"
+                    >
+                      <p className="flex items-center gap-2 text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
+                        <span className="flex h-2 w-2 shrink-0 rounded-full bg-[var(--brand-secondary)]" aria-hidden="true" />
+                        {item}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Top Experiences */}
+            {topExperiences.length > 0 && (
+              <div>
+                <h2 className="text-fluid-2xl font-black text-[var(--foreground)]">
+                  Top experiences
+                </h2>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  {topExperiences.map((item: any, index: number) => {
+                    const experienceName =
+                      typeof item === "string" ? item : item.name || item.title || "";
+                    const experienceSlug =
+                      typeof item === "string"
+                        ? item
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")
+                            .replace(/[^a-z0-9-]/g, "")
+                        : item.slug || "";
+                    return (
+                      <Link
+                        key={index}
+                        href={experienceSlug ? `/experiences/${experienceSlug}` : "#"}
+                        className="group rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 transition-all hover:border-[var(--brand-secondary)] hover:shadow-md"
+                      >
+                        <p className="text-fluid-sm font-black text-[var(--foreground)] group-hover:text-[var(--brand-secondary)]">
+                          {experienceName}
+                        </p>
+                        {typeof item === "object" && item.description && (
+                          <p className="mt-2 text-fluid-xs leading-6 text-[var(--brand-muted-text)]">
+                            {item.description}
+                          </p>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Best Time and Recommended Stay */}
             <div className="grid gap-6 md:grid-cols-2">
               <div className="rounded-[var(--brand-radius)] border border-black/10 bg-white p-6">
@@ -239,7 +303,7 @@ export default async function DestinationDetailPage({ params }: Props) {
             {displaySafaris.length > 0 && (
               <div>
                 <h2 className="text-fluid-3xl font-black text-[var(--foreground)]">
-                  Related Uganda safaris
+                  Related {destination.name || "Uganda"} safaris
                 </h2>
                 <div className="mt-6">
                   <Carousel desktopCount={2}>
