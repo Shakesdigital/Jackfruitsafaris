@@ -221,7 +221,7 @@ export default async function Home() {
         title={getStringValue(experiencesSection, "title", "The right trip for your travel style")}
         intro={<CmsRichText html={getSectionText(experiencesSection, "intro", "Jackfruit Safaris can combine wildlife, primates, Nile adventure, culture, and transport into a single smooth plan.")} />}
       >
-        <Carousel>
+        <Carousel mobileCount={1} tabletCount={2} desktopCount={3}>
           {experiences.map((experience: any) => {
             const Icon = iconMap[experience.icon as keyof typeof iconMap];
             const IconComponent = Icon || BadgeCheck;
@@ -258,7 +258,7 @@ export default async function Home() {
         title={getStringValue(quickNavSection, "title", "Quick links")}
         intro={<CmsRichText html={getSectionText(quickNavSection, "intro", "Jump to the pieces you need fast — our most trusted routes, real traveler questions, and direct ways to reach us.")} />}
       >
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             href="/safaris"
             className="group flex items-center gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 transition-shadow hover:shadow-lg"

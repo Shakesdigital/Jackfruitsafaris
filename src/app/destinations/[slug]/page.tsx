@@ -306,7 +306,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                   Related {destination.name || "Uganda"} safaris
                 </h2>
                 <div className="mt-6">
-                  <Carousel desktopCount={2}>
+                  <Carousel mobileCount={1} tabletCount={2} desktopCount={2}>
                     {displaySafaris.map((safari: Safari) => (
                       <SafariCard
                         key={safari.slug}

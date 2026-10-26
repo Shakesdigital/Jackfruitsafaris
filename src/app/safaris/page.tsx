@@ -135,11 +135,11 @@ export default async function SafarisPage() {
       <Section>
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
           <div>
-            <div className="mb-6 flex flex-wrap gap-3">
+            <div className="mb-6 flex flex-wrap gap-2 sm:gap-3">
               {filters.map((filter) => (
                 <span
                   key={filter}
-                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-fluid-sm font-bold text-[var(--foreground)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-fluid-xs font-bold text-[var(--foreground)] sm:px-4 sm:py-2 sm:text-fluid-sm"
                 >
                   <Filter size={15} aria-hidden="true" />
                   {filter}

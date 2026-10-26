@@ -186,7 +186,7 @@ export default async function AboutPage() {
 
       {/* Mission / Vision / Give Back — rendered from content JSONB */}
       <Section>
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {["mission", "vision", "give_back"].map((key) => {
             const text = heroContent[key] || fallback?.content?.[key] || "";
             if (!text) return null;

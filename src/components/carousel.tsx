@@ -8,6 +8,11 @@ type CarouselProps = {
   /** Number of cards to show on mobile (default 1) */
   mobileCount?: number;
   /**
+   * Number of cards to show on tablet (640px–1023px).
+   * Falls back to mobileCount when not provided.
+   */
+  tabletCount?: number;
+  /**
    * Number of cards to show on desktop/tablet (≥1024px).
    * When set, uses a single lg+ breakpoint instead of the default
    * xl(4)/lg(3) split. Omit to preserve the original responsive behavior.
@@ -21,7 +26,7 @@ type CarouselProps = {
   loop?: boolean;
 };
 
-export function Carousel({ children, mobileCount = 1, desktopCount, loop = false }: CarouselProps) {
+export function Carousel({ children, mobileCount = 1, tabletCount, desktopCount, loop = false }: CarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemCount = children.length;
   const isLooping = loop && itemCount > 1;
@@ -44,10 +49,12 @@ export function Carousel({ children, mobileCount = 1, desktopCount, loop = false
     if (typeof window === "undefined") return mobileCount;
     if (desktopCount !== undefined) {
       if (window.innerWidth >= 1024) return desktopCount;
+      if (window.innerWidth >= 640 && tabletCount !== undefined) return tabletCount;
       return mobileCount;
     }
     if (window.innerWidth >= 1280) return 4;
     if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 640 && tabletCount !== undefined) return tabletCount;
     return mobileCount;
   }
 
