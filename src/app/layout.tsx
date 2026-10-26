@@ -42,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${settings?.business_name || "Jackfruit Safaris"}`,
     },
     description,
-    icons: settings?.favicon_url ? { icon: settings.favicon_url } : undefined,
+    icons: settings?.favicon_url ? { icon: settings.favicon_url } : { icon: "/favicon.ico" },
     openGraph: {
       title,
       description,
