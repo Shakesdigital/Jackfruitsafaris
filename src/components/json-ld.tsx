@@ -12,7 +12,7 @@ export function OrganizationJsonLd() {
       addressLocality: "Jinja",
       addressCountry: "UG",
     },
-    url: "https://www.jackfruitsafaris.org/",
+    url: "https://jackfruitsafarisuganda.com/",
   };
 
   return (

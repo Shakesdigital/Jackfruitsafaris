@@ -6,6 +6,7 @@ import { CmsRealtimeProvider } from "@/lib/supabase/realtime-context";
 import { OrganizationJsonLd } from "@/components/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { LoadingBar } from "@/components/loading-bar";
 import { getSiteSettings } from "@/lib/cms-data";
 import type { PublicSiteSettings } from "@/lib/site-settings";
 import { Suspense } from "react";
@@ -36,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "Plan private Uganda safaris with Jackfruit Safaris, a Jinja-based tour company offering gorilla trekking, Murchison Falls, 10-day Uganda itineraries, Jinja adventures, cultural tours, and airport transfers.";
 
   return {
-    metadataBase: new URL("https://www.jackfruitsafaris.org"),
+    metadataBase: new URL("https://jackfruitsafarisuganda.com"),
     title: {
       default: title,
       template: `%s | ${settings?.business_name || "Jackfruit Safaris"}`,
@@ -46,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: "https://www.jackfruitsafaris.org",
+      url: "https://jackfruitsafarisuganda.com",
       siteName: settings?.business_name || "Jackfruit Safaris",
       locale: "en_US",
       type: "website",
@@ -178,6 +179,7 @@ export default async function RootLayout({
         style={aestheticStyle}
       >
         <CmsRealtimeProvider>
+          <LoadingBar />
           <OrganizationJsonLd />
           <Suspense fallback={<header className="sticky top-0 z-50 border-b border-black/10 bg-white/92 backdrop-blur-xl"><div className="container-responsive flex items-center justify-between py-3 sm:py-4"><div className="animate-pulse h-10 w-10 rounded-full bg-gray-200" /><div className="hidden sm:block ml-4"><div className="h-4 w-32 bg-gray-200 rounded" /><div className="h-3 w-24 bg-gray-200 rounded mt-1" /></div></div></header>}>
             <SiteHeader settings={settings} />

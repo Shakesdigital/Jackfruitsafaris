@@ -397,6 +397,24 @@ img {
   .no-print { display: none !important; }
 }
 
+/* Loading bar animation — shown at the top of the viewport during navigation */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-loading-bar {
+    animation: loading-bar 1.2s ease-in-out infinite;
+  }
+}
+@keyframes loading-bar {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-loading-bar {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
 /* Carousel: CSS scroll-snap horizontal scrolling */
 .carousel-container {
   scroll-snap-type: x mandatory;
