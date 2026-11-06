@@ -22,6 +22,39 @@
 -- improves day bodies, inclusions, permits and FAQ fields.
 
 -- ===========================================================================
+-- 0. LIVE SCHEMA ALIGNMENT (idempotent)
+--    This file may run against a database that has not yet received the
+--    destination-content-enhancements migration. Add the columns the content
+--    updates below write to, and convert top_experiences to jsonb when it is
+--    still a text[] so the object-shaped experience links do not fail.
+-- ============================================================================
+
+alter table public.destinations
+  add column if not exists how_to_get_there text[] not null default '{}'::text[],
+  add column if not exists key_highlights jsonb not null default '[]'::jsonb;
+
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'destinations'
+      and column_name = 'top_experiences'
+      and data_type = 'ARRAY'
+  ) then
+    alter table public.destinations
+      alter column top_experiences drop default,
+      alter column top_experiences type jsonb
+      using case
+        when top_experiences is null then '[]'::jsonb
+        else array_to_json(top_experiences)::jsonb
+      end,
+      alter column top_experiences set default '[]'::jsonb;
+  end if;
+end $$;
+
+-- ===========================================================================
 -- 1. DESTINATIONS
 -- ===========================================================================
 
