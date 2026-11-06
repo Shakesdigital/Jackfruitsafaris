@@ -68,14 +68,18 @@ where page_slug = '/reviews'
   and status = 'published';
 
 -- ---------------------------------------------------------------------------
--- 2. Listing page card-grid sections — replace admin-note intros with
---    traveler-facing copy. Force-update so earlier seeded jargon is replaced.
+-- 2. Listing page card-grid sections - replace admin-note eyebrow/title text
+--    with traveler-facing labels. Force-update so earlier seeded jargon is
+--    replaced. NOTE: page_content_sections has NO intro column - the intro
+--    paragraph for /destinations renders from the separate 'destination_intro'
+--    section's content key, and /experiences intro from 'experience_intro';
+--    only title/subtitle (used as grid text + eyebrow) are touched here.
 -- ---------------------------------------------------------------------------
 
 update public.page_content_sections
 set
   title = 'Uganda''s premier adventure destinations',
-  intro = 'Each destination below is chosen for its distinct wildlife, landscape, or adventure — from mountain gorillas in misty Bwindi to the roaring cataract of Murchison Falls, from chimpanzee tracking in Kibale to highland canoeing on Lake Bunyonyi, and the adventure capital of Jinja at the source of the Nile. Jackfruit Safaris plans the routes, timing, and logistics so you can focus on the experience.',
+  subtitle = 'Explore the Pearl of Africa',
   updated_at = now()
 where section_type = 'entity_card_grid'
   and page_slug = '/destinations';
@@ -83,7 +87,7 @@ where section_type = 'entity_card_grid'
 update public.page_content_sections
 set
   title = 'Choose your next Uganda experience',
-  intro = 'Every experience below is one your Jackfruit Safaris guide has led before — with the safety brief, transfer plan, and timing to make it fit your route.',
+  subtitle = 'What you can do on safari',
   updated_at = now()
 where section_type = 'entity_card_grid'
   and page_slug = '/experiences';
