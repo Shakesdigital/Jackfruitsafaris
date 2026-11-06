@@ -920,10 +920,10 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
     },
   },
   "/safaris": {
-    title: "Choose Proven Route",
-    subtitle: "Make It Yours",
+    title: "Choose A Proven Route",
+    subtitle: "Then Make It Yours",
     intro:
-      "Whether you have three days or two weeks, Jackfruit Safaris can help you experience Uganda's landscapes and wildlife as budget, mid-range, or luxury private trips.",
+      "Three days or two weeks — start from a route that already works, then adjust lodges, pace, and comfort level with your private Jinja-based planning team.",
     backgroundImage: images.savannah,
     introImage: "/images/Safaris Intro.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
@@ -931,9 +931,9 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/destinations": {
     title: "Uganda Safari Places",
-    subtitle: "Routed With Care",
+    subtitle: "Chosen For Your Route",
     intro:
-      "Destination pages give travelers the practical why go, best time, recommended nights, and related route context they need before requesting a quote.",
+      "Gorilla forests, Rift Valley savannah, chimpanzee country, highland lakes, and the source of the Nile — browse the places Jackfruit Safaris knows road by road, then tell us the mix you want.",
     backgroundImage: images.falls,
     introImage: "/images/Destinations.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
@@ -941,9 +941,9 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/experiences": {
     title: "Choose Your Experience",
-    subtitle: "Make It Yours",
+    subtitle: "Then Tie It Together",
     intro:
-      "Choose primates, wildlife, Nile adventure, cultural visits, or reliable transport, then ask Jackfruit Safaris to connect the pieces into a realistic itinerary.",
+      "Primate tracking, savannah game drives, Nile adventure, cultural encounters, and dependable transport — one team connects the pieces into a realistic itinerary.",
     backgroundImage: images.forest,
     introImage: "/images/Experiences intro best.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
@@ -951,9 +951,9 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/reviews": {
     title: "Hear From Travelers",
-    subtitle: "Who Explored Uganda With Jackfruit Safaris",
+    subtitle: "Who Explored Uganda With Us",
     intro:
-      "Review content imported only with permission or embedded according to review platform rules. The CMS includes permission and source fields for that reason.",
+      "First-hand accounts from guests who travelled with Jackfruit Safaris — shared with permission, kept honest.",
     backgroundImage: images.nile,
     introImage: "/images/Reviews.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
@@ -961,9 +961,9 @@ export const pageHeroFallbacks: Record<string, PageHeroFallback> = {
   },
   "/travel-guide": {
     title: "Practical Travel Articles",
-    subtitle: "That Answer Your Booking Questions",
+    subtitle: "That Answer Your Questions",
     intro:
-      "These are ready as CMS article topics for SEO, buyer education, and AI-search visibility.",
+      "Permits, park fees, packing, transport, and route planning — practical Uganda travel notes written by the Jinja team that drives these routes.",
     backgroundImage: images.culture,
     introImage: "/images/Travel guide intro best.jpg",
     ctaPrimary: { label: "Plan My Safari", href: "/request-quote" },
