@@ -154,7 +154,7 @@ export default async function SafarisPage() {
               </div>
             ) : null}
           </div>
-          <aside className="space-y-4 lg:sticky lg:top-24 self-start">
+          <aside className="space-y-4">
             <div className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5 sm:p-6">
               <p className="flex items-center gap-2 text-fluid-sm font-black uppercase tracking-[0.16em] text-[var(--brand-secondary)]">
                 <SlidersHorizontal size={17} aria-hidden="true" />

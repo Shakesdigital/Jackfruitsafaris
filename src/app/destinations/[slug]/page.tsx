@@ -350,7 +350,7 @@ export default async function DestinationDetailPage({ params }: Props) {
               </Link>
             </div>
           </article>
-          <QuoteForm sourcePage={destination.slug} defaultService="custom safari" className="lg:sticky lg:top-24 self-start" />
+          <QuoteForm sourcePage={destination.slug} defaultService="custom safari" />
         </div>
       </Section>
     </>

@@ -25,7 +25,7 @@ export async function QuoteFormServer({
   return (
     <form
       action={createInquiry}
-      className={`grid content-start gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 shadow-sm sm:p-6 ${className}`}
+      className={`grid content-start self-start gap-4 rounded-[var(--brand-radius)] border border-black/10 bg-white p-5 shadow-sm sm:p-6 ${className}`}
     >
       <input type="hidden" name="source_page" value={sourcePage} />
       <div>

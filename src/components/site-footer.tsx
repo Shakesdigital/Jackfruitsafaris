@@ -9,7 +9,7 @@ import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export async function SiteFooter({ settings }: { settings?: PublicSiteSettings | null }) {
   let mainNavigation: NavItem[] = [];
-  const footerBg = settings?.footer_background_color || "#10251b";
+  const footerBg = settings?.footer_background_color || "#2f8f6c";
 
   try {
     mainNavigation = await getMenuItemsByLocation("main");

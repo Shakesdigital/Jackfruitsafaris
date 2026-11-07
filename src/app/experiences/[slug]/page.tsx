@@ -280,7 +280,7 @@ export default async function ExperienceDetailPage({ params }: Props) {
               images={galleryMedia as GalleryMedia[]}
               experienceTitle={experience.name}
             />
-            <QuoteForm sourcePage={experience.slug} defaultService={experience.name} className="lg:sticky lg:top-24 self-start" />
+            <QuoteForm sourcePage={experience.slug} defaultService={experience.name} />
           </div>
         </div>
       </Section>

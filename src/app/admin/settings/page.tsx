@@ -254,7 +254,7 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
                 <ColorInputField name="brand_surface_color" label="Card / Surface Color" fallback="#ffffff" />
                 <ColorInputField name="brand_text_color" label="Main Text Color" fallback="#10251b" />
                 <ColorInputField name="brand_muted_text_color" label="Muted Text Color" fallback="#536154" />
-                <ColorInputField name="footer_background_color" label="Footer Background Color" fallback="#10251b" />
+                <ColorInputField name="footer_background_color" label="Footer Background Color" fallback="#2f8f6c" />
               </div>
             </div>
 
