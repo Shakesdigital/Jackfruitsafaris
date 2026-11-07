@@ -363,8 +363,8 @@ export async function upsertSiteSettings(formData: FormData) {
     footer_background_color: formData.get("footer_background_color") || undefined,
     aesthetics: {
       palette: {
-        primary: formData.get("brand_primary_color") || "#143c2d",
-        secondary: formData.get("brand_secondary_color") || "#2d6f55",
+        primary: formData.get("brand_primary_color") || "#207458",
+        secondary: formData.get("brand_secondary_color") || "#2f8f6c",
         accent: formData.get("brand_accent_color") || "#f5bf2f",
         background: formData.get("brand_background_color") || "#fbfaf5",
         surface: formData.get("brand_surface_color") || "#ffffff",
@@ -614,7 +614,7 @@ function parseSafariDetails(formData: FormData) {
   const accommodations = [];
   const faqs = [];
 
-  // Parse itinerary days — each day can now include an optional image
+  // Parse itinerary days â€” each day can now include an optional image
   for (let i = 1; i <= daysCount; i++) {
     const day = formData.get(`day_${i}_number`) as string;
     const title = formData.get(`day_${i}_title`) as string;
@@ -1548,7 +1548,7 @@ export async function upsertPageHero(formData: FormData) {
     try {
       quickLinks = JSON.parse(quickLinksRaw);
     } catch {
-      // Invalid JSON — leave undefined so Zod schema catches it
+      // Invalid JSON â€” leave undefined so Zod schema catches it
     }
   }
 

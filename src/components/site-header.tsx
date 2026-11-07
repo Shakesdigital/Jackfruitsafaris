@@ -123,13 +123,13 @@ function HeaderInner({
         <div className="hidden items-center gap-2 lg:flex">
           <Link
             href="/request-quote"
-            className="btn-h-responsive rounded-full bg-[var(--brand-primary)] px-5 py-2 text-fluid-sm font-black text-white shadow-sm transition hover:bg-[#0f2d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="btn-h-responsive rounded-full bg-[var(--brand-primary)] px-5 py-2 text-fluid-sm font-black text-white shadow-sm transition hover:bg-[#165342] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             Request Quote
           </Link>
         </div>
 
-        {/* Mobile menu toggle — clean hamburger/X icon */}
+        {/* Mobile menu toggle â€” clean hamburger/X icon */}
         <button
           type="button"
           onClick={() => setMenuOpen(true)}
@@ -150,7 +150,7 @@ function HeaderInner({
             aria-hidden="true"
           />
 
-          {/* Drawer panel — slides in from the right */}
+          {/* Drawer panel â€” slides in from the right */}
           <div
             className="fixed top-0 right-0 z-[51] h-screen w-full max-w-sm overflow-y-auto bg-white p-6 shadow-2xl"
             aria-label="Mobile menu"
@@ -188,11 +188,11 @@ function HeaderInner({
               })}
             </nav>
 
-            {/* Request a Quote — separate accent block */}
+            {/* Request a Quote â€” separate accent block */}
             <Link
               href="/request-quote"
               onClick={() => setMenuOpen(false)}
-              className="mt-4 block rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-center text-fluid-base font-black text-white hover:bg-[#0f2d22] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+              className="mt-4 block rounded-xl bg-[var(--brand-primary)] px-4 py-3 text-center text-fluid-base font-black text-white hover:bg-[#165342] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
             >
               Request a Quote
             </Link>

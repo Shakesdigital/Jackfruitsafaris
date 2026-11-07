@@ -247,8 +247,8 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
                 Brand Colors
               </h3>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <ColorInputField name="brand_primary_color" label="Primary Brand Color" fallback="#143c2d" />
-                <ColorInputField name="brand_secondary_color" label="Secondary Brand Color" fallback="#2d6f55" />
+                <ColorInputField name="brand_primary_color" label="Primary Brand Color" fallback="#207458" />
+                <ColorInputField name="brand_secondary_color" label="Secondary Brand Color" fallback="#2f8f6c" />
                 <ColorInputField name="brand_accent_color" label="Accent / Highlight Color" fallback="#f5bf2f" />
                 <ColorInputField name="brand_background_color" label="Website Background" fallback="#fbfaf5" />
                 <ColorInputField name="brand_surface_color" label="Card / Surface Color" fallback="#ffffff" />
@@ -419,14 +419,14 @@ export default async function SettingsPage({ searchParams }: SettingsPageProps) 
               name="footer_about"
               label="Footer About Text"
               rows={3}
-              placeholder="Jackfruit Safaris designs private, tailor-made Uganda safaris — from gorilla trekking in Bwindi to Nile adventures and cultural encounters — planned locally from our base in Jinja."
+              placeholder="Jackfruit Safaris designs private, tailor-made Uganda safaris â€” from gorilla trekking in Bwindi to Nile adventures and cultural encounters â€” planned locally from our base in Jinja."
             />
           </div>
           <TextAreaField
             name="footer_copy"
             label="Footer Copyright"
             rows={3}
-            placeholder="© 2024 Jackfruit Safaris. All rights reserved."
+            placeholder="Â© 2024 Jackfruit Safaris. All rights reserved."
           />
         </div>
 

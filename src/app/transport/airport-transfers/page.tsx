@@ -84,7 +84,7 @@ export default async function AirportTransfersPage() {
               ))}
             </div>
           </div>
-          <QuoteForm sourcePage={sourcePage} defaultService={defaultService} />
+          <QuoteForm sourcePage={sourcePage} defaultService={defaultService} className="lg:sticky lg:top-24 self-start" />
         </div>
       </Section>
     </>

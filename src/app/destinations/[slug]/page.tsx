@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CalendarCheck, MapPin, Star } from "lucide-react";
+import { CalendarCheck, Compass, MapPin, Mountain, MountainSnow, Bird, Users, TreePine, Footprints, Camera, Tent } from "lucide-react";
 import { HeroSection } from "@/components/hero-section";
 import { QuoteForm } from "@/components/quote-form";
 import { Section } from "@/components/section";
@@ -111,6 +111,20 @@ export default async function DestinationDetailPage({ params }: Props) {
   const overviewTitle = getSectionText(overviewSection, "title", "Destination overview");
   const overviewBody = getSectionText(overviewSection, "intro", overview);
 
+  // Themed cycling icons for the Why-go cards (forest, mountain, water, people,
+  // wildlife, trails, birding, safari nights, horizons, basecamps).
+  const whyGoIcons = [
+    TreePine,
+    MountainSnow,
+    Compass,
+    Footprints,
+    Users,
+    Bird,
+    Camera,
+    Tent,
+    Mountain,
+  ];
+
   return (
     <>
       <HeroSection
@@ -149,21 +163,22 @@ export default async function DestinationDetailPage({ params }: Props) {
                   Why go here
                 </h2>
                 <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                  {whyGo.map((item: string) => (
-                    <div
-                      key={item}
-                      className="rounded-[var(--brand-radius)] bg-[#eef7f0] p-5"
-                    >
-                      <Star
-                        className="text-[var(--brand-secondary)]"
-                        size={22}
-                        aria-hidden="true"
-                      />
-                      <p className="mt-3 text-fluid-sm font-black text-[var(--foreground)]">
-                        {item}
-                      </p>
-                    </div>
-                  ))}
+                  {whyGo.map((item: string, whyIndex: number) => {
+                    const WhyIcon = whyGoIcons[whyIndex % whyGoIcons.length];
+                    return (
+                      <div
+                        key={item}
+                        className="flex items-start gap-3 rounded-[var(--brand-radius)] bg-[#eef7f0] p-4"
+                      >
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[var(--brand-secondary)] shadow-sm">
+                          <WhyIcon size={18} aria-hidden="true" />
+                        </span>
+                        <p className="pt-1 text-fluid-sm font-bold leading-6 text-[var(--foreground)]">
+                          {item}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -335,7 +350,7 @@ export default async function DestinationDetailPage({ params }: Props) {
               </Link>
             </div>
           </article>
-          <QuoteForm sourcePage={destination.slug} defaultService="custom safari" />
+          <QuoteForm sourcePage={destination.slug} defaultService="custom safari" className="lg:sticky lg:top-24 self-start" />
         </div>
       </Section>
     </>

@@ -91,7 +91,7 @@ export default async function ContactPage() {
               );
             })}
           </div>
-          <QuoteForm sourcePage={getSectionText(quoteFormSection, "source_page", "contact")} />
+          <QuoteForm sourcePage={getSectionText(quoteFormSection, "source_page", "contact")} className="lg:sticky lg:top-24 self-start" />
         </div>
       </Section>
     </>

@@ -46,6 +46,7 @@ export default async function DestinationsPage() {
         region: d.region,
         featured_image_url: d.featured_image_url || hardcodedDestinations.find(hd => hd.slug === d.slug)?.image || "",
         overview: d.overview || d.summary,
+        summary: d.summary || (d.overview || d.cms_summary || ""),
       }))
     : hardcodedDestinations.map((d) => ({
       slug: d.slug,
@@ -53,6 +54,7 @@ export default async function DestinationsPage() {
       region: d.region,
       featured_image_url: d.image,
       overview: d.overview || d.summary,
+      summary: d.summary || d.overview,
     }));
 
   const introText = getSectionText(
@@ -115,7 +117,7 @@ export default async function DestinationsPage() {
                   {destination.name}
                 </h2>
                 <p className="mt-3 text-fluid-sm leading-7 text-[var(--brand-muted-text)]">
-                  {destination.overview || destination.summary}
+                  {destination.summary || destination.overview}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-fluid-sm font-black text-[var(--brand-primary)]">
                   View destination

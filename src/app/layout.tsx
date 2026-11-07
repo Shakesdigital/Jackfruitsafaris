@@ -105,7 +105,7 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   return { r, g, b };
 }
 
-// Calculate the relative luminance of a hex color (0–1 scale).
+// Calculate the relative luminance of a hex color (0â€“1 scale).
 // Uses the WCAG 2.0 relative luminance formula so we can pick
 // a readable text color for any footer background.
 function getLuminance(hex: string): number | null {
@@ -139,8 +139,8 @@ function buildAestheticStyle(settings: PublicSiteSettings | null): AestheticStyl
   return {
     "--background": settingValue(settings?.brand_background_color, "#fbfaf5"),
     "--foreground": settingValue(settings?.brand_text_color, "#10251b"),
-    "--brand-primary": settingValue(settings?.brand_primary_color, "#143c2d"),
-    "--brand-secondary": settingValue(settings?.brand_secondary_color, "#2d6f55"),
+    "--brand-primary": settingValue(settings?.brand_primary_color, "#207458"),
+    "--brand-secondary": settingValue(settings?.brand_secondary_color, "#2f8f6c"),
     "--brand-accent": settingValue(settings?.brand_accent_color, "#f5bf2f"),
     "--brand-surface": settingValue(settings?.brand_surface_color, "#ffffff"),
     "--brand-muted-text": settingValue(settings?.brand_muted_text_color, "#536154"),
