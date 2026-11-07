@@ -9,7 +9,7 @@ import type { PublicSiteSettings } from "@/lib/site-settings";
 
 export async function SiteFooter({ settings }: { settings?: PublicSiteSettings | null }) {
   let mainNavigation: NavItem[] = [];
-  const footerBg = settings?.footer_background_color || "#2f8f6c";
+  const footerBg = settings?.footer_background_color || "#277e64";
 
   try {
     mainNavigation = await getMenuItemsByLocation("main");
@@ -36,14 +36,13 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
           >
             {settings?.logo_url ? (
               <img
-                src={settings.logo_url}
+                src="/images/jackfruit-safaris-logo.png"
                 alt={`${settings?.business_name || "Jackfruit Safaris"} logo`}
-                className="logo-responsive rounded-full object-contain"
-                width="96"
-                height="96"
+                className="h-14 w-auto rounded-lg bg-white p-1 object-contain shadow-sm sm:h-16"
+                width="128"
+                height="64"
                 loading="lazy"
                 decoding="async"
-                sizes="(max-width: 600px) 48px, 72px"
               />
             ) : (
               <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-3xl font-black text-[var(--foreground)]">
@@ -131,24 +130,21 @@ export async function SiteFooter({ settings }: { settings?: PublicSiteSettings |
       </div>
 
       <div
-        className="container-responsive mt-10 border-t pt-6 text-center text-fluid-xs"
-        style={{ borderColor: "#ffffff", opacity: 0.3 }}
+        className="container-responsive mt-10 border-t pt-6 text-center text-fluid-sm"
+        style={{ borderColor: "rgba(255,255,255,0.35)" }}
       >
-        {settings?.footer_copy || (
-          <>
-            © {new Date().getFullYear()} Jackfruit Safaris Ltd. All Rights Reserved. Designed and powered by{" "}
-            <a
-              href="https://shakesdigital.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="underline decoration-white/50 hover:decoration-white hover:text-[var(--brand-accent)]"
-              style={{ color: "var(--footer-text)" }}
-            >
-              Shakes Digital
-            </a>
-            .
-          </>
-        )}
+        <span className="text-white/90">
+          © {new Date().getFullYear()} Jackfruit Safaris Ltd. All Rights Reserved. Designed and powered by{" "}
+        </span>
+        <a
+          href="https://shakesdigital.com/"
+          target="_blank"
+          rel="noreferrer"
+          className="font-semibold text-white underline decoration-white/60 underline-offset-4 transition-colors hover:text-[var(--brand-accent)] hover:decoration-[var(--brand-accent)]"
+        >
+          Shakes Digital
+        </a>
+        .
       </div>
     </footer>
   );

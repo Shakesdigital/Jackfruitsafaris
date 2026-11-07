@@ -133,7 +133,7 @@ function buildAestheticStyle(settings: PublicSiteSettings | null): AestheticStyl
   const buttonStyle = settingValue(settings?.button_style, "pill");
   const sectionSpacing = settingValue(settings?.section_spacing, "comfortable");
   const cardShadow = settingValue(settings?.card_shadow_style, "soft");
-  const footerBg = settingValue(settings?.footer_background_color, "#2f8f6c");
+  const footerBg = settingValue(settings?.footer_background_color, "#277e64");
   const footerTextColor = footerTextColorForBackground(footerBg);
 
   return {
@@ -185,7 +185,7 @@ export default async function RootLayout({
             <SiteHeader settings={settings} />
           </Suspense>
           <main>{children}</main>
-          <Suspense fallback={<footer className="pb-16 pt-10 md:pb-12" style={{ backgroundColor: "#2f8f6c", color: "white" }}><div className="container-responsive"><div className="animate-pulse space-y-4"><div className="h-8 w-48 bg-gray-700 rounded" /><div className="h-4 w-64 bg-gray-700 rounded" /><div className="grid gap-4 md:grid-cols-3 mt-8"><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /></div><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-24 bg-gray-700 rounded" /></div><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /></div></div></div></div></footer>}>
+          <Suspense fallback={<footer className="pb-16 pt-10 md:pb-12" style={{ backgroundColor: "#277e64", color: "white" }}><div className="container-responsive"><div className="animate-pulse space-y-4"><div className="h-8 w-48 bg-gray-700 rounded" /><div className="h-4 w-64 bg-gray-700 rounded" /><div className="grid gap-4 md:grid-cols-3 mt-8"><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /></div><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-24 bg-gray-700 rounded" /></div><div className="space-y-2"><div className="h-4 w-24 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /><div className="h-4 w-28 bg-gray-700 rounded" /><div className="h-4 w-32 bg-gray-700 rounded" /></div></div></div></div></footer>}>
             <SiteFooter settings={settings} />
           </Suspense>
           <MobileCta settings={settings} />

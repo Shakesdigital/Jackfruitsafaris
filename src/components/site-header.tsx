@@ -72,14 +72,13 @@ function HeaderInner({
         >
           {settings?.logo_url ? (
             <img
-              src={settings.logo_url}
+              src="/images/jackfruit-safaris-logo.png"
               alt={`${businessName} logo`}
-              className="logo-responsive rounded-full object-contain"
-              width="48"
+              className="h-10 w-auto object-contain sm:h-12"
+              width="96"
               height="48"
               loading="eager"
               decoding="async"
-              sizes="(max-width: 600px) 40px, 48px"
             />
           ) : (
             <span className="flex logo-responsive items-center justify-center rounded-full bg-[var(--brand-accent)] text-xl font-black text-[var(--foreground)]">

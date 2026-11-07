@@ -1,6 +1,7 @@
 -- Jackfruit Safaris - footer green, healthy destination overviews, favicon
--- 1. Footer background -> #2f8f6c (harmonized logo green; white footer text
---    is auto-derived from the color's luminance by the app layout).
+-- 1. Footer background -> #277e64 (a step darker than the harmonized logo
+--    green #2f8f6c, same hue; white footer text is auto-derived from the
+--    color's luminance by the app layout).
 -- 2. Re-sync the per-destination "Destination overview" content sections from
 --    the destinations.overview column. The detail page prefers the CMS section
 --    row when one exists, so a stale row would keep overriding the full
@@ -22,7 +23,7 @@ begin
       and column_name = 'footer_background_color'
   ) then
     update public.site_settings
-    set footer_background_color = '#2f8f6c',
+    set footer_background_color = '#277e64',
         updated_at = now();
   end if;
 end $$;
